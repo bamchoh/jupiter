@@ -1,0 +1,57 @@
+﻿<UserControl x:Class="Jupiter.Views.NodeTree"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:Controls="clr-namespace:System.Windows.Controls;assembly=MultiSelectTreeView"
+             xmlns:local="clr-namespace:Jupiter.Views"
+             xmlns:Prism="http://prismlibrary.com/"
+             Prism:ViewModelLocator.AutoWireViewModel="True"
+             xmlns:local2="clr-namespace:Jupiter">
+    <UserControl.Resources>
+        <ContextMenu x:Key="topLevelMenu">
+            <MenuItem Header="To One Time Access" Click="MenuItem_Click" />
+            <MenuItem Header="To Subscription" Click="MenuItem_Click_1" />
+        </ContextMenu>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="25*" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="25*" />
+        </Grid.ColumnDefinitions>
+        <DockPanel Grid.Column="0">
+            <Button DockPanel.Dock="Top" Content="Reload" Click="Button_Click" />
+            <TreeView ItemsSource="{Binding Path=References.Value.Children}">
+                <TreeView.ItemContainerStyle>
+                    <Style TargetType="{x:Type TreeViewItem}">
+                        <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded, Mode=TwoWay}"/>
+                        <!-- <Setter Property="IsSelected" Value="{Binding Path=IsSelected, Mode=TwoWay}"/> -->
+                        <EventSetter Event="Selected" Handler="TreeViewItem_Selected" />
+                    </Style>
+                </TreeView.ItemContainerStyle>
+                <TreeView.Resources>
+                    <HierarchicalDataTemplate DataType="{x:Type local2:OPCUAReference}" ItemsSource="{Binding Children}">
+                        <TextBlock Text="{Binding Path=DisplayName}" ContextMenuService.Placement="Left" />
+                    </HierarchicalDataTemplate>
+                </TreeView.Resources>
+            </TreeView>
+        </DockPanel>
+        <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Center" />
+        <DataGrid Grid.Column="2"
+                  SelectionChanged="DataGrid_SelectionChanged"
+                  ItemsSource="{Binding Path=VariableNodes.Value}" RowHeight="20" CanUserResizeRows="False"
+                  CanUserAddRows="False" CanUserSortColumns="False" CanUserReorderColumns="False" IsReadOnly="True" AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Name" Binding="{Binding DisplayName}" Width="*"/>
+            </DataGrid.Columns>
+            <DataGrid.ItemContainerStyle>
+                <Style TargetType="{x:Type DataGridRow}">
+                    <Setter Property="ContextMenu" Value="{StaticResource topLevelMenu}" />
+                    <EventSetter Event="MouseRightButtonDown" Handler="TreeViewItem_MouseRightButtonDown" />
+                    <EventSetter Event="MouseDoubleClick" Handler="OnItemMouseDoubleClick" />
+                </Style>
+            </DataGrid.ItemContainerStyle>
+        </DataGrid>
+    </Grid>
+</UserControl>

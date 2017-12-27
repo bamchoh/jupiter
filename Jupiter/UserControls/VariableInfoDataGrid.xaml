@@ -1,0 +1,78 @@
+﻿<UserControl x:Class="Jupiter.UserControls.VariableInfoDataGrid"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Jupiter.UserControls"
+             xmlns:local2="clr-namespace:Jupiter"
+             HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+             >
+    <UserControl.Resources>
+        <DataTemplate x:Key="VariantTypeForShow">
+            <TextBlock Text="{Binding Path=Value}" />
+        </DataTemplate>
+        <DataTemplate x:Key="VariantTypeForEdit">
+            <TextBox Text="{Binding Path=WriteValue, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+        </DataTemplate>
+        <DataTemplate x:Key="BoolType">
+            <CheckBox IsChecked="{Binding Path=Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+        </DataTemplate>
+        <DataTemplate x:Key="VariantTypeForShowPrepareValue">
+            <TextBlock Text="{Binding Path=PrepareValue}" />
+        </DataTemplate>
+        <DataTemplate x:Key="VariantTypeForEditPrepareValue">
+            <TextBox Text="{Binding Path=PrepareValue, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+        </DataTemplate>
+        <DataTemplate x:Key="BoolTypePrepareValue">
+            <CheckBox IsChecked="{Binding Path=PrepareValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <DockPanel>
+        <DataGrid Grid.Column="1" Grid.Row="1"
+                  ItemsSource="{Binding ItemsSource, RelativeSource={RelativeSource AncestorType=local:VariableInfoDataGrid}}"
+                  SelectionChanged="DataGrid_SelectionChanged"
+                  CanUserAddRows="False" CanUserSortColumns="False" CanUserReorderColumns="False" IsReadOnly="False" AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn IsReadOnly="True" Header="NodeId" Binding="{Binding NodeId}" />
+                <DataGridTextColumn IsReadOnly="True" Header="Type" Binding="{Binding Type}" />
+                <DataGridTemplateColumn Header="Value">
+                    <DataGridTemplateColumn.CellTemplateSelector>
+                        <local2:ValueTemplateSelector
+			                VariantTemplate="{StaticResource VariantTypeForShow}"
+			                BoolTemplate="{StaticResource BoolType}"
+			                />
+                    </DataGridTemplateColumn.CellTemplateSelector>
+                    <DataGridTemplateColumn.CellEditingTemplateSelector>
+                        <local2:ValueTemplateSelector
+			                VariantTemplate="{StaticResource VariantTypeForEdit}"
+			                BoolTemplate="{StaticResource BoolType}"
+			                />
+                    </DataGridTemplateColumn.CellEditingTemplateSelector>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn IsReadOnly="True" Header="StatusCode" Binding="{Binding StatusCode}" />
+                <DataGridTemplateColumn Header="Prepare Value">
+                    <DataGridTemplateColumn.CellTemplateSelector>
+                        <local2:ValueTemplateSelector
+			                VariantTemplate="{StaticResource VariantTypeForShowPrepareValue}"
+			                BoolTemplate="{StaticResource BoolTypePrepareValue}"
+			                />
+                    </DataGridTemplateColumn.CellTemplateSelector>
+                    <DataGridTemplateColumn.CellEditingTemplateSelector>
+                        <local2:ValueTemplateSelector
+			                VariantTemplate="{StaticResource VariantTypeForEditPrepareValue}"
+			                BoolTemplate="{StaticResource BoolTypePrepareValue}"
+			                />
+                    </DataGridTemplateColumn.CellEditingTemplateSelector>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn IsReadOnly="True" Header="ServerTimestamp" Binding="{Binding ServerTimestamp}" />
+                <DataGridTextColumn IsReadOnly="True" Header="SourceTimestamp" Binding="{Binding SourceTimestamp}" />
+            </DataGrid.Columns>
+            <DataGrid.RowStyle>
+                <Style TargetType="{x:Type DataGridRow}">
+                    <Setter Property="IsSelected" Value="{Binding Path=IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                </Style>
+            </DataGrid.RowStyle>
+        </DataGrid>
+    </DockPanel>
+</UserControl>
