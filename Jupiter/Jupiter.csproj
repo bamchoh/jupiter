@@ -235,16 +235,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\UA-.NETStandardLibrary\SampleApplications\SDK\Opc.Ua.Client\Opc.Ua.Client.csproj">
-      <Project>{b8c37f76-a858-4498-8437-8dcdb7865f53}</Project>
-      <Name>Opc.Ua.Client</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\UA-.NETStandardLibrary\Stack\Opc.Ua.Core\Opc.Ua.Core.csproj">
-      <Project>{1dd757ca-137c-47ac-b024-76de4e55971f}</Project>
-      <Name>Opc.Ua.Core</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">
       <Visible>False</Visible>
       <ProductName>Microsoft .NET Framework 4.6.1 %28x86 および x64%29</ProductName>
@@ -259,6 +249,15 @@
   <ItemGroup>
     <Resource Include="jupiter.ico" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\opcua\SampleApplications\SDK\Opc.Ua.Client\Opc.Ua.Client.csproj">
+      <Project>{865319b4-0faf-4bd2-b9b2-7e7ec71b9e6b}</Project>
+      <Name>Opc.Ua.Client</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\opcua\Stack\Opc.Ua.Core\Opc.Ua.Core.csproj">
+      <Project>{509ed649-ff7f-424a-af61-f5cceff4f974}</Project>
+      <Name>Opc.Ua.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
