@@ -192,7 +192,7 @@ namespace Jupiter
 
             if (session.Subscriptions.Count() == 0)
             {
-                subscription = new Subscription(session.DefaultSubscription) { PublishingInterval = 100 };
+                subscription = new Subscription(session.DefaultSubscription) { PublishingInterval = 5000 };
                 session.AddSubscription(subscription);
                 subscription.Create();
             }
@@ -308,11 +308,6 @@ namespace Jupiter
             Connected = session.Connected;
         }
 
-        private void Session_Notification1(Session session, NotificationEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
         public void Close()
         {
             if (subscription != null)
@@ -361,7 +356,11 @@ namespace Jupiter
 
             for(int i = 0; i < values.Count; i++)
             {
-                items[i].SetItem(items[i].NodeId, items[i].ClientHandle, values[i]);
+                var vi = NewVariableInfo(items[i].NodeId);
+                vi.SetItem(items[i].NodeId, items[i].ClientHandle, values[i]);
+                var isSelected = items[i].IsSelected;
+                items[i] = vi;
+                vi.IsSelected = isSelected;
             }
 
             return;
@@ -391,7 +390,7 @@ namespace Jupiter
             return vi;
         }
 
-        private VariableInfoBase NewVariableInfo(ExpandedNodeId id)
+        public VariableInfoBase NewVariableInfo(ExpandedNodeId id)
         {
             var node = session.NodeCache.Find(id) as VariableNode;
             BuiltInType builtinType = TypeInfo.GetBuiltInType(node.DataType, session.TypeTree);

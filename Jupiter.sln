@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Opc.Ua.Core", "opcua\Stack\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Opc.Ua.Client", "opcua\SampleApplications\SDK\Opc.Ua.Client\Opc.Ua.Client.csproj", "{865319B4-0FAF-4BD2-B9B2-7E7EC71B9E6B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestJupiter", "UnitTestJupiter\UnitTestJupiter.csproj", "{ED86ED74-CC12-4D5A-9222-63977110D647}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{865319B4-0FAF-4BD2-B9B2-7E7EC71B9E6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{865319B4-0FAF-4BD2-B9B2-7E7EC71B9E6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{865319B4-0FAF-4BD2-B9B2-7E7EC71B9E6B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED86ED74-CC12-4D5A-9222-63977110D647}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED86ED74-CC12-4D5A-9222-63977110D647}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED86ED74-CC12-4D5A-9222-63977110D647}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED86ED74-CC12-4D5A-9222-63977110D647}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

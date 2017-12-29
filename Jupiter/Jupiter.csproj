@@ -123,6 +123,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Behaviors\TextBoxBehaviors.cs" />
     <Compile Include="Client.cs" />
     <Compile Include="Commands\DelegateCommand.cs" />
     <Compile Include="Commands\ShowMessageCommand.cs" />

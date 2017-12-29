@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:b="clr-namespace:Jupiter.Behaviors"
              xmlns:local="clr-namespace:Jupiter.UserControls"
              xmlns:local2="clr-namespace:Jupiter"
              HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
@@ -12,7 +13,7 @@
             <TextBlock Text="{Binding Path=Value}" />
         </DataTemplate>
         <DataTemplate x:Key="VariantTypeForEdit">
-            <TextBox Text="{Binding Path=WriteValue, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+            <TextBox Text="{Binding Path=WriteValue, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" b:TextBoxBehaviors.IsFocusSelect="True" />
         </DataTemplate>
         <DataTemplate x:Key="BoolType">
             <CheckBox IsChecked="{Binding Path=Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />

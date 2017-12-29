@@ -48,14 +48,5 @@ namespace Jupiter.UserControls
         {
             this.SelectedItems = ((DataGrid)sender).SelectedItems;
         }
-
-        private void TextBox_GotFocus(object sender, RoutedEventArgs e)
-        {
-            var tb = (sender as TextBox);
-            if(tb != null)
-            {
-                tb.SelectAll();
-            }
-        }
     }
 }

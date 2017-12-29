@@ -593,6 +593,15 @@ namespace Jupiter
 
         public DataValue DataValue;
 
+        public void Update(VariableInfoBase vi)
+        {
+            this.DataValue = vi.DataValue;
+            this.SetProperty("Value");
+            this.SetProperty("StatusCode");
+            this.SetProperty("ServerTimestamp");
+            this.SetProperty("SourceTimestamp");
+        }
+
         public void SetItem(NodeId nodeid, uint handle, DataValue dv)
         {
             if(nodeid != null)

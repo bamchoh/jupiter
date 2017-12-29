@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Collections.ObjectModel;
 using System.Collections;
 using System.Windows.Input;
+using System.Windows.Data;
 
 using Prism.Mvvm;
 
@@ -17,15 +18,20 @@ namespace Jupiter.Models
     public class SubscriptionModel : BindableBase, Interfaces.ISubscriptionModel
     {
         private Interfaces.ISubscriptionOperatable subscriptionOperator;
+        private Interfaces.IVariableInfoManager variableInfoManager;
         private ObservableCollection<VariableInfoBase> monitoredItemList = new ObservableCollection<VariableInfoBase>();
 
         public ICommand DeleteMonitoredItemsCommand { get; set; }
 
         public SubscriptionModel(
             Interfaces.IConnection connector,
-            Interfaces.ISubscriptionOperatable subscriptionOperator)
+            Interfaces.ISubscriptionOperatable subscriptionOperator,
+            Interfaces.IVariableInfoManager variableInfoManager)
         {
             this.subscriptionOperator = subscriptionOperator;
+            this.variableInfoManager = variableInfoManager;
+
+            BindingOperations.EnableCollectionSynchronization(monitoredItemList, new object());
 
             subscriptionOperator.SessionNotification -= Session_Notificaiton;
             subscriptionOperator.SessionNotification += Session_Notificaiton;
@@ -62,21 +68,17 @@ namespace Jupiter.Models
 
         private void Session_Notificaiton(object sender, ClientNotificationEventArgs e)
         {
-            var currentList = this.monitoredItemList;
-
             foreach(var change in e.Items)
             {
-                for (int i = 0; i < currentList.Count(); i++)
+                for(int i = 0; i < this.monitoredItemList.Count; i++)
                 {
-                    if (currentList[i].ClientHandle == change.ClientHandle)
+                    var vi = this.monitoredItemList[i];
+                    if (vi.ClientHandle == change.ClientHandle)
                     {
-                        currentList[i].SetItem(change.NodeId, change.ClientHandle, change.DataValue);
-                        break;
+                        vi.Update(change);
                     }
                 }
             }
-
-            this.MonitoredItemList = currentList;
         }
 
         private void DeleteMonitoredItems()
