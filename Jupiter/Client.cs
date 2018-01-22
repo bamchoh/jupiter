@@ -374,7 +374,7 @@ namespace Jupiter
                 ResponseHeader responseHeader = session.Read(
                     null,
                     0,
-                    TimestampsToReturn.Neither,
+                    TimestampsToReturn.Both,
                     itemsToRead,
                     out values,
                     out diagnosticInfos);
