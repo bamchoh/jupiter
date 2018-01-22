@@ -37,7 +37,9 @@ namespace Jupiter
             this.Container.RegisterInstance<Interfaces.ISubscriptionOperatable>(Client.Instance);
             this.Container.RegisterInstance<Interfaces.IOneTimeAccessOperator>(Client.Instance);
             this.Container.RegisterInstance<Interfaces.IVariableInfoManager>(Client.Instance);
-            this.Container.RegisterInstance<Interfaces.IReference>(new OPCUAReference(Client.Instance, null));
+
+            var references = new OPCUAReference(Client.Instance, null);
+            this.Container.RegisterInstance<Interfaces.IReference>(references);
 
             this.Container.Resolve<Views.MainWindow>().Show();
         }

@@ -244,52 +244,70 @@ namespace Jupiter
 
         public ReferenceDescriptionCollection FetchRootReferences()
         {
-            var refs = session.FetchReferences(ObjectIds.ObjectsFolder);
-            byte[] continuationPoint;
+            try
+            {
+                var refs = session.FetchReferences(ObjectIds.ObjectsFolder);
+                byte[] continuationPoint;
 
-            session.Browse(
-                null,
-                null,
-                ObjectIds.ObjectsFolder,
-                0u,
-                BrowseDirection.Forward,
-                ReferenceTypeIds.HierarchicalReferences,
-                true,
-                (uint)NodeClass.Object | (uint)NodeClass.Method,
-                out continuationPoint,
-                out refs);
+                session.Browse(
+                    null,
+                    null,
+                    ObjectIds.ObjectsFolder,
+                    0u,
+                    BrowseDirection.Forward,
+                    ReferenceTypeIds.HierarchicalReferences,
+                    true,
+                    (uint)NodeClass.Object | (uint)NodeClass.Method,
+                    out continuationPoint,
+                    out refs);
 
-            return refs;
+                return refs;
+            }
+            catch (Exception ex)
+            {
+                MessagePassing(ex);
+                Close();
+                return null;
+            }
         }
 
         public ReferenceDescriptionCollection FetchReferences(ExpandedNodeId nodeid, bool onlyVariable = false)
         {
-            ReferenceDescriptionCollection refs;
-            byte[] continuationPoint;
-
-            uint mask;
-            if (onlyVariable)
+            try
             {
-                mask = (uint)NodeClass.Variable;
+                ReferenceDescriptionCollection refs;
+                byte[] continuationPoint;
+
+                uint mask;
+                if (onlyVariable)
+                {
+                    mask = (uint)NodeClass.Variable;
+                }
+                else
+                {
+                    mask = (uint)NodeClass.Object | (uint)NodeClass.Method;
+                }
+
+                session.Browse(
+                    null,
+                    null,
+                    ExpandedNodeId.ToNodeId(nodeid, session.NamespaceUris),
+                    0u,
+                    BrowseDirection.Forward,
+                    ReferenceTypeIds.HierarchicalReferences,
+                    true,
+                    mask,
+                    out continuationPoint,
+                    out refs);
+
+                return refs;
             }
-            else
+            catch (Exception ex)
             {
-                mask = (uint)NodeClass.Object | (uint)NodeClass.Method;
+                MessagePassing(ex);
+                Close();
+                return null;
             }
-
-            session.Browse(
-                null,
-                null,
-                ExpandedNodeId.ToNodeId(nodeid, session.NamespaceUris),
-                0u,
-                BrowseDirection.Forward,
-                ReferenceTypeIds.HierarchicalReferences,
-                true,
-                mask,
-                out continuationPoint,
-                out refs);
-
-            return refs;
         }
 
         public async Task CreateSession()
@@ -305,6 +323,14 @@ namespace Jupiter
                 60000,
                 new UserIdentity(new AnonymousIdentityToken()),
                 null);
+
+            session.PublishError += Session_PublishError;
+            Connected = session.Connected;
+        }
+
+        private void Session_PublishError(Session session, PublishErrorEventArgs e)
+        {
+            session.Close();
             Connected = session.Connected;
         }
 
@@ -325,45 +351,54 @@ namespace Jupiter
 
         public void Read(IList<VariableInfoBase> items)
         {
-            var itemsToRead = new ReadValueIdCollection();
-
-            foreach(var vi in items)
+            try
             {
-                var rv = new ReadValueId()
+                var itemsToRead = new ReadValueIdCollection();
+
+                foreach (var vi in items)
                 {
-                    NodeId = vi.NodeId,
-                    AttributeId = Attributes.Value,
-                    IndexRange = null,
-                    DataEncoding = null,
-                };
+                    var rv = new ReadValueId()
+                    {
+                        NodeId = vi.NodeId,
+                        AttributeId = Attributes.Value,
+                        IndexRange = null,
+                        DataEncoding = null,
+                    };
 
-                itemsToRead.Add(rv);
+                    itemsToRead.Add(rv);
+                }
+
+                DataValueCollection values;
+                DiagnosticInfoCollection diagnosticInfos;
+
+                ResponseHeader responseHeader = session.Read(
+                    null,
+                    0,
+                    TimestampsToReturn.Neither,
+                    itemsToRead,
+                    out values,
+                    out diagnosticInfos);
+
+                ClientBase.ValidateResponse(values, itemsToRead);
+                ClientBase.ValidateDiagnosticInfos(diagnosticInfos, itemsToRead);
+
+                for (int i = 0; i < values.Count; i++)
+                {
+                    var vi = NewVariableInfo(items[i].NodeId);
+                    vi.SetItem(items[i].NodeId, items[i].ClientHandle, values[i]);
+                    var isSelected = items[i].IsSelected;
+                    items[i] = vi;
+                    vi.IsSelected = isSelected;
+                }
+
+                return;
             }
-
-            DataValueCollection values;
-            DiagnosticInfoCollection diagnosticInfos;
-
-            ResponseHeader responseHeader = session.Read(
-                null,
-                0,
-                TimestampsToReturn.Neither,
-                itemsToRead,
-                out values,
-                out diagnosticInfos);
-
-            ClientBase.ValidateResponse(values, itemsToRead);
-            ClientBase.ValidateDiagnosticInfos(diagnosticInfos, itemsToRead);
-
-            for(int i = 0; i < values.Count; i++)
+            catch (Exception ex)
             {
-                var vi = NewVariableInfo(items[i].NodeId);
-                vi.SetItem(items[i].NodeId, items[i].ClientHandle, values[i]);
-                var isSelected = items[i].IsSelected;
-                items[i] = vi;
-                vi.IsSelected = isSelected;
+                MessagePassing(ex);
+                Close();
+                return;
             }
-
-            return;
         }
 
         public void Write(IList<VariableInfoBase> items)
@@ -496,6 +531,19 @@ namespace Jupiter
 
             ClientBase.ValidateResponse(results, values);
             ClientBase.ValidateDiagnosticInfos(diagnosticInfos, values);
+        }
+
+        private void MessagePassing(Exception ex)
+        {
+            var msgbox = Commands.ShowMessageCommand.Command;
+            if (ex.InnerException != null)
+            {
+                msgbox.Execute(ex.InnerException.Message);
+            }
+            else
+            {
+                msgbox.Execute(ex.Message);
+            }
         }
 
         private void Vi_PropertyChanged(object sender, PropertyChangedEventArgs e)

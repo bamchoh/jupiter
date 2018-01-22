@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using Opc.Ua;
 using System.Collections;
+using System.Windows.Data;
 
 namespace Jupiter
 {
@@ -27,6 +28,8 @@ namespace Jupiter
             this.parent = parent;
 
             this.children = new ObservableCollection<OPCUAReference>();
+
+            BindingOperations.EnableCollectionSynchronization(this.children, new object());
 
             this.children.Add(DummyChild);
 
@@ -129,6 +132,11 @@ namespace Jupiter
         public void UpdateReferences()
         {
             var refs = client.FetchRootReferences();
+
+            if(refs == null)
+            {
+                return;
+            }
 
             this.Children.Clear();
 

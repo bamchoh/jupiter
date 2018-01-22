@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Collections.ObjectModel;
 using System.Collections;
 using System.Windows.Input;
+using System.Windows.Data;
 
 using Prism.Mvvm;
 
@@ -29,6 +30,8 @@ namespace Jupiter.Models
             this.variableInfoManager = variableInfoManager;
             this._itemsToRead = new ObservableCollection<VariableInfoBase>();
             this.otaOperator = otaOperator;
+
+            BindingOperations.EnableCollectionSynchronization(_itemsToRead, new object());
 
             DeleteOneTimeAccessItemsCommand = new Commands.DelegateCommand(
                 (param) => { DeleteOneTimeAccessItems(); },
@@ -68,22 +71,7 @@ namespace Jupiter.Models
 
         private void OneTimeRead()
         {
-            try
-            {
-                otaOperator.Read(_itemsToRead);
-            }
-            catch (Exception ex)
-            {
-                var msgbox = Commands.ShowMessageCommand.Command;
-                if (ex.InnerException != null)
-                {
-                    msgbox.Execute(ex.InnerException.Message);
-                }
-                else
-                {
-                    msgbox.Execute(ex.Message);
-                }
-            }
+            otaOperator.Read(_itemsToRead);
         }
 
         private void GroupWrite(IList<VariableInfoBase> items)

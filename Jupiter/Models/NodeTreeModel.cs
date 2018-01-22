@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Windows.Data;
 using System.Collections;
 using System.Collections.ObjectModel;
 
@@ -93,7 +94,7 @@ namespace Jupiter.Models
         {
             References?.Children.Clear();
 
-            VariableNodes?.Clear();
+            VariableNodes = new ObservableCollection<OPCUAReference>();
         }
 
         private void SelectionChanged(Interfaces.IReference reference, Interfaces.INodeInfoDataGrid nodeInfoDataGrid)
