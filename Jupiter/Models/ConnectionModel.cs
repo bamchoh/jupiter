@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 using Prism.Mvvm;
 
+using Reactive.Bindings;
+using Reactive.Bindings.Extensions;
+
+
 namespace Jupiter.Models
 {
     public class ConnectionModel : BindableBase
@@ -16,8 +20,18 @@ namespace Jupiter.Models
         public ConnectionModel(Interfaces.IConnection client)
         {
             this.client = client;
-        }
 
+            this.client.ObserveProperty(x => x.Connected).Subscribe(c => {
+                if(c)
+                {
+                    ConnectButtonContent = "Disconnect";
+                }
+                else
+                {
+                    ConnectButtonContent = "Connect";
+                }
+            });
+        }
         public string Endpoint
         {
             get { return client.Endpoint; }
@@ -37,8 +51,6 @@ namespace Jupiter.Models
                 try
                 {
                     client.CreateSession().Wait();
-
-                    ConnectButtonContent = "Disconnect";
                 }
                 catch (Exception ex)
                 {
@@ -56,10 +68,7 @@ namespace Jupiter.Models
             else
             {
                 client.Close();
-
-                ConnectButtonContent = "Connect";
             }
         }
-
     }
 }
