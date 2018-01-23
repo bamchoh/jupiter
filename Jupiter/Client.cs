@@ -508,52 +508,71 @@ namespace Jupiter
 
         private void innerWrite(IList<VariableInfoBase> items, Func<VariableInfoBase, object> func)
         {
-            var values = new WriteValueCollection();
-
-            foreach (var vi in items)
+            try
             {
-                var value = new WriteValue();
+                var values = new WriteValueCollection();
 
-                value.NodeId = vi.NodeId;
-                value.AttributeId = Attributes.Value;
-                value.IndexRange = null;
-                value.Value.StatusCode = StatusCodes.Good;
-                value.Value.ServerTimestamp = DateTime.MinValue;
-                value.Value.SourceTimestamp = DateTime.MinValue;
-                value.Value.Value = func(vi);
-
-                values.Add(value);
-            }
-
-            foreach (WriteValue nodeToWrite in values)
-            {
-                NumericRange indexRange;
-                ServiceResult result = NumericRange.Validate(nodeToWrite.IndexRange, out indexRange);
-
-                if (ServiceResult.IsGood(result) && indexRange != NumericRange.Empty)
+                foreach (var vi in items)
                 {
-                    // apply the index range.
-                    object valueToWrite = nodeToWrite.Value.Value;
+                    var value = new WriteValue();
 
-                    result = indexRange.ApplyRange(ref valueToWrite);
+                    value.NodeId = vi.NodeId;
+                    value.AttributeId = Attributes.Value;
+                    value.IndexRange = null;
+                    value.Value.StatusCode = StatusCodes.UncertainInitialValue;
+                    value.Value.ServerTimestamp = DateTime.MinValue;
+                    value.Value.SourceTimestamp = DateTime.MinValue;
+                    value.Value.Value = func(vi);
 
-                    if (ServiceResult.IsGood(result))
+                    values.Add(value);
+                }
+
+                foreach (WriteValue nodeToWrite in values)
+                {
+                    NumericRange indexRange;
+                    ServiceResult result = NumericRange.Validate(nodeToWrite.IndexRange, out indexRange);
+
+                    if (ServiceResult.IsGood(result) && indexRange != NumericRange.Empty)
                     {
-                        nodeToWrite.Value.Value = valueToWrite;
+                        // apply the index range.
+                        object valueToWrite = nodeToWrite.Value.Value;
+
+                        result = indexRange.ApplyRange(ref valueToWrite);
+
+                        if (ServiceResult.IsGood(result))
+                        {
+                            nodeToWrite.Value.Value = valueToWrite;
+                        }
                     }
                 }
+                StatusCodeCollection results = null;
+                DiagnosticInfoCollection diagnosticInfos = null;
+
+                ResponseHeader responseHeader = session.Write(
+                    null,
+                    values,
+                    out results,
+                    out diagnosticInfos);
+
+                ClientBase.ValidateResponse(results, values);
+                ClientBase.ValidateDiagnosticInfos(diagnosticInfos, values);
+
+                for (int i = 0; i < values.Count; i++)
+                {
+                    var vi = NewVariableInfo(items[i].NodeId);
+                    values[i].Value.ServerTimestamp = items[i].ServerTimestamp;
+                    values[i].Value.SourceTimestamp = items[i].SourceTimestamp;
+                    values[i].Value.StatusCode = results[i];
+                    vi.SetItem(items[i].NodeId, items[i].ClientHandle, values[i].Value);
+                    var isSelected = items[i].IsSelected;
+                    items[i] = vi;
+                    vi.IsSelected = isSelected;
+                }
             }
-            StatusCodeCollection results = null;
-            DiagnosticInfoCollection diagnosticInfos = null;
-
-            ResponseHeader responseHeader = session.Write(
-                null,
-                values,
-                out results,
-                out diagnosticInfos);
-
-            ClientBase.ValidateResponse(results, values);
-            ClientBase.ValidateDiagnosticInfos(diagnosticInfos, values);
+            catch (Exception ex)
+            {
+                MessagePassing(ex);
+            }
         }
 
         private void MessagePassing(Exception ex)

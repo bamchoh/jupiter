@@ -76,22 +76,7 @@ namespace Jupiter.Models
 
         private void GroupWrite(IList<VariableInfoBase> items)
         {
-            try
-            {
-                otaOperator.Write(items);
-            }
-            catch (Exception ex)
-            {
-                var msgbox = Commands.ShowMessageCommand.Command;
-                if (ex.InnerException != null)
-                {
-                    msgbox.Execute(ex.InnerException.Message);
-                }
-                else
-                {
-                    msgbox.Execute(ex.Message);
-                }
-            }
+            otaOperator.Write(items);
         }
 
         private void DeleteOneTimeAccessItems()
