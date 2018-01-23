@@ -40,8 +40,9 @@
         <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Center" />
         <DataGrid Grid.Column="2"
                   SelectionChanged="DataGrid_SelectionChanged"
+                  Sorting="DataGrid_Sorting"
                   ItemsSource="{Binding Path=VariableNodes.Value}" RowHeight="20" CanUserResizeRows="False"
-                  CanUserAddRows="False" CanUserSortColumns="False" CanUserReorderColumns="False" IsReadOnly="True" AutoGenerateColumns="False">
+                  CanUserAddRows="False" CanUserReorderColumns="False" IsReadOnly="True" AutoGenerateColumns="False">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Name" Binding="{Binding DisplayName}" Width="*"/>
             </DataGrid.Columns>

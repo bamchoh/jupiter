@@ -138,6 +138,7 @@
     <Compile Include="Interfaces\ISubscriptionModel.cs" />
     <Compile Include="Interfaces\ISubscriptionOperatable.cs" />
     <Compile Include="Interfaces\IVariableInfoManager.cs" />
+    <Compile Include="Libraries\NaturalComparer.cs" />
     <Compile Include="Models\ConnectionModel.cs" />
     <Compile Include="Models\NodeInfoDataGridModel.cs" />
     <Compile Include="Models\NodeTreeModel.cs" />

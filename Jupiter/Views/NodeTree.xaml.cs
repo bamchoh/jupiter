@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Jupiter.Commands;
 using System.Collections;
+using System.ComponentModel;
 
 namespace Jupiter.Views
 {
@@ -156,6 +157,47 @@ namespace Jupiter.Views
                 var obj = ((TreeViewItem)sender).Header;
                 NodeSelectedCommand.Execute(obj);
             }
+        }
+
+        private void DataGrid_Sorting(object sender, DataGridSortingEventArgs e)
+        {
+            var dg = (DataGrid)sender;
+
+            ListCollectionView lcv = (ListCollectionView)CollectionViewSource.GetDefaultView(dg.ItemsSource);
+
+            e.Handled = true;
+
+            DataGridColumn col = e.Column;
+            ListSortDirection direction;
+            if (ListSortDirection.Ascending != col.SortDirection)
+                direction = ListSortDirection.Ascending;
+            else
+                direction = ListSortDirection.Descending;
+            col.SortDirection = direction;
+
+            lcv.CustomSort = new LibraryNoNaturalComparer(direction);
+        }
+    }
+
+    public class LibraryNoNaturalComparer : Libraries.NaturalComparer
+    {
+        private ListSortDirection _direction;
+
+        public LibraryNoNaturalComparer(ListSortDirection direction)
+        {
+            _direction = direction;
+        }
+
+        public override int Compare(object s1, object s2)
+        {
+            dynamic xm = s1;
+            dynamic ym = s2;
+
+            if (_direction == ListSortDirection.Ascending)
+                return base.Compare((string)xm.DisplayName, (string)ym.DisplayName);
+            else
+                return base.Compare((string)ym.DisplayName, (string)xm.DisplayName);
+
         }
     }
 }
