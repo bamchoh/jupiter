@@ -163,64 +163,87 @@ namespace Jupiter
 
         public void RemoveMonitoredItem(List<uint> chList)
         {
-            var miList = new List<MonitoredItem>();
-            foreach (var ch in chList)
+            try
             {
-                foreach (var mi in subscription.MonitoredItems)
+                var miList = new List<MonitoredItem>();
+                foreach (var ch in chList)
                 {
-                    if (mi.ClientHandle == ch)
+                    foreach (var mi in subscription.MonitoredItems)
                     {
-                        miList.Add(mi);
-                        break;
+                        if (mi.ClientHandle == ch)
+                        {
+                            miList.Add(mi);
+                            break;
+                        }
+                    }
+                }
+
+                subscription.RemoveItems(miList);
+                subscription.ApplyChanges();
+
+                if (subscription.MonitoredItemCount == 0)
+                {
+                    if(!session.RemoveSubscription(subscription))
+                    {
+                        throw new Exception("Removing subscription was failed.");
                     }
                 }
             }
-
-            subscription.RemoveItems(miList);
-            subscription.ApplyChanges();
+            catch (Exception ex)
+            {
+                MessagePassing(ex);
+            }
         }
 
         public IList<VariableInfoBase> AddToSubscription(IList objs)
         {
-            if (objs == null || objs.Count == 0)
-                return null;
-
-            var viList = NewVariableInfo(objs);
-
-            if (viList.Count == 0)
-                return viList;
-
-            if (session.Subscriptions.Count() == 0)
+            try
             {
-                subscription = new Subscription(session.DefaultSubscription) { PublishingInterval = 5000 };
-                session.AddSubscription(subscription);
-                subscription.Create();
-            }
-            else
-            {
-                subscription = session.Subscriptions.ElementAt(0);
-            }
+                if (objs == null || objs.Count == 0)
+                    return null;
 
-            var list = new List<MonitoredItem>();
-            foreach (var vi in viList)
-            {
-                var monitoredItem = new MonitoredItem(subscription.DefaultItem)
+                var viList = NewVariableInfo(objs);
+
+                if (viList.Count == 0)
+                    return viList;
+
+                if (session.Subscriptions.Count() == 0)
                 {
-                    StartNodeId = vi.NodeId
-                };
+                    subscription = new Subscription(session.DefaultSubscription) { PublishingInterval = 5000 };
+                    session.AddSubscription(subscription);
+                    subscription.Create();
+                }
+                else
+                {
+                    subscription = session.Subscriptions.ElementAt(0);
+                }
 
-                list.Add(monitoredItem);
+                var list = new List<MonitoredItem>();
+                foreach (var vi in viList)
+                {
+                    var monitoredItem = new MonitoredItem(subscription.DefaultItem)
+                    {
+                        StartNodeId = vi.NodeId
+                    };
 
-                vi.ClientHandle = monitoredItem.ClientHandle;
-                vi.PropertyChanged += Vi_PropertyChanged;
+                    list.Add(monitoredItem);
+
+                    vi.ClientHandle = monitoredItem.ClientHandle;
+                    vi.PropertyChanged += Vi_PropertyChanged;
+                }
+
+                subscription.AddItems(list);
+                subscription.ApplyChanges();
+
+                subscription.Session.Notification += Session_Notification;
+
+                return viList;
             }
-
-            subscription.AddItems(list);
-            subscription.ApplyChanges();
-
-            subscription.Session.Notification += Session_Notification;
-
-            return viList;
+            catch(Exception ex)
+            {
+                MessagePassing(ex);
+                return null;
+            }
         }
 
         public IList<VariableInfoBase> NewVariableInfo(IList objs)
