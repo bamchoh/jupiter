@@ -519,7 +519,7 @@ namespace Jupiter
                     value.NodeId = vi.NodeId;
                     value.AttributeId = Attributes.Value;
                     value.IndexRange = null;
-                    value.Value.StatusCode = StatusCodes.UncertainInitialValue;
+                    value.Value.StatusCode = StatusCodes.Good;
                     value.Value.ServerTimestamp = DateTime.MinValue;
                     value.Value.SourceTimestamp = DateTime.MinValue;
                     value.Value.Value = func(vi);
