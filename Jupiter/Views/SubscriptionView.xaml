@@ -11,7 +11,18 @@
              >
     <DockPanel>
         <TextBlock DockPanel.Dock="Top" Text="Subscription Items" />
-        <Button DockPanel.Dock="Top" Content="Delete" Click="Button_Click_1" />
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+            <Button Click="Button_Click_1" Style="{DynamicResource MaterialDesignRaisedLightButton}" Margin="2.5,5,5,5">
+                <StackPanel Orientation="Horizontal">
+                    <Viewbox Width="24" Height="24">
+                        <Canvas Width="24" Height="24">
+                            <Path Data="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" Fill="Black" />
+                        </Canvas>
+                    </Viewbox>
+                    <Label Content="Delete" VerticalContentAlignment="Center" Padding="0,0,0,0"/>
+                </StackPanel>
+            </Button>
+        </StackPanel>
         <uc:VariableInfoDataGrid
             ItemsSource="{Binding Path=MonitoredItemList}"
             SelectedItems="{Binding Path=MonitoredSelectedItems, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>

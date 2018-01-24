@@ -7,13 +7,29 @@
              xmlns:Prism="http://prismlibrary.com/"
              Prism:ViewModelLocator.AutoWireViewModel="True"        
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             >
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="70"/>
+            <ColumnDefinition Width="120"/>
         </Grid.ColumnDefinitions>
-        <TextBox Grid.Column="0" Height="23" Text="{Binding Endpoint.Value}" />
-        <Button Grid.Column="1" Height="23" Content="{Binding ConnectButtonContent.Value}" Command="{Binding ConnectCommand}"/>
+        <DockPanel Margin="2.5,5,5,2.5">
+            <Viewbox DockPanel.Dock="Left" Width="24" Height="24">
+                <Canvas Width="24" Height="24">
+                    <Path Data="M17.9,17.39C17.64,16.59 16.89,16 16,16H15V13A1,1 0 0,0 14,12H8V10H10A1,1 0 0,0 11,9V7H13A2,2 0 0,0 15,5V4.59C17.93,5.77 20,8.64 20,12C20,14.08 19.2,15.97 17.9,17.39M11,19.93C7.05,19.44 4,16.08 4,12C4,11.38 4.08,10.78 4.21,10.21L9,15V16A2,2 0 0,0 11,18M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" Fill="Black" />
+                </Canvas>
+            </Viewbox>
+            <TextBox Grid.Column="0" Text="{Binding Endpoint.Value}" VerticalAlignment="Center" VerticalContentAlignment="Center" Padding="2.5,0,0,0" />
+        </DockPanel>
+        <Button Grid.Column="1" Command="{Binding ConnectCommand}" Margin="2.5,5,5,5" Style="{DynamicResource MaterialDesignRaisedLightButton}">
+            <StackPanel Orientation="Horizontal">
+                <Viewbox Width="24" Height="24">
+                    <Canvas Width="24" Height="24">
+                        <Path Data="M16,7V3H14V7H10V3H8V7H8C7,7 6,8 6,9V14.5L9.5,18V21H14.5V18L18,14.5V9C18,8 17,7 16,7Z" Fill="Black" />
+                    </Canvas>
+                </Viewbox>
+                <Label Content="{Binding ConnectButtonContent.Value}" VerticalAlignment="Center" VerticalContentAlignment="Center" Padding="0,0,0,0" />
+            </StackPanel>
+        </Button>
     </Grid>
 </UserControl>

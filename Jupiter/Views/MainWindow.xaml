@@ -8,7 +8,15 @@
         xmlns:Prism="http://prismlibrary.com/"
         Prism:ViewModelLocator.AutoWireViewModel="True"        
         mc:Ignorable="d"
-        Title="Jupiter" Height="660" Width="800">
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal" 
+        TextOptions.TextRenderingMode="Auto"        
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}"        
+        Title="Jupiter" Height="660" Width="1100">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Closing">
             <i:InvokeCommandAction Command="{Binding Path=ClosingCommand}" />
@@ -23,7 +31,7 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="200" />
+                <ColumnDefinition Width="100" />
             </Grid.ColumnDefinitions>
             <local:NodeTree Grid.Column="0"
                                  MouseDoubleClickedCommand="{Binding MouseDoubleClickedCommand}"

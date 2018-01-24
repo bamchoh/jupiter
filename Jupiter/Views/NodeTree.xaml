@@ -21,7 +21,16 @@
             <ColumnDefinition Width="25*" />
         </Grid.ColumnDefinitions>
         <DockPanel Grid.Column="0">
-            <Button DockPanel.Dock="Top" Content="Reload" Click="Button_Click" />
+            <Button DockPanel.Dock="Top" Click="Button_Click" Style="{DynamicResource MaterialDesignRaisedLightButton}" Margin="5,5,5,5">
+                <StackPanel Orientation="Horizontal">
+                    <Viewbox Width="24" Height="24">
+                        <Canvas Width="24" Height="24">
+                            <Path Data="M19,12H22.32L17.37,16.95L12.42,12H16.97C17,10.46 16.42,8.93 15.24,7.75C12.9,5.41 9.1,5.41 6.76,7.75C4.42,10.09 4.42,13.9 6.76,16.24C8.6,18.08 11.36,18.47 13.58,17.41L15.05,18.88C12,20.69 8,20.29 5.34,17.65C2.22,14.53 2.23,9.47 5.35,6.35C8.5,3.22 13.53,3.21 16.66,6.34C18.22,7.9 19,9.95 19,12Z" Fill="Black" />
+                        </Canvas>
+                    </Viewbox>
+                    <Label Content="Reload" VerticalAlignment="Center" VerticalContentAlignment="Center" Padding="0,0,0,0" />
+                </StackPanel>
+            </Button>
             <TreeView ItemsSource="{Binding Path=References.Value.Children}">
                 <TreeView.ItemContainerStyle>
                     <Style TargetType="{x:Type TreeViewItem}">
@@ -41,7 +50,7 @@
         <DataGrid Grid.Column="2"
                   SelectionChanged="DataGrid_SelectionChanged"
                   Sorting="DataGrid_Sorting"
-                  ItemsSource="{Binding Path=VariableNodes.Value}" RowHeight="20" CanUserResizeRows="False"
+                  ItemsSource="{Binding Path=VariableNodes.Value}" CanUserResizeRows="False"
                   CanUserAddRows="False" CanUserReorderColumns="False" IsReadOnly="True" AutoGenerateColumns="False">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Name" Binding="{Binding DisplayName}" Width="*"/>
