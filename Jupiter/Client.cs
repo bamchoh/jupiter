@@ -323,6 +323,22 @@ namespace Jupiter
                     out continuationPoint,
                     out refs);
 
+                while (continuationPoint != null) {
+                    byte[] revisedContinuationPoint;
+                    ReferenceDescriptionCollection additionalDescription;
+
+                    session.BrowseNext(
+                        null,
+                        false,
+                        continuationPoint,
+                        out revisedContinuationPoint,
+                        out additionalDescription);
+
+                    continuationPoint = revisedContinuationPoint;
+
+                    refs.AddRange(additionalDescription);
+                }
+
                 return refs;
             }
             catch (Exception ex)
