@@ -6,6 +6,7 @@
              xmlns:Controls="clr-namespace:System.Windows.Controls;assembly=MultiSelectTreeView"
              xmlns:local="clr-namespace:Jupiter.Views"
              xmlns:Prism="http://prismlibrary.com/"
+             xmlns:mtrDesign="clr-namespace:MaterialDesignThemes.Wpf.Converters;assembly=MaterialDesignThemes.Wpf"
              Prism:ViewModelLocator.AutoWireViewModel="True"
              xmlns:local2="clr-namespace:Jupiter">
     <UserControl.Resources>
@@ -13,6 +14,11 @@
             <MenuItem Header="To One Time Access" Click="MenuItem_Click" />
             <MenuItem Header="To Subscription" Click="MenuItem_Click_1" />
         </ContextMenu>
+
+        <Style x:Key="MaterialDesignTreeViewItem" BasedOn="{StaticResource MaterialDesignTreeViewItem}"  TargetType="{x:Type TreeViewItem}">
+            <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded, Mode=TwoWay}"/>
+            <EventSetter Event="Selected" Handler="TreeViewItem_Selected" />
+        </Style>
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -21,7 +27,7 @@
             <ColumnDefinition Width="25*" />
         </Grid.ColumnDefinitions>
         <DockPanel Grid.Column="0">
-            <Button DockPanel.Dock="Top" Click="Button_Click" Style="{DynamicResource MaterialDesignRaisedLightButton}" Margin="5,5,5,5">
+            <Button DockPanel.Dock="Top" Click="Button_Click" Style="{DynamicResource MaterialDesignRaisedLightButton}" Margin="0,0,2.5,5">
                 <StackPanel Orientation="Horizontal">
                     <Viewbox Width="24" Height="24">
                         <Canvas Width="24" Height="24">
@@ -31,14 +37,7 @@
                     <Label Content="Reload" VerticalAlignment="Center" VerticalContentAlignment="Center" Padding="0,0,0,0" />
                 </StackPanel>
             </Button>
-            <TreeView ItemsSource="{Binding Path=References.Value.Children}">
-                <TreeView.ItemContainerStyle>
-                    <Style TargetType="{x:Type TreeViewItem}">
-                        <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded, Mode=TwoWay}"/>
-                        <!-- <Setter Property="IsSelected" Value="{Binding Path=IsSelected, Mode=TwoWay}"/> -->
-                        <EventSetter Event="Selected" Handler="TreeViewItem_Selected" />
-                    </Style>
-                </TreeView.ItemContainerStyle>
+            <TreeView ItemsSource="{Binding Path=References.Value.Children}" ItemContainerStyle="{StaticResource MaterialDesignTreeViewItem}">
                 <TreeView.Resources>
                     <HierarchicalDataTemplate DataType="{x:Type local2:OPCUAReference}" ItemsSource="{Binding Children}">
                         <TextBlock Text="{Binding Path=DisplayName}" ContextMenuService.Placement="Left" />
