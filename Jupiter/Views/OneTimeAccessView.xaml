@@ -8,40 +8,39 @@
              Prism:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <DockPanel>
-        <TextBlock DockPanel.Dock="Top" Text="One Time Access Items" />
-        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
-            <Button Click="Button_Click" Style="{DynamicResource MaterialDesignRaisedLightButton}" Margin="5,5,5,5">
-                <StackPanel Orientation="Horizontal">
-                    <Viewbox Width="24" Height="24">
-                        <Canvas Width="24" Height="24">
-                            <Path Data="M12,6V9L16,5L12,1V4A8,8 0 0,0 4,12C4,13.57 4.46,15.03 5.24,16.26L6.7,14.8C6.25,13.97 6,13 6,12A6,6 0 0,1 12,6M18.76,7.74L17.3,9.2C17.74,10.04 18,11 18,12A6,6 0 0,1 12,18V15L8,19L12,23V20A8,8 0 0,0 20,12C20,10.43 19.54,8.97 18.76,7.74Z" Fill="Black" />
-                        </Canvas>
-                    </Viewbox>
-                    <Label Content="Read" VerticalAlignment="Center" VerticalContentAlignment="Center" Padding="0,0,0,0"/>
+            <DockPanel>
+                <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,2.5">
+                    <Button Click="Button_Click" Style="{DynamicResource MaterialDesignRaisedLightButton}" Margin="2.5,0,2.5,0">
+                        <StackPanel Orientation="Horizontal">
+                            <Viewbox Width="24" Height="24">
+                                <Canvas Width="24" Height="24">
+                                    <Path Data="M12,6V9L16,5L12,1V4A8,8 0 0,0 4,12C4,13.57 4.46,15.03 5.24,16.26L6.7,14.8C6.25,13.97 6,13 6,12A6,6 0 0,1 12,6M18.76,7.74L17.3,9.2C17.74,10.04 18,11 18,12A6,6 0 0,1 12,18V15L8,19L12,23V20A8,8 0 0,0 20,12C20,10.43 19.54,8.97 18.76,7.74Z" Fill="Black" />
+                                </Canvas>
+                            </Viewbox>
+                            <Label Content="Read" VerticalAlignment="Center" VerticalContentAlignment="Center" Padding="0,0,0,0"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Click="Button_Click_2" Style="{DynamicResource MaterialDesignRaisedLightButton}" Margin="2.5,0,2.5,0">
+                        <StackPanel Orientation="Horizontal">
+                            <Viewbox Width="24" Height="24">
+                                <Canvas Width="24" Height="24">
+                                    <Path Data="M16.84,2.73C16.45,2.73 16.07,2.88 15.77,3.17L13.65,5.29L18.95,10.6L21.07,8.5C21.67,7.89 21.67,6.94 21.07,6.36L17.9,3.17C17.6,2.88 17.22,2.73 16.84,2.73M12.94,6L4.84,14.11L7.4,14.39L7.58,16.68L9.86,16.85L10.15,19.41L18.25,11.3M4.25,15.04L2.5,21.73L9.2,19.94L8.96,17.78L6.65,17.61L6.47,15.29" Fill="Black" />
+                                </Canvas>
+                            </Viewbox>
+                            <Label Content="Write" VerticalContentAlignment="Center" Padding="0,0,0,0"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Click="Button_Click_1" Style="{DynamicResource MaterialDesignRaisedLightButton}" Margin="2.5,0,2.5,0">
+                        <StackPanel Orientation="Horizontal">
+                            <Viewbox Width="24" Height="24">
+                                <Canvas Width="24" Height="24">
+                                    <Path Data="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" Fill="Black" />
+                                </Canvas>
+                            </Viewbox>
+                            <Label Content="Delete" VerticalContentAlignment="Center" Padding="0,0,0,0"/>
+                        </StackPanel>
+                    </Button>
                 </StackPanel>
-            </Button>
-            <Button Click="Button_Click_2" Style="{DynamicResource MaterialDesignRaisedLightButton}" Margin="2.5,5,5,5">
-                <StackPanel Orientation="Horizontal">
-                    <Viewbox Width="24" Height="24">
-                        <Canvas Width="24" Height="24">
-                            <Path Data="M16.84,2.73C16.45,2.73 16.07,2.88 15.77,3.17L13.65,5.29L18.95,10.6L21.07,8.5C21.67,7.89 21.67,6.94 21.07,6.36L17.9,3.17C17.6,2.88 17.22,2.73 16.84,2.73M12.94,6L4.84,14.11L7.4,14.39L7.58,16.68L9.86,16.85L10.15,19.41L18.25,11.3M4.25,15.04L2.5,21.73L9.2,19.94L8.96,17.78L6.65,17.61L6.47,15.29" Fill="Black" />
-                        </Canvas>
-                    </Viewbox>
-                    <Label Content="Write" VerticalContentAlignment="Center" Padding="0,0,0,0"/>
-                </StackPanel>
-            </Button>
-            <Button Click="Button_Click_1" Style="{DynamicResource MaterialDesignRaisedLightButton}" Margin="2.5,5,5,5">
-                <StackPanel Orientation="Horizontal">
-                    <Viewbox Width="24" Height="24">
-                        <Canvas Width="24" Height="24">
-                            <Path Data="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" Fill="Black" />
-                        </Canvas>
-                    </Viewbox>
-                    <Label Content="Delete" VerticalContentAlignment="Center" Padding="0,0,0,0"/>
-                </StackPanel>
-            </Button>
-        </StackPanel>
-        <uc:VariableInfoDataGrid ItemsSource="{Binding OneTimeAccessItems, Mode=OneWay}" SelectedItems="{Binding Path=OneTimeAccessSelectedItems, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-    </DockPanel>
+                <uc:VariableInfoDataGrid ItemsSource="{Binding OneTimeAccessItems, Mode=OneWay}" SelectedItems="{Binding Path=OneTimeAccessSelectedItems, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            </DockPanel>
 </UserControl>
