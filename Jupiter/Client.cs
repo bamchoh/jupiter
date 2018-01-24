@@ -369,6 +369,10 @@ namespace Jupiter
 
         private void Session_PublishError(Session session, PublishErrorEventArgs e)
         {
+            var message = "[Publish Error]";
+            message += e.Status.LocalizedText.Text;
+            var msgbox = Commands.ShowMessageCommand.Command;
+            msgbox.Execute(message);
             session.Close();
             Connected = session.Connected;
         }
