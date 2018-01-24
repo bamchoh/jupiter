@@ -22,7 +22,7 @@
             <TextBlock Text="{Binding Path=PrepareValue}" />
         </DataTemplate>
         <DataTemplate x:Key="VariantTypeForEditPrepareValue">
-            <TextBox Text="{Binding Path=PrepareValue, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+            <TextBox Text="{Binding Path=PrepareValue, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" b:TextBoxBehaviors.IsFocusSelect="True"/>
         </DataTemplate>
         <DataTemplate x:Key="BoolTypePrepareValue">
             <CheckBox IsChecked="{Binding Path=PrepareValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
