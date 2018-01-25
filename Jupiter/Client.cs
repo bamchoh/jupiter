@@ -77,8 +77,8 @@ namespace Jupiter
                     AutoAcceptUntrustedCertificates = true
                 },
                 TransportConfigurations = new TransportConfigurationCollection(),
-                TransportQuotas = new TransportQuotas { OperationTimeout = 15000 },
-                ClientConfiguration = new ClientConfiguration { DefaultSessionTimeout = 60000 },
+                TransportQuotas = new TransportQuotas { OperationTimeout = 120000 },
+                ClientConfiguration = new ClientConfiguration { DefaultSessionTimeout = 600000 },
             };
 
             initialize(config).Wait();
@@ -373,7 +373,7 @@ namespace Jupiter
             message += e.Status.LocalizedText.Text;
             var msgbox = Commands.ShowMessageCommand.Command;
             msgbox.Execute(message);
-            session.Close();
+            // session.Close();
             Connected = session.Connected;
         }
 
