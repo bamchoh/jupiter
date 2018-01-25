@@ -11,7 +11,7 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="130"/>
+            <ColumnDefinition Width="140"/>
         </Grid.ColumnDefinitions>
         <DockPanel Margin="2.5,5,5,2.5">
             <Viewbox DockPanel.Dock="Left" Width="24" Height="24">
