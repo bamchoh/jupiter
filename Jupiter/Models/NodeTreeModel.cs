@@ -107,10 +107,14 @@ namespace Jupiter.Models
         private void UpdateVariableNodes(Interfaces.IReference obj)
         {
             var refs = reffetcher.FetchReferences(obj.NodeId, true);
-            if (refs == null || refs.Count == 0)
-                return;
-
             var tempList = new ObservableCollection<OPCUAReference>();
+
+            if (refs == null || refs.Count == 0)
+            {
+                VariableNodes = tempList;
+                return;
+            }
+
             foreach (var r in refs)
             {
                 var child = new OPCUAReference(this.reffetcher, null)

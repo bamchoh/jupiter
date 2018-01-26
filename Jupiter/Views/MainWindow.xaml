@@ -8,8 +8,6 @@
         xmlns:Prism="http://prismlibrary.com/"
         Prism:ViewModelLocator.AutoWireViewModel="True"        
         mc:Ignorable="d"
-                      Icon="../jupiter.ico"
-                      ShowIconOnTitleBar="True"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         BorderThickness="0" 
         GlowBrush="Black"

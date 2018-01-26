@@ -32,6 +32,7 @@ namespace Jupiter.Models
                 }
             });
         }
+
         public string Endpoint
         {
             get { return client.Endpoint; }
