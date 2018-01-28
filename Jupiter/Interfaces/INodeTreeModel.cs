@@ -19,5 +19,6 @@ namespace Jupiter.Interfaces
         ICommand MouseDoubleClickedCommand { get; set; }
         ICommand AddToReadWriteCommand { get; set; }
         ICommand NodeSelectedCommand { get; set; }
+        ICommand UpdateVariableNodeListCommand { get; set; }
     }
 }

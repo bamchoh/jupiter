@@ -27,6 +27,7 @@ namespace Jupiter.ViewModels
             MouseDoubleClickedCommand = model.MouseDoubleClickedCommand;
             AddToReadWriteCommand = model.AddToReadWriteCommand;
             NodeSelectedCommand = model.NodeSelectedCommand;
+            UpdateVariableNodeListCommand = model.UpdateVariableNodeListCommand;
 
             References = model.ToReactivePropertyAsSynchronized(x => x.References);
             VariableNodes = model.ToReactivePropertyAsSynchronized(x => x.VariableNodes);
@@ -36,6 +37,7 @@ namespace Jupiter.ViewModels
         public ICommand MouseDoubleClickedCommand { get; set; }
         public ICommand AddToReadWriteCommand { get; set; }
         public ICommand NodeSelectedCommand { get; set; }
+        public ICommand UpdateVariableNodeListCommand { get; set; }
 
         public ReactiveProperty<Interfaces.IReference> References { get; }
         public ReactiveProperty<IList> VariableNodes { get; }

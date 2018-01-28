@@ -23,6 +23,18 @@ namespace Jupiter.Views
     /// </summary>
     public partial class NodeTree : UserControl
     {
+        public static DependencyProperty UpdateVariableNodeListCommandProperty =
+            DependencyProperty.Register(
+                "UpdateVariableNodeListCommand",
+                typeof(ICommand),
+                typeof(NodeTree));
+
+        public ICommand UpdateVariableNodeListCommand
+        {
+            get { return (ICommand)GetValue(UpdateVariableNodeListCommandProperty); }
+            set { SetValue(UpdateVariableNodeListCommandProperty, value); }
+        }
+
         public static DependencyProperty NodeSelectedCommandProperty =
             DependencyProperty.Register(
                 "NodeSelectedCommand",
@@ -156,6 +168,7 @@ namespace Jupiter.Views
             {
                 var obj = ((TreeViewItem)sender).Header;
                 NodeSelectedCommand.Execute(obj);
+                UpdateVariableNodeListCommand.Execute(obj);
             }
         }
 

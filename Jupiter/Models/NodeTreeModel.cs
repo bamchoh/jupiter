@@ -47,7 +47,11 @@ namespace Jupiter.Models
                 (param) => connector.Connected);
 
             NodeSelectedCommand = new Commands.DelegateCommand(
-                (param) => { SelectionChanged((Interfaces.IReference)param, nodeInfoDataGrid); },
+                (param) => { nodeInfoDataGrid.Update((Interfaces.IReference)param); },
+                (param) => true);
+
+            UpdateVariableNodeListCommand = new Commands.DelegateCommand(
+                (param) => { UpdateVariableNodes((Interfaces.IReference)param); },
                 (param) => true);
 
             this.connector.ObserveProperty(x => x.Connected).Subscribe(c => Update(c));
@@ -69,6 +73,7 @@ namespace Jupiter.Models
         public ICommand MouseDoubleClickedCommand { get; set; }
         public ICommand AddToReadWriteCommand { get; set; }
         public ICommand NodeSelectedCommand { get; set; }
+        public ICommand UpdateVariableNodeListCommand { get; set; }
 
         public void Dispose()
         {
@@ -100,8 +105,6 @@ namespace Jupiter.Models
         private void SelectionChanged(Interfaces.IReference reference, Interfaces.INodeInfoDataGrid nodeInfoDataGrid)
         {
             nodeInfoDataGrid.Update(reference);
-
-            UpdateVariableNodes(reference);
         }
 
         private void UpdateVariableNodes(Interfaces.IReference obj)

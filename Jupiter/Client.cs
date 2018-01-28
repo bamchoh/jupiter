@@ -308,7 +308,7 @@ namespace Jupiter
                 }
                 else
                 {
-                    mask = (uint)NodeClass.Object | (uint)NodeClass.Method;
+                    mask = (uint)NodeClass.Object | (uint)NodeClass.Variable;
                 }
 
                 session.Browse(
