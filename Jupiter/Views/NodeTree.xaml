@@ -40,7 +40,19 @@
             <TreeView ItemsSource="{Binding Path=References.Value.Children}" ItemContainerStyle="{StaticResource MaterialDesignTreeViewItem}">
                 <TreeView.Resources>
                     <HierarchicalDataTemplate DataType="{x:Type local2:OPCUAReference}" ItemsSource="{Binding Children}">
-                        <TextBlock Text="{Binding Path=DisplayName}" ContextMenuService.Placement="Left" />
+                        <StackPanel Orientation="Horizontal">
+                            <Viewbox>
+                                <Canvas Width="24" Height="24">
+                                    <Path x:Name="iconPath" Data="M13,9H18.5L13,3.5V9M6,2H14L20,8V20A2,2 0 0,1 18,22H6C4.89,22 4,21.1 4,20V4C4,2.89 4.89,2 6,2M15,18V16H6V18H15M18,14V12H6V14H18Z" Fill="Black" />
+                                </Canvas>
+                            </Viewbox>
+                            <TextBlock Text="{Binding Path=DisplayName}" ContextMenuService.Placement="Left" VerticalAlignment="Center" Padding="5,0,0,0" />
+                        </StackPanel>
+                        <HierarchicalDataTemplate.Triggers>
+                            <DataTrigger Binding="{Binding Path=TypeString}" Value="Object">
+                                <Setter TargetName="iconPath" Property="Data" Value="M20,18H4V8H20M20,6H12L10,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V8C22,6.89 21.1,6 20,6Z" />
+                            </DataTrigger>
+                        </HierarchicalDataTemplate.Triggers>
                     </HierarchicalDataTemplate>
                 </TreeView.Resources>
             </TreeView>

@@ -56,6 +56,14 @@ namespace Jupiter
 
         public NodeClass Type { get; set; }
 
+        public string TypeString
+        {
+            get
+            {
+                return Type.ToString();
+            }
+        }
+
         public IList Children
         {
             get
