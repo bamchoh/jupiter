@@ -1,13 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
+# Visual Studio Express 15 for Windows Desktop
 VisualStudioVersion = 15.0.27004.2002
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jupiter", "Jupiter\Jupiter.csproj", "{589A1771-995B-4DAE-9B3B-406DFC54680E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Opc.Ua.Core", "opcua\Stack\Opc.Ua.Core\Opc.Ua.Core.csproj", "{509ED649-FF7F-424A-AF61-F5CCEFF4F974}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Opc.Ua.Core", "opcua\Stack\Opc.Ua.Core\Opc.Ua.Core.csproj", "{509ED649-FF7F-424A-AF61-F5CCEFF4F974}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Opc.Ua.Client", "opcua\SampleApplications\SDK\Opc.Ua.Client\Opc.Ua.Client.csproj", "{865319B4-0FAF-4BD2-B9B2-7E7EC71B9E6B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Opc.Ua.Client", "opcua\SampleApplications\SDK\Opc.Ua.Client\Opc.Ua.Client.csproj", "{865319B4-0FAF-4BD2-B9B2-7E7EC71B9E6B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestJupiter", "UnitTestJupiter\UnitTestJupiter.csproj", "{ED86ED74-CC12-4D5A-9222-63977110D647}"
 EndProject
