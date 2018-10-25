@@ -11,8 +11,8 @@
              xmlns:local2="clr-namespace:Jupiter">
     <UserControl.Resources>
         <ContextMenu x:Key="topLevelMenu">
-            <MenuItem Header="To One Time Access" Click="MenuItem_Click" />
             <MenuItem Header="To Subscription" Click="MenuItem_Click_1" />
+            <MenuItem Header="To One Time Access" Click="MenuItem_Click" />
         </ContextMenu>
 
         <Style x:Key="MaterialDesignTreeViewItem" BasedOn="{StaticResource MaterialDesignTreeViewItem}"  TargetType="{x:Type TreeViewItem}">

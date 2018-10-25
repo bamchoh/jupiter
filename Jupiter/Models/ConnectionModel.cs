@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 using Prism.Mvvm;
 
@@ -31,6 +32,10 @@ namespace Jupiter.Models
                     ConnectButtonContent = "Connect";
                 }
             });
+
+            this.ConnectCommand = new Commands.DelegateCommand(
+                (param) => { CreateSession(param); },
+                (param) => true);
         }
 
         public string Endpoint
@@ -45,7 +50,9 @@ namespace Jupiter.Models
             set { this.SetProperty(ref connectButtonContent, value); }
         }
 
-        public void CreateSession(object param)
+        public ICommand ConnectCommand { get; private set; }
+
+        private void CreateSession(object param)
         {
             if (!client.Connected)
             {

@@ -412,9 +412,25 @@ namespace Jupiter
             get
             {
                 if (DataValue.Value == null)
+                {
                     return null;
+                }
                 else
-                    return (String)DataValue.Value;
+                {
+                    if(DataValue.Value is String[])
+                    {
+                        var ss = "";
+                        foreach(var s in (String[])DataValue.Value)
+                        {
+                            ss += s + ";";
+                        }
+                        return ss;
+                    }
+                    else
+                    {
+                        return DataValue.Value.ToString();
+                    }
+                }
             }
         }
 

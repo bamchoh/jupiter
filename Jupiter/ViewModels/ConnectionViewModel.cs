@@ -28,9 +28,7 @@ namespace Jupiter.ViewModels
 
             ConnectButtonContent = model.ToReactivePropertyAsSynchronized(x => x.ConnectButtonContent);
 
-            this.ConnectCommand = new Commands.DelegateCommand(
-                (param) => { model.CreateSession(param); },
-                (param) => true);
+            this.ConnectCommand = model.ConnectCommand;
         }
 
         public ICommand ConnectCommand { get; private set; }
