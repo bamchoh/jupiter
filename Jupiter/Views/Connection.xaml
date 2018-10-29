@@ -6,8 +6,18 @@
              xmlns:local="clr-namespace:Jupiter.Views"
              xmlns:Prism="http://prismlibrary.com/"
              Prism:ViewModelLocator.AutoWireViewModel="True"        
+             xmlns:mtrDesign="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
              mc:Ignorable="d" 
              >
+    <UserControl.Resources>
+
+        <Style x:Key="MaterialDesignFloatingHintTextBox" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}" TargetType="{x:Type TextBox}">
+            <Setter Property="FontSize" Value="24" />
+            <Setter Property="mtrDesign:HintAssist.FloatingScale" Value="0.6" />
+            <Setter Property="mtrDesign:HintAssist.FloatingOffset" Value="1,-20" />
+        </Style>
+
+    </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>

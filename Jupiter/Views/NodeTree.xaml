@@ -6,7 +6,7 @@
              xmlns:Controls="clr-namespace:System.Windows.Controls;assembly=MultiSelectTreeView"
              xmlns:local="clr-namespace:Jupiter.Views"
              xmlns:Prism="http://prismlibrary.com/"
-             xmlns:mtrDesign="clr-namespace:MaterialDesignThemes.Wpf.Converters;assembly=MaterialDesignThemes.Wpf"
+             xmlns:mtrDesign="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
              Prism:ViewModelLocator.AutoWireViewModel="True"
              xmlns:local2="clr-namespace:Jupiter">
     <UserControl.Resources>
@@ -16,8 +16,15 @@
         </ContextMenu>
 
         <Style x:Key="MaterialDesignTreeViewItem" BasedOn="{StaticResource MaterialDesignTreeViewItem}"  TargetType="{x:Type TreeViewItem}">
+            <Setter Property="Padding" Value="0,0,0,0" />
             <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded, Mode=TwoWay}"/>
             <EventSetter Event="Selected" Handler="TreeViewItem_Selected" />
+        </Style>
+
+        <Style x:Key="MaterialDesignDataGridColumnHeader" BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}" TargetType="{x:Type DataGridColumnHeader}">
+            <Setter Property="mtrDesign:DataGridAssist.CellPadding" Value="0,0,0,0" />
+            <Setter Property="Background" Value="Black" />
+            <Setter Property="FontSize" Value="9" />
         </Style>
     </UserControl.Resources>
     <Grid>
@@ -27,9 +34,9 @@
             <ColumnDefinition Width="25*" />
         </Grid.ColumnDefinitions>
         <DockPanel Grid.Column="0">
-            <Button DockPanel.Dock="Top" Click="Button_Click" Style="{DynamicResource MaterialDesignRaisedLightButton}" Margin="0,0,2.5,5">
+            <Button DockPanel.Dock="Top" Click="Button_Click" Style="{DynamicResource MaterialDesignRaisedLightButton}" Margin="0,0,2.5,5" Height="20" Padding="0,0,0,0">
                 <StackPanel Orientation="Horizontal">
-                    <Viewbox Width="24" Height="24">
+                    <Viewbox Width="20" Height="20">
                         <Canvas Width="24" Height="24">
                             <Path Data="M19,12H22.32L17.37,16.95L12.42,12H16.97C17,10.46 16.42,8.93 15.24,7.75C12.9,5.41 9.1,5.41 6.76,7.75C4.42,10.09 4.42,13.9 6.76,16.24C8.6,18.08 11.36,18.47 13.58,17.41L15.05,18.88C12,20.69 8,20.29 5.34,17.65C2.22,14.53 2.23,9.47 5.35,6.35C8.5,3.22 13.53,3.21 16.66,6.34C18.22,7.9 19,9.95 19,12Z" Fill="Black" />
                         </Canvas>
@@ -41,12 +48,12 @@
                 <TreeView.Resources>
                     <HierarchicalDataTemplate DataType="{x:Type local2:OPCUAReference}" ItemsSource="{Binding Children}">
                         <StackPanel Orientation="Horizontal">
-                            <Viewbox>
+                            <Viewbox Width="20" Height="20">
                                 <Canvas Width="24" Height="24">
                                     <Path x:Name="iconPath" Data="M13,9H18.5L13,3.5V9M6,2H14L20,8V20A2,2 0 0,1 18,22H6C4.89,22 4,21.1 4,20V4C4,2.89 4.89,2 6,2M15,18V16H6V18H15M18,14V12H6V14H18Z" Fill="Black" />
                                 </Canvas>
                             </Viewbox>
-                            <TextBlock Text="{Binding Path=DisplayName}" ContextMenuService.Placement="Left" VerticalAlignment="Center" Padding="5,0,0,0" />
+                            <TextBlock Text="{Binding Path=DisplayName}" FontSize="12" ContextMenuService.Placement="Left" VerticalAlignment="Center" Padding="5,0,0,0" />
                         </StackPanel>
                         <HierarchicalDataTemplate.Triggers>
                             <DataTrigger Binding="{Binding Path=TypeString}" Value="Object">
@@ -68,6 +75,7 @@
             </DataGrid.Columns>
             <DataGrid.ItemContainerStyle>
                 <Style TargetType="{x:Type DataGridRow}">
+                    <Setter Property="FontSize" Value="12" />
                     <Setter Property="ContextMenu" Value="{StaticResource topLevelMenu}" />
                     <EventSetter Event="MouseRightButtonDown" Handler="TreeViewItem_MouseRightButtonDown" />
                     <EventSetter Event="MouseDoubleClick" Handler="OnItemMouseDoubleClick" />
