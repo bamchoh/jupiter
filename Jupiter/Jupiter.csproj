@@ -132,6 +132,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ApplicationConfigure.cs" />
     <Compile Include="Behaviors\TextBoxBehaviors.cs" />
     <Compile Include="Client.cs" />
     <Compile Include="Commands\DelegateCommand.cs" />
@@ -265,10 +266,17 @@
       <Project>{61115b1b-f57b-40a2-8bb2-7de54b7f129a}</Project>
       <Name>Opc.Ua.Client</Name>
     </ProjectReference>
+    <ProjectReference Include="..\opcua\SampleApplications\SDK\Opc.Ua.Configuration\Opc.Ua.Configuration.csproj">
+      <Project>{26f0d36f-1348-4aed-b011-234131871d35}</Project>
+      <Name>Opc.Ua.Configuration</Name>
+    </ProjectReference>
     <ProjectReference Include="..\opcua\Stack\Opc.Ua.Core\Opc.Ua.Core.csproj">
       <Project>{509ed649-ff7f-424a-af61-f5cceff4f974}</Project>
       <Name>Opc.Ua.Core</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Jupiter.Config.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

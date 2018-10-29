@@ -20,6 +20,8 @@ namespace Jupiter.Models
 
         public ConnectionModel(Interfaces.IConnection client)
         {
+            this.Endpoint = "opc.tcp://127.0.0.1:62548";
+
             this.client = client;
 
             this.client.ObserveProperty(x => x.Connected).Subscribe(c => {
@@ -38,11 +40,7 @@ namespace Jupiter.Models
                 (param) => true);
         }
 
-        public string Endpoint
-        {
-            get { return client.Endpoint; }
-            set { client.Endpoint = value; }
-        }
+        public string Endpoint { get; set; }
 
         public string ConnectButtonContent
         {
@@ -58,7 +56,9 @@ namespace Jupiter.Models
             {
                 try
                 {
-                    client.CreateSession().Wait();
+                    var filepath = "Jupiter.Config.xml";
+                    var config = ApplicationConfiguration.Load(filepath);
+                    client.CreateSession(Endpoint, config).Wait();
                 }
                 catch (Exception ex)
                 {

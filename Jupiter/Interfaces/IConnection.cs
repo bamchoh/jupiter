@@ -4,16 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel;
+using Opc.Ua;
 
 namespace Jupiter.Interfaces
 {
     public interface IConnection : INotifyPropertyChanged
     {
-        string Endpoint { get; set; }
-
         bool Connected { get; set; }
 
-        Task CreateSession();
+        Task CreateSession(string endpointURI, Opc.Ua.ApplicationConfiguration config);
 
         void Close();
 

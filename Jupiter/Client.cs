@@ -19,6 +19,7 @@ using Opc.Ua.Client;
 using System.Collections;
 using System.Runtime.CompilerServices;
 using Prism.Mvvm;
+using Opc.Ua.Configuration;
 
 namespace Jupiter
 {
@@ -27,7 +28,7 @@ namespace Jupiter
         #region Private Fields
         private Session session;
         private Subscription subscription;
-        private ApplicationConfiguration config;
+        private Opc.Ua.ApplicationConfiguration config;
 
         private bool connected;
         #endregion
@@ -43,53 +44,10 @@ namespace Jupiter
         #region Constructor
         private Client()
         {
-            Endpoint = "opc.tcp://127.0.0.1:62541";
-
-            config = new ApplicationConfiguration()
-            {
-                ApplicationName = "Jupiter",
-                ApplicationType = ApplicationType.Client,
-                ApplicationUri = "urn:" + Utils.GetHostName() + ":bamchoh:Jupiter",
-                SecurityConfiguration = new SecurityConfiguration
-                {
-                    ApplicationCertificate = new CertificateIdentifier
-                    {
-                        StoreType = "X509Store",
-                        StorePath = "CurrentUser\\My",
-                        SubjectName = "UA Core Sample Client"
-                    },
-                    TrustedPeerCertificates = new CertificateTrustList
-                    {
-                        StoreType = "Directory",
-                        StorePath = "OPC Foundation/CertificateStores/UA Applications",
-                    },
-                    TrustedIssuerCertificates = new CertificateTrustList
-                    {
-                        StoreType = "Directory",
-                        StorePath = "OPC Foundation/CertificateStores/UA Certificate Authorities",
-                    },
-                    RejectedCertificateStore = new CertificateTrustList
-                    {
-                        StoreType = "Directory",
-                        StorePath = "OPC Foundation/CertificateStores/RejectedCertificates",
-                    },
-                    NonceLength = 32,
-                    AutoAcceptUntrustedCertificates = true
-                },
-                TransportConfigurations = new TransportConfigurationCollection(),
-                TransportQuotas = new TransportQuotas { OperationTimeout = 120000 },
-                ClientConfiguration = new ClientConfiguration { DefaultSessionTimeout = 600000 },
-            };
-
-            initialize(config).Wait();
-
-            config.CertificateValidator.CertificateValidation += new CertificateValidationEventHandler(validateCerts);
         }
         #endregion
 
         #region Properties
-        public string Endpoint { get; set; }
-
         public bool Connected
         {
             get { return connected; }
@@ -349,16 +307,17 @@ namespace Jupiter
             }
         }
 
-        public async Task CreateSession()
+        public async Task CreateSession(string endpointURI, Opc.Ua.ApplicationConfiguration config)
         {
-            var selectedEndpoint = CoreClientUtils.SelectEndpoint(Endpoint, false, 15000);
+            config.CertificateValidator.CertificateValidation += new CertificateValidationEventHandler(validateCerts);
+            EndpointDescription selectedEndpoint = CoreClientUtils.SelectEndpoint(endpointURI, false, 15000);
             var endpointConfiguration = EndpointConfiguration.Create(config);
             var endpoint = new ConfiguredEndpoint(null, selectedEndpoint, endpointConfiguration);
             session = await Session.Create(
                 config, 
                 endpoint, 
                 false, 
-                "Jupiter", 
+                config.ApplicationName, 
                 60000,
                 new UserIdentity(new AnonymousIdentityToken()),
                 null);
@@ -454,11 +413,6 @@ namespace Jupiter
         protected virtual void OnNotified(ClientNotificationEventArgs e)
         {
             SessionNotification?.Invoke(this, e);
-        }
-
-        private async Task initialize(ApplicationConfiguration config)
-        {
-            await config.Validate(ApplicationType.Client);
         }
 
         private VariableInfoBase NewVariableInfo(MonitoredItem m, MonitoredItemNotification n)

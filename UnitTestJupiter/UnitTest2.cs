@@ -62,7 +62,7 @@ namespace UnitTestJupiter
         [TestMethod]
         public void TestMethod1()
         {
-            var config = new Config();
+            // var config = new Config();
             //
             // TODO: テスト ロジックをここに追加してください
             //
