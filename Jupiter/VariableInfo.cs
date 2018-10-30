@@ -33,6 +33,11 @@ namespace Jupiter
         {
             return PrepareValue;
         }
+
+        public override void SetPrepareValue(object obj)
+        {
+            PrepareValue = (bool)obj;
+        }
     }
 
     public class SByteVariableInfo : VariableInfoBase
@@ -69,6 +74,11 @@ namespace Jupiter
         public override object GetPrepareValue()
         {
             return PrepareValue;
+        }
+
+        public override void SetPrepareValue(object obj)
+        {
+            PrepareValue = (sbyte)obj;
         }
     }
 
@@ -107,6 +117,11 @@ namespace Jupiter
         {
             return PrepareValue;
         }
+
+        public override void SetPrepareValue(object obj)
+        {
+            PrepareValue = (byte)obj;
+        }
     }
 
     public class UInt16VariableInfo : VariableInfoBase
@@ -143,6 +158,11 @@ namespace Jupiter
         public override object GetPrepareValue()
         {
             return PrepareValue;
+        }
+
+        public override void SetPrepareValue(object obj)
+        {
+            PrepareValue = (UInt16)obj;
         }
     }
 
@@ -181,6 +201,11 @@ namespace Jupiter
         {
             return PrepareValue;
         }
+
+        public override void SetPrepareValue(object obj)
+        {
+            PrepareValue = (Int16)obj;
+        }
     }
 
     public class UInt32VariableInfo : VariableInfoBase
@@ -217,6 +242,11 @@ namespace Jupiter
         public override object GetPrepareValue()
         {
             return PrepareValue;
+        }
+
+        public override void SetPrepareValue(object obj)
+        {
+            PrepareValue = (UInt32)obj;
         }
     }
 
@@ -255,6 +285,11 @@ namespace Jupiter
         {
             return PrepareValue;
         }
+
+        public override void SetPrepareValue(object obj)
+        {
+            PrepareValue = (Int32)obj;
+        }
     }
 
     public class Int64VariableInfo : VariableInfoBase
@@ -291,6 +326,11 @@ namespace Jupiter
         public override object GetPrepareValue()
         {
             return PrepareValue;
+        }
+
+        public override void SetPrepareValue(object obj)
+        {
+            PrepareValue = (Int64)obj;
         }
     }
 
@@ -329,6 +369,11 @@ namespace Jupiter
         {
             return PrepareValue;
         }
+
+        public override void SetPrepareValue(object obj)
+        {
+            PrepareValue = (UInt64)obj;
+        }
     }
 
     public class FloatVariableInfo : VariableInfoBase
@@ -366,6 +411,11 @@ namespace Jupiter
         {
             return PrepareValue;
         }
+
+        public override void SetPrepareValue(object obj)
+        {
+            PrepareValue = (float)obj;
+        }
     }
 
     public class DoubleVariableInfo : VariableInfoBase
@@ -402,6 +452,11 @@ namespace Jupiter
         public override object GetPrepareValue()
         {
             return PrepareValue;
+        }
+
+        public override void SetPrepareValue(object obj)
+        {
+            PrepareValue = (Double)obj;
         }
     }
 
@@ -456,6 +511,11 @@ namespace Jupiter
         {
             return PrepareValue;
         }
+
+        public override void SetPrepareValue(object obj)
+        {
+            PrepareValue = (String)obj;
+        }
     }
 
     public class DateTimeVariableInfo : VariableInfoBase
@@ -493,6 +553,11 @@ namespace Jupiter
         {
             return PrepareValue;
         }
+
+        public override void SetPrepareValue(object obj)
+        {
+            PrepareValue = (DateTime)obj;
+        }
     }
 
     public class VariantVariableInfo : VariableInfoBase
@@ -527,6 +592,11 @@ namespace Jupiter
         public override object GetPrepareValue()
         {
             return PrepareValue;
+        }
+
+        public override void SetPrepareValue(object obj)
+        {
+            PrepareValue = obj;
         }
     }
 
@@ -641,5 +711,7 @@ namespace Jupiter
         }
 
         public abstract object GetPrepareValue();
+
+        public abstract void SetPrepareValue(object obj);
     }
 }

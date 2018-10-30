@@ -389,6 +389,7 @@ namespace Jupiter
                     var vi = NewVariableInfo(items[i].NodeId);
                     vi.SetItem(items[i].NodeId, items[i].ClientHandle, values[i]);
                     var isSelected = items[i].IsSelected;
+                    vi.SetPrepareValue(items[i].GetPrepareValue());
                     items[i] = vi;
                     vi.IsSelected = isSelected;
                 }
@@ -539,6 +540,7 @@ namespace Jupiter
                     values[i].Value.StatusCode = results[i];
                     vi.SetItem(items[i].NodeId, items[i].ClientHandle, values[i].Value);
                     var isSelected = items[i].IsSelected;
+                    vi.SetPrepareValue(items[i].GetPrepareValue());
                     items[i] = vi;
                     vi.IsSelected = isSelected;
                 }
