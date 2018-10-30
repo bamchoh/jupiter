@@ -538,6 +538,10 @@ namespace Jupiter
                     values[i].Value.ServerTimestamp = items[i].ServerTimestamp;
                     values[i].Value.SourceTimestamp = items[i].SourceTimestamp;
                     values[i].Value.StatusCode = results[i];
+                    if(StatusCode.IsNotGood(results[i]))
+                    {
+                        values[i].Value.Value = items[i].DataValue.Value;
+                    }
                     vi.SetItem(items[i].NodeId, items[i].ClientHandle, values[i].Value);
                     var isSelected = items[i].IsSelected;
                     vi.SetPrepareValue(items[i].GetPrepareValue());
