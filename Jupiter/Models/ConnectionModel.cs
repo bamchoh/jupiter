@@ -56,8 +56,7 @@ namespace Jupiter.Models
             {
                 try
                 {
-                    var filepath = "Jupiter.Config.xml";
-                    var config = ApplicationConfiguration.Load(filepath);
+                    var config = ApplicationConfiguration.Load(null);
                     client.CreateSession(Endpoint, config).Wait();
                 }
                 catch (Exception ex)

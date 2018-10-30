@@ -9,13 +9,25 @@ namespace Jupiter
 {
     public class ApplicationConfiguration
     {
+        private static string DefaultFilePath = System.IO.Path.Combine(System.Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Jupiter", "Jupiter.Config.xml");
+
         public static Opc.Ua.ApplicationConfiguration Load(string filepath)
         {
+            if(string.IsNullOrEmpty(filepath))
+            {
+                filepath = DefaultFilePath;
+            }
+
             var fi = new System.IO.FileInfo(filepath);
             if(!fi.Exists)
             {
                 var config = DefaultConfiguration();
                 config.Validate(ApplicationType.Client).Wait();
+                var dirpath = System.IO.Path.GetDirectoryName(filepath);
+                if(!System.IO.Directory.Exists(dirpath))
+                {
+                    System.IO.Directory.CreateDirectory(dirpath);
+                }
                 config.SaveToFile(filepath);
                 return config;
             }
