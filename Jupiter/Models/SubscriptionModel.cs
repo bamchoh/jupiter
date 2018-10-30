@@ -60,8 +60,14 @@ namespace Jupiter.Models
             if (items == null || items.Count == 0)
                 return;
 
+            foreach(VariableInfoBase mi in MonitoredItemList)
+            {
+                mi.IsSelected = false;
+            }
+
             foreach (var vi in items)
             {
+                vi.IsSelected = true;
                 MonitoredItemList.Add(vi);
             }
         }
