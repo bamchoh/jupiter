@@ -10,9 +10,9 @@ namespace UnitTestJupiter
     /// UnitTest2 の概要の説明
     /// </summary>
     [TestClass]
-    public class ConfigurationUnitTest
+    public class ConnectionModelTest
     {
-        public ConfigurationUnitTest()
+        public ConnectionModelTest()
         {
             //
             // TODO: コンストラクター ロジックをここに追加します
@@ -60,12 +60,25 @@ namespace UnitTestJupiter
         #endregion
 
         [TestMethod]
-        public void TestMethod1()
+        public void ConnectStatusCheck()
         {
-            // var config = new Config();
-            //
-            // TODO: テスト ロジックをここに追加してください
-            //
+            var connection = new TestConnection();
+            var model = new Jupiter.Models.ConnectionModel(connection);
+            model.ConnectCommand.Execute(null);
+            Assert.AreEqual(connection.Connected, true);
+            Assert.AreEqual(model.ConnectButtonContent, "Disconnect");
+            model.ConnectCommand.Execute(null);
+            Assert.AreEqual(connection.Connected, false);
+            Assert.AreEqual(model.ConnectButtonContent, "Connect");
+        }
+
+        [TestMethod]
+        public void CreateSessionExceptionCheck()
+        {
+            var connection = new TestConnection();
+            connection.Exception = true;
+            var model = new Jupiter.Models.ConnectionModel(connection);
+            model.ConnectCommand.Execute(null);
         }
     }
 }
