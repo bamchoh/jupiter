@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 
 using Prism.Mvvm;
+using Prism.Events;
+
+using Unity.Attributes;
 
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
@@ -15,6 +18,9 @@ namespace Jupiter.Models
 {
     public class ConnectionModel : BindableBase
     {
+        [Dependency]
+        public IEventAggregator EventAggregator { get; set; }
+
         private Interfaces.IConnection client;
         private string connectButtonContent = "Connect";
 
@@ -61,15 +67,20 @@ namespace Jupiter.Models
                 }
                 catch (Exception ex)
                 {
-                    var msgbox = Commands.ShowMessageCommand.Command;
+                    var msg = "";
+
                     if (ex.InnerException != null)
                     {
-                        msgbox.Execute(ex.InnerException.Message);
+                        msg = ex.InnerException.Message;
                     }
                     else
                     {
-                        msgbox.Execute(ex.Message);
+                        msg = ex.Message;
                     }
+
+                    this.EventAggregator
+                        .GetEvent<Events.ErrorNotificationEvent>()
+                        .Publish(new Events.ErrorNotification{ Message = msg});
                 }
             }
             else

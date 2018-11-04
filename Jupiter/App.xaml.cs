@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using Microsoft.Practices.Unity;
 using Prism.Mvvm;
+using Unity;
+using Unity.Lifetime;
 
 namespace Jupiter
 {

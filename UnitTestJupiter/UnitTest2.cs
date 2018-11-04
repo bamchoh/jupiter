@@ -3,6 +3,7 @@ using System.Text;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Jupiter;
+using Unity;
 
 namespace UnitTestJupiter
 {
@@ -76,9 +77,18 @@ namespace UnitTestJupiter
         public void CreateSessionExceptionCheck()
         {
             var connection = new TestConnection();
+            var ea = new Prism.Events.EventAggregator();
+            var msg = "";
+
+            ea.GetEvent<Jupiter.Events.ErrorNotificationEvent>()
+                .Subscribe(x => msg = x.Message);
+
             connection.Exception = true;
             var model = new Jupiter.Models.ConnectionModel(connection);
+            model.EventAggregator = ea;
             model.ConnectCommand.Execute(null);
+
+            Assert.AreEqual(msg, "CreateSessionException");
         }
     }
 }
