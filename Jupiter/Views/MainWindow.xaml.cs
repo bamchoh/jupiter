@@ -15,9 +15,12 @@ namespace Jupiter.Views
     /// </summary>
     public partial class MainWindow : MetroWindow
     {
-        public MainWindow()
+        public MainWindow(Prism.Events.IEventAggregator eventAggregator)
         {
             InitializeComponent();
+
+            eventAggregator.GetEvent<Events.ErrorNotificationEvent>()
+                .Subscribe((x) => this.ShowMessageAsync("!!Error!!", $"{x.Message}"));
         }
     }
 }

@@ -23,6 +23,9 @@ namespace Jupiter.ViewModels
         public ICommand ClosingCommand { get; set; }
         #endregion
 
+        [Unity.Attributes.Dependency]
+        public Prism.Events.IEventAggregator EventAggregator { get; set; }
+
         #region Constructor
         public MainWindowViewModel(Interfaces.IConnection client)
         {
