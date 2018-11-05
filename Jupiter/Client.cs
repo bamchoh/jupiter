@@ -626,10 +626,4 @@ namespace Jupiter
 
     public delegate void ClientNotificationEventHandler(object sender, ClientNotificationEventArgs e);
 
-    public class NodeInfo
-    {
-        public string Name { get; set; }
-        public string Value { get; set; }
-    }
-
 }

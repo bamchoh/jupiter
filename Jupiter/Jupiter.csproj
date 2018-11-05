@@ -177,6 +177,7 @@
     <Compile Include="Models\NodeTreeModel.cs" />
     <Compile Include="Models\OneTimeAccessModel.cs" />
     <Compile Include="Models\SubscriptionModel.cs" />
+    <Compile Include="NodeInfo.cs" />
     <Compile Include="OPCUAReference.cs" />
     <Compile Include="Utility.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
