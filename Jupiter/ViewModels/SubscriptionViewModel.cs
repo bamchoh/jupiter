@@ -25,13 +25,13 @@ namespace Jupiter.ViewModels
 
         public IList MonitoredItemList { get; set; }
 
-        public SubscriptionViewModel(Models.SubscriptionModel model)
+        public SubscriptionViewModel(Interfaces.ISubscriptionModel model)
         {
-            this.model = model;
+            this.model = (Models.SubscriptionModel)model;
 
-            this.MonitoredItemList = model.MonitoredItemList;
+            this.MonitoredItemList = this.model.MonitoredItemList;
 
-            this.DeleteMonitoredItemsCommand = model.DeleteMonitoredItemsCommand;
+            this.DeleteMonitoredItemsCommand = this.model.DeleteMonitoredItemsCommand;
         }
 
         public ICommand DeleteMonitoredItemsCommand { get; set; }

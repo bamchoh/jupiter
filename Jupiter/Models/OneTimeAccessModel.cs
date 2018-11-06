@@ -15,7 +15,7 @@ using Reactive.Bindings.Extensions;
 
 namespace Jupiter.Models
 {
-    class OneTimeAccessModel : BindableBase, Interfaces.IOneTimeAccessModel
+    public class OneTimeAccessModel : BindableBase, Interfaces.IOneTimeAccessModel
     {
         private Interfaces.IVariableInfoManager variableInfoManager;
         private ObservableCollection<VariableInfoBase> _itemsToRead;
@@ -83,7 +83,20 @@ namespace Jupiter.Models
         {
             var tempList = new ObservableCollection<VariableInfoBase>();
 
-            var lastSelectedIndex = this.OneTimeAccessItems.IndexOf(OneTimeAccessSelectedItems[OneTimeAccessSelectedItems.Count - 1]);
+            int lastSelectedIndex;
+            if (OneTimeAccessSelectedItems == null)
+            { // No items are selected
+                if (this._itemsToRead.Count == 0)
+                { // No items are registerd
+                    // Thus, there are no any items should be deleted
+                    return;
+                }
+
+                var idx = this._itemsToRead.Count - 1;
+                this._itemsToRead[idx].IsSelected = true;
+            }
+
+            lastSelectedIndex = this.OneTimeAccessItems.IndexOf(OneTimeAccessSelectedItems[OneTimeAccessSelectedItems.Count - 1]);
 
             foreach (var vi in this._itemsToRead)
             {

@@ -25,17 +25,17 @@ namespace Jupiter.ViewModels
 
         public IList OneTimeAccessItems { get; set; }
 
-        public OneTimeAccessViewModel(Models.OneTimeAccessModel model)
+        public OneTimeAccessViewModel(Interfaces.IOneTimeAccessModel model)
         {
-            this.model = model;
+            this.model = (Models.OneTimeAccessModel)model;
 
-            this.OneTimeAccessItems = model.OneTimeAccessItems;
+            this.OneTimeAccessItems = this.model.OneTimeAccessItems;
 
-            this.DeleteOneTimeAccessItemsCommand = model.DeleteOneTimeAccessItemsCommand;
+            this.DeleteOneTimeAccessItemsCommand = this.model.DeleteOneTimeAccessItemsCommand;
 
-            this.ReadCommand = model.ReadCommand;
-            this.WriteCommand = model.WriteCommand;
-            this.DeleteOneTimeAccessItemsCommand = model.DeleteOneTimeAccessItemsCommand;
+            this.ReadCommand = this.model.ReadCommand;
+            this.WriteCommand = this.model.WriteCommand;
+            this.DeleteOneTimeAccessItemsCommand = this.model.DeleteOneTimeAccessItemsCommand;
         }
 
         public ICommand DeleteOneTimeAccessItemsCommand { get; set; }

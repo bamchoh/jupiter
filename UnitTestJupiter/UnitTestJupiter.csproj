@@ -110,6 +110,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="NodeInfoDataGridModelTest.cs" />
+    <Compile Include="OneTimeAccessModelTest.cs" />
     <Compile Include="TestConnection.cs" />
     <Compile Include="UnitTest1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
