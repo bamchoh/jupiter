@@ -54,6 +54,22 @@ namespace Jupiter
 
         public ExpandedNodeId NodeId { get; set; }
 
+        public INode Node
+        {
+            get
+            {
+                return client.FindNode(this.NodeId);
+            }
+        }
+
+        public ITypeTable TypeTable
+        {
+            get
+            {
+                return client.TypeTable;
+            }
+        }
+
         public NodeClass Type { get; set; }
 
         public string TypeString

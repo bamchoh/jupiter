@@ -19,5 +19,9 @@ namespace Jupiter.Interfaces
         NodeClass Type { get; set; }
 
         void UpdateReferences();
+
+        INode Node { get; }
+
+        ITypeTable TypeTable { get; }
     }
 }

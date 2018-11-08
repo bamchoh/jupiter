@@ -116,7 +116,7 @@ namespace Jupiter.Models
 
         public void AddToReadWrite(IList objs)
         {
-            var items = variableInfoManager.NewVariableInfo(objs);
+            var items = variableInfoManager.GenerateVariableInfoList(objs);
             if (items == null || items.Count == 0)
                 return;
 

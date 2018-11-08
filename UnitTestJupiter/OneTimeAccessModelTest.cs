@@ -20,24 +20,6 @@ namespace UnitTestJupiter
         }
     }
 
-    public class TestVariableInfoManager : Jupiter.Interfaces.IVariableInfoManager
-    {
-        public IList<VariableInfoBase> NewVariableInfo(IList objs)
-        {
-            return new List<VariableInfoBase>()
-            {
-                new BooleanVariableInfo(),
-                new SByteVariableInfo(),
-                new Int16VariableInfo()
-            };
-        }
-
-        public VariableInfoBase NewVariableInfo(ExpandedNodeId id)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
     [TestClass]
     public class OneTimeAccessModelTest
     {
@@ -46,7 +28,7 @@ namespace UnitTestJupiter
         {
             var connection = new TestConnection();
             var otao = new TestOneTimeAccessOperator();
-            var varinfomgr = new TestVariableInfoManager();
+            var varinfomgr = new VariableInfo();
             var ota = new Jupiter.Models.OneTimeAccessModel(connection, otao, varinfomgr);
             ota.AddToReadWrite(new List<string>() { "a", "b", "c" });
         }
@@ -56,7 +38,7 @@ namespace UnitTestJupiter
         {
             var connection = new TestConnection();
             var otao = new TestOneTimeAccessOperator();
-            var varinfomgr = new TestVariableInfoManager();
+            var varinfomgr = new VariableInfo();
             var ota = new Jupiter.Models.OneTimeAccessModel(connection, otao, varinfomgr);
             ota.DeleteOneTimeAccessItemsCommand.Execute(null);
         }
@@ -66,7 +48,7 @@ namespace UnitTestJupiter
         {
             var connection = new TestConnection();
             var otao = new TestOneTimeAccessOperator();
-            var varinfomgr = new TestVariableInfoManager();
+            var varinfomgr = new VariableInfo();
             var ota = new Jupiter.Models.OneTimeAccessModel(connection, otao, varinfomgr);
             ota.DeleteOneTimeAccessItemsCommand.Execute(null);
         }

@@ -23,6 +23,9 @@ namespace Jupiter
         {
             ViewModelLocationProvider.SetDefaultViewModelFactory(x => this.Container.Resolve(x));
 
+            var varinfo = new VariableInfo();
+            this.Container.RegisterInstance<Interfaces.IVariableInfoManager>(varinfo);
+
             var lifetimeManager = new ContainerControlledLifetimeManager();
             var lifetimeManager2 = new ContainerControlledLifetimeManager();
             var lifetimeManager3 = new ContainerControlledLifetimeManager();
@@ -34,14 +37,14 @@ namespace Jupiter
             this.Container.RegisterType<Interfaces.ISubscriptionModel, Models.SubscriptionModel>(lifetimeManager3);
             this.Container.RegisterType<Interfaces.IOneTimeAccessModel, Models.OneTimeAccessModel>(lifetimeManager4);
 
-            this.Container.RegisterInstance<Interfaces.IConnection>(Client.Instance);
-            this.Container.RegisterInstance<Interfaces.IReferenceFetchable>(Client.Instance);
-            this.Container.RegisterInstance<Interfaces.INodeInfoGetter>(Client.Instance);
-            this.Container.RegisterInstance<Interfaces.ISubscriptionOperatable>(Client.Instance);
-            this.Container.RegisterInstance<Interfaces.IOneTimeAccessOperator>(Client.Instance);
-            this.Container.RegisterInstance<Interfaces.IVariableInfoManager>(Client.Instance);
+            var c = new Client(varinfo);
+            this.Container.RegisterInstance<Interfaces.IConnection>(c);
+            this.Container.RegisterInstance<Interfaces.IReferenceFetchable>(c);
+            this.Container.RegisterInstance<Interfaces.INodeInfoGetter>(c);
+            this.Container.RegisterInstance<Interfaces.ISubscriptionOperatable>(c);
+            this.Container.RegisterInstance<Interfaces.IOneTimeAccessOperator>(c);
 
-            var references = new OPCUAReference(Client.Instance, null);
+            var references = new OPCUAReference(c, null);
             this.Container.RegisterInstance<Interfaces.IReference>(references);
 
             this.Container.Resolve<Views.MainWindow>().Show();

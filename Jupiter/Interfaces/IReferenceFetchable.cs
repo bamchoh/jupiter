@@ -12,5 +12,9 @@ namespace Jupiter.Interfaces
         ReferenceDescriptionCollection FetchReferences(ExpandedNodeId nodeid, bool onlyVariable = false);
 
         ReferenceDescriptionCollection FetchRootReferences();
+
+        INode FindNode(ExpandedNodeId id);
+
+        ITypeTable TypeTable { get; }
     }
 }

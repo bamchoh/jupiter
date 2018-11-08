@@ -10,8 +10,8 @@ namespace Jupiter.Interfaces
 {
     public interface IVariableInfoManager
     {
-        IList<VariableInfoBase> NewVariableInfo(IList objs);
+        IList<VariableInfoBase> GenerateVariableInfoList(IList objs);
 
-        VariableInfoBase NewVariableInfo(ExpandedNodeId id);
+        VariableInfoBase NewVariableInfo(INode node, ITypeTable typetree);
     }
 }

@@ -2,9 +2,91 @@
 using Opc.Ua;
 using Opc.Ua.Client;
 using System.ComponentModel;
+using System.Collections.Generic;
+using System.Collections;
 
 namespace Jupiter
 {
+    public class VariableInfo : Interfaces.IVariableInfoManager
+    {
+        public IList<VariableInfoBase> GenerateVariableInfoList(IList objs)
+        {
+            if (objs == null || objs.Count == 0)
+                return null;
+
+            var addList = new List<VariableInfoBase>();
+            foreach (Interfaces.IReference obj in objs)
+            {
+                if (obj.Type != NodeClass.Variable)
+                {
+                    continue;
+                }
+
+                var vi = NewVariableInfo(obj.Node, obj.TypeTable);
+                addList.Add(vi);
+            }
+            return addList;
+        }
+
+        public VariableInfoBase NewVariableInfo(INode node, ITypeTable typetree)
+        {
+            VariableNode vnode = node as VariableNode;
+            BuiltInType builtinType = TypeInfo.GetBuiltInType(vnode.DataType, typetree);
+            var type = TypeInfo.GetSystemType(builtinType, vnode.ValueRank);
+
+            VariableInfoBase vi;
+            switch (builtinType)
+            {
+                case BuiltInType.Boolean:
+                    vi = new BooleanVariableInfo();
+                    break;
+                case BuiltInType.SByte:
+                    vi = new SByteVariableInfo();
+                    break;
+                case BuiltInType.Byte:
+                    vi = new ByteVariableInfo();
+                    break;
+                case BuiltInType.Int16:
+                    vi = new Int16VariableInfo();
+                    break;
+                case BuiltInType.UInt16:
+                    vi = new UInt16VariableInfo();
+                    break;
+                case BuiltInType.Int32:
+                    vi = new Int32VariableInfo();
+                    break;
+                case BuiltInType.UInt32:
+                    vi = new UInt32VariableInfo();
+                    break;
+                case BuiltInType.Int64:
+                    vi = new Int64VariableInfo();
+                    break;
+                case BuiltInType.UInt64:
+                    vi = new UInt64VariableInfo();
+                    break;
+                case BuiltInType.Float:
+                    vi = new FloatVariableInfo();
+                    break;
+                case BuiltInType.Double:
+                    vi = new DoubleVariableInfo();
+                    break;
+                case BuiltInType.String:
+                    vi = new StringVariableInfo();
+                    break;
+                case BuiltInType.DateTime:
+                    vi = new DateTimeVariableInfo();
+                    break;
+                default:
+                    vi = new VariantVariableInfo();
+                    break;
+            }
+
+            vi.NodeId = vnode.NodeId;
+            vi.Type = builtinType.ToString();
+            return vi;
+        }
+    }
+
     public class BooleanVariableInfo : VariableInfoBase
     {
         public bool Value
