@@ -11,7 +11,7 @@
              >
             <DockPanel>
                 <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,2.5">
-                    <Button Click="Button_Click_1" Style="{DynamicResource MaterialDesignRaisedLightButton}" Margin="2.5,0,2.5,0">
+            <Button Style="{DynamicResource MaterialDesignRaisedLightButton}" Margin="2.5,0,2.5,0"  Command="{Binding DeleteMonitoredItemsCommand}">
                         <StackPanel Orientation="Horizontal">
                             <Viewbox Width="24" Height="24">
                                 <Canvas Width="24" Height="24">
