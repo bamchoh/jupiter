@@ -93,7 +93,7 @@ namespace UnitTestJupiter
             var connection = new TestConnection();
             var nodeinfogetter = new TestNodeInfoGetter();
             var model = new Jupiter.Models.NodeInfoDataGridModel(connection, nodeinfogetter);
-            var reference = new OPCUAReference(null, null);
+            var reference = new OPCUAReference(null, null, null);
             model.Update(reference);
             var expectedNodeInfoList0 = new ObservableCollection<NodeInfo>() {
                 new NodeInfo() { Name = "Var1", Value = "1234" },
@@ -120,7 +120,7 @@ namespace UnitTestJupiter
             var connection = new TestConnection();
             var nodeinfogetter = new TestNodeInfoGetter();
             var model = new Jupiter.Models.NodeInfoDataGridModel(connection, nodeinfogetter);
-            var reference = new OPCUAReference(null, null);
+            var reference = new OPCUAReference(null, null, null);
             model.Update(reference);
             var expectedNodeInfoList0 = new ObservableCollection<NodeInfo>() {
                 new NodeInfo() { Name = "Var1", Value = "1234" },

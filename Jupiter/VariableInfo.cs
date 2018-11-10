@@ -30,7 +30,7 @@ namespace Jupiter
 
         public VariableInfoBase NewVariableInfo(INode node, ITypeTable typetree)
         {
-            VariableNode vnode = node as VariableNode;
+            var vnode = node as VariableNode;
             BuiltInType builtinType = TypeInfo.GetBuiltInType(vnode.DataType, typetree);
             var type = TypeInfo.GetSystemType(builtinType, vnode.ValueRank);
 

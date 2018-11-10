@@ -10,7 +10,7 @@
              d:DesignHeight="300" d:DesignWidth="300">
             <DockPanel>
                 <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,2.5">
-                    <Button Click="Button_Click" Style="{DynamicResource MaterialDesignRaisedLightButton}" Margin="2.5,0,2.5,0">
+                    <Button Style="{DynamicResource MaterialDesignRaisedLightButton}" Margin="2.5,0,2.5,0" Command="{Binding ReadCommand}">
                         <StackPanel Orientation="Horizontal">
                             <Viewbox Width="24" Height="24">
                                 <Canvas Width="24" Height="24">
@@ -20,7 +20,7 @@
                             <Label Content="Read" VerticalAlignment="Center" VerticalContentAlignment="Center" Padding="0,0,0,0"/>
                         </StackPanel>
                     </Button>
-                    <Button Click="Button_Click_2" Style="{DynamicResource MaterialDesignRaisedLightButton}" Margin="2.5,0,2.5,0">
+                    <Button Style="{DynamicResource MaterialDesignRaisedLightButton}" Margin="2.5,0,2.5,0" Command="{Binding WriteCommand}">
                         <StackPanel Orientation="Horizontal">
                             <Viewbox Width="24" Height="24">
                                 <Canvas Width="24" Height="24">
@@ -30,7 +30,7 @@
                             <Label Content="Write" VerticalContentAlignment="Center" Padding="0,0,0,0"/>
                         </StackPanel>
                     </Button>
-                    <Button Click="Button_Click_1" Style="{DynamicResource MaterialDesignRaisedLightButton}" Margin="2.5,0,2.5,0">
+                    <Button Style="{DynamicResource MaterialDesignRaisedLightButton}" Margin="2.5,0,2.5,0" Command="{Binding DeleteOneTimeAccessItemsCommand}">
                         <StackPanel Orientation="Horizontal">
                             <Viewbox Width="24" Height="24">
                                 <Canvas Width="24" Height="24">

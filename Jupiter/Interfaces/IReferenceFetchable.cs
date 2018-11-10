@@ -9,11 +9,13 @@ namespace Jupiter.Interfaces
 {
     public interface IReferenceFetchable
     {
-        ReferenceDescriptionCollection FetchReferences(ExpandedNodeId nodeid, bool onlyVariable = false);
+        ReferenceDescriptionCollection FetchReferences(NodeId id);
 
-        ReferenceDescriptionCollection FetchRootReferences();
+        ResponseHeader Browse(NodeId id, uint mask, out ReferenceDescriptionCollection refs);
 
         INode FindNode(ExpandedNodeId id);
+
+        NodeId ToNodeId(ExpandedNodeId id);
 
         ITypeTable TypeTable { get; }
     }

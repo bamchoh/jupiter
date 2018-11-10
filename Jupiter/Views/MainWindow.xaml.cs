@@ -20,7 +20,9 @@ namespace Jupiter.Views
             InitializeComponent();
 
             eventAggregator.GetEvent<Events.ErrorNotificationEvent>()
-                .Subscribe((x) => this.ShowMessageAsync("!!Error!!", $"{x.Message}"));
+                .Subscribe((x) => {
+                    this.ShowMessageAsync("!!Error!!", $"{x.Message}");
+                });
         }
     }
 }

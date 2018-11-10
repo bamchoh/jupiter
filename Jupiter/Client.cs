@@ -207,6 +207,11 @@ namespace Jupiter
             return session.NodeCache.Find(id);
         }
 
+        public NodeId ToNodeId(ExpandedNodeId id)
+        {
+            return ExpandedNodeId.ToNodeId(id, session.NamespaceUris);
+        }
+
         public ITypeTable TypeTable
         {
             get
@@ -215,56 +220,16 @@ namespace Jupiter
             }
         }
 
-        public ReferenceDescriptionCollection FetchRootReferences()
+        public ResponseHeader Browse(NodeId id, uint mask, out ReferenceDescriptionCollection refs)
         {
-            try
-            {
-                var refs = session.FetchReferences(ObjectIds.ObjectsFolder);
-                byte[] continuationPoint;
+            byte[] continuationPoint;
 
-                session.Browse(
+            ResponseHeader resp;
+
+            resp = session.Browse(
                     null,
                     null,
-                    ObjectIds.ObjectsFolder,
-                    0u,
-                    BrowseDirection.Forward,
-                    ReferenceTypeIds.HierarchicalReferences,
-                    true,
-                    (uint)NodeClass.Object | (uint)NodeClass.Method,
-                    out continuationPoint,
-                    out refs);
-
-                return refs;
-            }
-            catch (Exception ex)
-            {
-                MessagePassing(ex);
-                Close();
-                return null;
-            }
-        }
-
-        public ReferenceDescriptionCollection FetchReferences(ExpandedNodeId nodeid, bool onlyVariable = false)
-        {
-            try
-            {
-                ReferenceDescriptionCollection refs;
-                byte[] continuationPoint;
-
-                uint mask;
-                if (onlyVariable)
-                {
-                    mask = (uint)NodeClass.Variable;
-                }
-                else
-                {
-                    mask = (uint)NodeClass.Object;
-                }
-
-                session.Browse(
-                    null,
-                    null,
-                    ExpandedNodeId.ToNodeId(nodeid, session.NamespaceUris),
+                    id,
                     0u,
                     BrowseDirection.Forward,
                     ReferenceTypeIds.HierarchicalReferences,
@@ -273,30 +238,29 @@ namespace Jupiter
                     out continuationPoint,
                     out refs);
 
-                while (continuationPoint != null) {
-                    byte[] revisedContinuationPoint;
-                    ReferenceDescriptionCollection additionalDescription;
-
-                    session.BrowseNext(
-                        null,
-                        false,
-                        continuationPoint,
-                        out revisedContinuationPoint,
-                        out additionalDescription);
-
-                    continuationPoint = revisedContinuationPoint;
-
-                    refs.AddRange(additionalDescription);
-                }
-
-                return refs;
-            }
-            catch (Exception ex)
+            while (continuationPoint != null)
             {
-                MessagePassing(ex);
-                Close();
-                return null;
+                byte[] revisedContinuationPoint;
+                ReferenceDescriptionCollection additionalDescription;
+
+                resp = session.BrowseNext(
+                    null,
+                    false,
+                    continuationPoint,
+                    out revisedContinuationPoint,
+                    out additionalDescription);
+
+                continuationPoint = revisedContinuationPoint;
+
+                refs.AddRange(additionalDescription);
             }
+
+            return resp;
+        }
+
+        public ReferenceDescriptionCollection FetchReferences(NodeId id)
+        {
+            return session.FetchReferences(id);
         }
 
         public async Task CreateSession(string endpointURI, Opc.Ua.ApplicationConfiguration config)

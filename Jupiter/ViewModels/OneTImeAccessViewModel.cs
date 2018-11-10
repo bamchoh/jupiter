@@ -1,16 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections;
 using System.Windows.Input;
-using System.Collections;
-using System.Collections.ObjectModel;
-
-using Prism.Mvvm;
-
-using Reactive.Bindings;
-using Reactive.Bindings.Extensions;
 
 namespace Jupiter.ViewModels
 {
@@ -23,7 +12,7 @@ namespace Jupiter.ViewModels
             set { model.OneTimeAccessSelectedItems = value; }
         }
 
-        public IList OneTimeAccessItems { get; set; }
+        public IList OneTimeAccessItems { get; private set; }
 
         public OneTimeAccessViewModel(Interfaces.IOneTimeAccessModel model)
         {
@@ -31,15 +20,13 @@ namespace Jupiter.ViewModels
 
             this.OneTimeAccessItems = this.model.OneTimeAccessItems;
 
-            this.DeleteOneTimeAccessItemsCommand = this.model.DeleteOneTimeAccessItemsCommand;
-
             this.ReadCommand = this.model.ReadCommand;
             this.WriteCommand = this.model.WriteCommand;
             this.DeleteOneTimeAccessItemsCommand = this.model.DeleteOneTimeAccessItemsCommand;
         }
 
-        public ICommand DeleteOneTimeAccessItemsCommand { get; set; }
-        public ICommand WriteCommand { get; set; }
-        public ICommand ReadCommand { get; set; }
+        public ICommand DeleteOneTimeAccessItemsCommand { get; private set; }
+        public ICommand WriteCommand { get; private set; }
+        public ICommand ReadCommand { get; private set; }
     }
 }

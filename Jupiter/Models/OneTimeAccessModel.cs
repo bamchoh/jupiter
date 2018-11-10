@@ -35,15 +35,15 @@ namespace Jupiter.Models
 
             DeleteOneTimeAccessItemsCommand = new Commands.DelegateCommand(
                 (param) => { DeleteOneTimeAccessItems(); },
-                (param) => { return connector.Connected && (OneTimeAccessItems.Count > 0); });
+                (param) => { return OneTimeAccessItems.Count > 0; });
 
             ReadCommand = new Commands.DelegateCommand(
                 (param) => { OneTimeRead(); },
-                (param) => connector.Connected);
+                (param) => { return connector.Connected && OneTimeAccessItems.Count > 0; });
 
             WriteCommand = new Commands.DelegateCommand(
                 (param) => { GroupWrite(this._itemsToRead); },
-                (param) => connector.Connected);
+                (param) => { return connector.Connected && OneTimeAccessItems.Count > 0; });
 
             connector.ObserveProperty(x => x.Connected).Subscribe(c => { if (!c) Close(); });
 
@@ -84,7 +84,7 @@ namespace Jupiter.Models
             var tempList = new ObservableCollection<VariableInfoBase>();
 
             int lastSelectedIndex;
-            if (OneTimeAccessSelectedItems == null)
+            if (OneTimeAccessSelectedItems == null || OneTimeAccessItems.Count == 0)
             { // No items are selected
                 if (this._itemsToRead.Count == 0)
                 { // No items are registerd
@@ -96,7 +96,8 @@ namespace Jupiter.Models
                 this._itemsToRead[idx].IsSelected = true;
             }
 
-            lastSelectedIndex = this.OneTimeAccessItems.IndexOf(OneTimeAccessSelectedItems[OneTimeAccessSelectedItems.Count - 1]);
+            var lastSelectedItem = OneTimeAccessSelectedItems[OneTimeAccessSelectedItems.Count - 1];
+            lastSelectedIndex = this.OneTimeAccessItems.IndexOf(lastSelectedItem);
 
             foreach (var vi in this._itemsToRead)
             {

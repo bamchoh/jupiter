@@ -31,7 +31,9 @@ namespace Jupiter
             var lifetimeManager3 = new ContainerControlledLifetimeManager();
             var lifetimeManager4 = new ContainerControlledLifetimeManager();
 
-            this.Container.RegisterInstance<Prism.Events.IEventAggregator>(new Prism.Events.EventAggregator());
+            var ea = new Prism.Events.EventAggregator();
+
+            this.Container.RegisterInstance<Prism.Events.IEventAggregator>(ea);
             this.Container.RegisterType<Interfaces.INodeTreeModel, Models.NodeTreeModel>(lifetimeManager);
             this.Container.RegisterType<Interfaces.INodeInfoDataGrid, Models.NodeInfoDataGridModel>(lifetimeManager2);
             this.Container.RegisterType<Interfaces.ISubscriptionModel, Models.SubscriptionModel>(lifetimeManager3);
@@ -44,7 +46,7 @@ namespace Jupiter
             this.Container.RegisterInstance<Interfaces.ISubscriptionOperatable>(c);
             this.Container.RegisterInstance<Interfaces.IOneTimeAccessOperator>(c);
 
-            var references = new OPCUAReference(c, null);
+            var references = new OPCUAReference(c, null, ea);
             this.Container.RegisterInstance<Interfaces.IReference>(references);
 
             this.Container.Resolve<Views.MainWindow>().Show();

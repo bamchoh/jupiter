@@ -18,20 +18,17 @@ namespace Jupiter.Models
     public class NodeTreeModel : BindableBase, Interfaces.INodeTreeModel
     {
         private Interfaces.IConnection connector;
-        private Interfaces.IReferenceFetchable reffetcher;
         private Interfaces.IReference references;
         private ObservableCollection<OPCUAReference> variableNodes = new ObservableCollection<OPCUAReference>();
 
         public NodeTreeModel(
             Interfaces.IConnection connector, 
-            Interfaces.IReferenceFetchable reffetcher, 
             Interfaces.IReference references,
             Interfaces.INodeInfoDataGrid nodeInfoDataGrid,
             Interfaces.ISubscriptionModel subscriptionM,
             Interfaces.IOneTimeAccessModel oneTimeAccessM)
         {
             this.connector = connector;
-            this.reffetcher = reffetcher;
             this.references = references;
 
             ReloadCommand = new Commands.DelegateCommand(
@@ -109,7 +106,7 @@ namespace Jupiter.Models
 
         private void UpdateVariableNodes(Interfaces.IReference obj)
         {
-            var refs = reffetcher.FetchReferences(obj.NodeId, true);
+            var refs = obj.FetchVariableReferences();
             var tempList = new ObservableCollection<OPCUAReference>();
 
             if (refs == null || refs.Count == 0)
@@ -120,13 +117,10 @@ namespace Jupiter.Models
 
             foreach (var r in refs)
             {
-                var child = new OPCUAReference(this.reffetcher, null)
-                {
-                    DisplayName = r.DisplayName.ToString(),
-                    NodeId = r.NodeId,
-                    Type = r.NodeClass,
-                };
-                tempList.Add(child);
+                var child = obj.NewReference(r.DisplayName.ToString());
+                child.NodeId = r.NodeId;
+                child.Type = r.NodeClass;
+                tempList.Add((OPCUAReference)child);
             }
             VariableNodes = tempList;
         }

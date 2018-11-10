@@ -13,6 +13,18 @@ namespace Jupiter.Events
 
     public class ErrorNotification
     {
+        public ErrorNotification(Exception ex)
+        {
+            if (ex.InnerException != null)
+            {
+                Message = ex.InnerException.Message;
+            }
+            else
+            {
+                Message = ex.Message;
+            }
+        }
+
         public string Message { get; set; }
     }
 }

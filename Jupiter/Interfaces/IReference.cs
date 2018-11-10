@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Collections;
 using Opc.Ua;
+using Prism.Events;
 
 namespace Jupiter.Interfaces
 {
@@ -20,8 +21,14 @@ namespace Jupiter.Interfaces
 
         void UpdateReferences();
 
+        ReferenceDescriptionCollection FetchVariableReferences();
+
+        IReference NewReference(string name);
+
         INode Node { get; }
 
         ITypeTable TypeTable { get; }
+
+        IEventAggregator GetEventAggregator();
     }
 }

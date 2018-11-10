@@ -67,20 +67,9 @@ namespace Jupiter.Models
                 }
                 catch (Exception ex)
                 {
-                    var msg = "";
-
-                    if (ex.InnerException != null)
-                    {
-                        msg = ex.InnerException.Message;
-                    }
-                    else
-                    {
-                        msg = ex.Message;
-                    }
-
                     this.EventAggregator
                         .GetEvent<Events.ErrorNotificationEvent>()
-                        .Publish(new Events.ErrorNotification{ Message = msg});
+                        .Publish(new Events.ErrorNotification(ex));
                 }
             }
             else

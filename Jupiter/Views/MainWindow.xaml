@@ -54,10 +54,7 @@
             </GroupBox>
             <GridSplitter Grid.Row="3" Height="5" VerticalAlignment="Stretch" Width="Auto" HorizontalAlignment="Stretch" />
             <GroupBox Header="One Time Read Items" Grid.Row="5" >
-                <local:OneTimeAccessView
-                    ReadCommand="{Binding Path=ReadCommand}"
-                    WriteCommand="{Binding Path=WriteCommand}"
-                    DeleteCommand="{Binding Path=DeleteOneTimeAccessItemsCommand}" />
+                <local:OneTimeAccessView />
             </GroupBox>
             <!--
             <GridSplitter Grid.Column="3" Width="5" HorizontalAlignment="Center" />
