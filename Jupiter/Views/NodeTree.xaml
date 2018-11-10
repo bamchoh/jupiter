@@ -34,7 +34,7 @@
             <ColumnDefinition Width="25*" />
         </Grid.ColumnDefinitions>
         <DockPanel Grid.Column="0">
-            <Button DockPanel.Dock="Top" Click="Button_Click" Style="{DynamicResource MaterialDesignRaisedLightButton}" Margin="0,0,2.5,5" Height="20" Padding="0,0,0,0">
+            <Button DockPanel.Dock="Top" Style="{DynamicResource MaterialDesignRaisedLightButton}" Margin="0,0,2.5,5" Height="20" Padding="0,0,0,0" Command="{Binding ReloadCommand}">
                 <StackPanel Orientation="Horizontal">
                     <Viewbox Width="20" Height="20">
                         <Canvas Width="24" Height="24">

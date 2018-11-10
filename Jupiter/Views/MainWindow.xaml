@@ -43,7 +43,6 @@
                 <local:NodeTree
                                 MouseDoubleClickedCommand="{Binding MouseDoubleClickedCommand}"
                                 AddToReadWriteCommand="{Binding AddToReadWriteCommand}"
-                                ReloadCommand="{Binding ReloadCommand}"
                                 UpdateVariableNodeListCommand="{Binding UpdateVariableNodeListCommand}"
                                 NodeSelectedCommand="{Binding NodeSelectedCommand}"
                                 />

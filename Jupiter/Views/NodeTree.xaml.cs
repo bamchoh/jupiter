@@ -71,18 +71,6 @@ namespace Jupiter.Views
             set { SetValue(AddToReadWriteCommandProperty, value); }
         }
 
-        public static DependencyProperty ReloadCommandProperty =
-            DependencyProperty.Register(
-                "ReloadCommand",
-                typeof(ICommand),
-                typeof(NodeTree));
-
-        public ICommand ReloadCommand
-        {
-            get { return (ICommand)GetValue(ReloadCommandProperty); }
-            set { SetValue(ReloadCommandProperty, value); }
-        }
-
         public IList SelectedItems;
 
         private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -106,10 +94,6 @@ namespace Jupiter.Views
                 (param) => false);
 
             AddToReadWriteCommand = new DelegateCommand(
-                (param) => { return; },
-                (param) => false);
-
-            ReloadCommand = new DelegateCommand(
                 (param) => { return; },
                 (param) => false);
 
@@ -143,12 +127,6 @@ namespace Jupiter.Views
                 item.IsSelected = true;
                 e.Handled = true;
             }
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            if(ReloadCommand.CanExecute(null))
-                ReloadCommand.Execute(null);
         }
 
         private void MenuItem_Click_1(object sender, RoutedEventArgs e)
