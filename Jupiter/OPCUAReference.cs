@@ -10,7 +10,7 @@ using Jupiter.Interfaces;
 
 namespace Jupiter
 {
-    public class OPCUAReference : INotifyPropertyChanged, Interfaces.IReference
+    public class OPCUAReference : INotifyPropertyChanged, Interfaces.IReference, Interfaces.IVariableConfiguration
     {
         #region Event
         public event PropertyChangedEventHandler PropertyChanged;
@@ -60,20 +60,16 @@ namespace Jupiter
 
         public ExpandedNodeId NodeId { get; set; }
 
-        public INode Node
+        public BuiltInType BuiltInType()
         {
-            get
-            {
-                return client.FindNode(this.NodeId);
-            }
+            var vnode = (VariableNode)client.FindNode(this.NodeId);
+            return TypeInfo.GetBuiltInType(vnode.DataType, client.TypeTable);
         }
 
-        public ITypeTable TypeTable
+        public NodeId VariableNodeId()
         {
-            get
-            {
-                return client.TypeTable;
-            }
+            var vnode = (VariableNode)client.FindNode(this.NodeId);
+            return vnode.NodeId;
         }
 
         public NodeClass Type { get; set; }

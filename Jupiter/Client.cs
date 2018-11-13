@@ -343,7 +343,8 @@ namespace Jupiter
                 for (int i = 0; i < values.Count; i++)
                 {
                     var node = FindNode(items[i].NodeId);
-                    var vi = variableInfoManager.NewVariableInfo(node, session.TypeTree);
+                    var conf = VariableConfiguration.New(node, session.TypeTree);
+                    var vi = variableInfoManager.NewVariableInfo(conf);
                     vi.SetItem(items[i].NodeId, items[i].ClientHandle, values[i]);
                     var isSelected = items[i].IsSelected;
                     vi.SetPrepareValue(items[i].GetPrepareValue());
@@ -376,7 +377,8 @@ namespace Jupiter
         private VariableInfoBase NewVariableInfo2(MonitoredItem m, MonitoredItemNotification n)
         {
             var node = FindNode(m.StartNodeId);
-            var vi = variableInfoManager.NewVariableInfo(node, session.TypeTree);
+            var conf = VariableConfiguration.New(node, session.TypeTree);
+            var vi = variableInfoManager.NewVariableInfo(conf);
             vi.SetItem(m.StartNodeId, m.ClientHandle, n?.Value);
             return vi;
         }
@@ -435,7 +437,8 @@ namespace Jupiter
                 for (int i = 0; i < values.Count; i++)
                 {
                     var node = FindNode(items[i].NodeId);
-                    var vi = variableInfoManager.NewVariableInfo(node, session.TypeTree);
+                    var conf = VariableConfiguration.New(node, session.TypeTree);
+                    var vi = variableInfoManager.NewVariableInfo(conf);
                     values[i].Value.ServerTimestamp = items[i].ServerTimestamp;
                     values[i].Value.SourceTimestamp = items[i].SourceTimestamp;
                     values[i].Value.StatusCode = results[i];

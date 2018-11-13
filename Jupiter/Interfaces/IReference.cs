@@ -17,17 +17,11 @@ namespace Jupiter.Interfaces
 
         ExpandedNodeId NodeId { get; set; }
 
-        NodeClass Type { get; set; }
-
         void UpdateReferences();
 
         ReferenceDescriptionCollection FetchVariableReferences();
 
         IReference NewReference(string name);
-
-        INode Node { get; }
-
-        ITypeTable TypeTable { get; }
 
         IEventAggregator GetEventAggregator();
     }

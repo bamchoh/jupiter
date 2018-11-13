@@ -8,10 +8,19 @@ using Opc.Ua;
 
 namespace Jupiter.Interfaces
 {
+    public interface IVariableConfiguration
+    {
+        BuiltInType BuiltInType();
+
+        NodeId VariableNodeId();
+
+        NodeClass Type { get; set; }
+    }
+
     public interface IVariableInfoManager
     {
         IList<VariableInfoBase> GenerateVariableInfoList(IList objs);
 
-        VariableInfoBase NewVariableInfo(INode node, ITypeTable typetree);
+        VariableInfoBase NewVariableInfo(IVariableConfiguration reference);
     }
 }

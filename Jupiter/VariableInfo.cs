@@ -7,6 +7,37 @@ using System.Collections;
 
 namespace Jupiter
 {
+    public class VariableConfiguration : Interfaces.IVariableConfiguration
+    {
+        public static VariableConfiguration New(INode node, ITypeTable table)
+        {
+            var vnode = (VariableNode)node;
+            var id = vnode.NodeId;
+            var type = TypeInfo.GetBuiltInType(vnode.DataType, table);
+            return new VariableConfiguration(id, type);
+        }
+
+        private VariableConfiguration(NodeId id, BuiltInType type)
+        {
+            this._variablenodeid = id;
+            this._builtintype = type;
+        }
+
+        public NodeClass Type { get; set; }
+
+        private BuiltInType _builtintype;
+        public BuiltInType BuiltInType()
+        {
+            return _builtintype;
+        }
+
+        private NodeId _variablenodeid;
+        public NodeId VariableNodeId()
+        {
+            return _variablenodeid;
+        }
+    }
+
     public class VariableInfo : Interfaces.IVariableInfoManager
     {
         public IList<VariableInfoBase> GenerateVariableInfoList(IList objs)
@@ -15,27 +46,23 @@ namespace Jupiter
                 return null;
 
             var addList = new List<VariableInfoBase>();
-            foreach (Interfaces.IReference obj in objs)
+            foreach (Interfaces.IVariableConfiguration obj in objs)
             {
                 if (obj.Type != NodeClass.Variable)
                 {
                     continue;
                 }
 
-                var vi = NewVariableInfo(obj.Node, obj.TypeTable);
+                var vi = NewVariableInfo(obj);
                 addList.Add(vi);
             }
             return addList;
         }
 
-        public VariableInfoBase NewVariableInfo(INode node, ITypeTable typetree)
+        public VariableInfoBase NewVariableInfo(Interfaces.IVariableConfiguration conf)
         {
-            var vnode = node as VariableNode;
-            BuiltInType builtinType = TypeInfo.GetBuiltInType(vnode.DataType, typetree);
-            var type = TypeInfo.GetSystemType(builtinType, vnode.ValueRank);
-
             VariableInfoBase vi;
-            switch (builtinType)
+            switch (conf.BuiltInType())
             {
                 case BuiltInType.Boolean:
                     vi = new BooleanVariableInfo();
@@ -81,8 +108,8 @@ namespace Jupiter
                     break;
             }
 
-            vi.NodeId = vnode.NodeId;
-            vi.Type = builtinType.ToString();
+            vi.NodeId = conf.VariableNodeId();
+            vi.Type = conf.BuiltInType().ToString();
             return vi;
         }
     }

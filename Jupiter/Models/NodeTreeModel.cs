@@ -117,10 +117,10 @@ namespace Jupiter.Models
 
             foreach (var r in refs)
             {
-                var child = obj.NewReference(r.DisplayName.ToString());
+                var child = (OPCUAReference)obj.NewReference(r.DisplayName.ToString());
                 child.NodeId = r.NodeId;
                 child.Type = r.NodeClass;
-                tempList.Add((OPCUAReference)child);
+                tempList.Add(child);
             }
             VariableNodes = tempList;
         }
