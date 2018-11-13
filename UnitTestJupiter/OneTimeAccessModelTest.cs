@@ -23,37 +23,22 @@ namespace UnitTestJupiter
         }
     }
 
-    public class TestReference : Jupiter.Interfaces.IReference
+    public class TestReference : Jupiter.Interfaces.IVariableConfiguration
     {
-        public Jupiter.Interfaces.IReference Parent => throw new NotImplementedException();
-
-        public IList Children => throw new NotImplementedException();
-
-        public ExpandedNodeId NodeId { get; set; }
         public NodeClass Type { get; set; }
 
-        public INode Node { get; set; }
+        public BuiltInType TestBuiltInType { get; set; }
 
-        public ITypeTable TypeTable {get;set;}
+        public NodeId TestVariableNodeId { get; set; }
 
-        public ReferenceDescriptionCollection FetchVariableReferences()
+        public BuiltInType BuiltInType()
         {
-            throw new NotImplementedException();
+            return TestBuiltInType;
         }
 
-        public IEventAggregator GetEventAggregator()
+        public NodeId VariableNodeId()
         {
-            throw new NotImplementedException();
-        }
-
-        public Jupiter.Interfaces.IReference NewReference(string name)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void UpdateReferences()
-        {
-            throw new NotImplementedException();
+            return TestVariableNodeId;
         }
     }
 
@@ -67,7 +52,7 @@ namespace UnitTestJupiter
             var otao = new TestOneTimeAccessOperator();
             var varinfomgr = new VariableInfo();
             var ota = new Jupiter.Models.OneTimeAccessModel(connection, otao, varinfomgr);
-            Add(ota, "Var1", 12345);
+            Add(ota, "Var1", 12345, BuiltInType.Integer);
             Assert.AreEqual(ota.OneTimeAccessItems.Count, 1);
         }
 
@@ -78,7 +63,7 @@ namespace UnitTestJupiter
             var otao = new TestOneTimeAccessOperator();
             var varinfomgr = new VariableInfo();
             var ota = new Jupiter.Models.OneTimeAccessModel(connection, otao, varinfomgr);
-            Add(ota, "Var1", 12345);
+            Add(ota, "Var1", 12345, BuiltInType.Integer);
             connection.Connected = true;
             Assert.AreEqual(ota.OneTimeAccessItems.Count, 1);
             connection.Connected = false;
@@ -98,7 +83,7 @@ namespace UnitTestJupiter
             connection.Connected = true;
             flag = ota.DeleteOneTimeAccessItemsCommand.CanExecute(null);
             Assert.AreEqual(flag, false);
-            Add(ota, "Var1", 12345);
+            Add(ota, "Var1", 12345, BuiltInType.Integer);
             flag = ota.DeleteOneTimeAccessItemsCommand.CanExecute(null);
             Assert.AreEqual(flag, true);
         }
@@ -116,7 +101,7 @@ namespace UnitTestJupiter
             connection.Connected = true;
             flag = ota.ReadCommand.CanExecute(null);
             Assert.AreEqual(flag, false);
-            Add(ota, "Var1", 12345);
+            Add(ota, "Var1", 12345, BuiltInType.Integer);
             flag = ota.ReadCommand.CanExecute(null);
             Assert.AreEqual(flag, true);
         }
@@ -134,7 +119,7 @@ namespace UnitTestJupiter
             connection.Connected = true;
             flag = ota.WriteCommand.CanExecute(null);
             Assert.AreEqual(flag, false);
-            Add(ota, "Var1", 12345);
+            Add(ota, "Var1", 12345, BuiltInType.Integer);
             flag = ota.ReadCommand.CanExecute(null);
             Assert.AreEqual(flag, true);
         }
@@ -157,7 +142,7 @@ namespace UnitTestJupiter
             var otao = new TestOneTimeAccessOperator();
             var varinfomgr = new VariableInfo();
             var ota = new Jupiter.Models.OneTimeAccessModel(connection, otao, varinfomgr);
-            Add(ota, "Var1", 12345);
+            Add(ota, "Var1", 12345, BuiltInType.Integer);
             ((VariableInfoBase)ota.OneTimeAccessItems[0]).PropertyChanged += (object sender, System.ComponentModel.PropertyChangedEventArgs e) => {
                 ota.OneTimeAccessSelectedItems = new ObservableCollection<VariableInfoBase>();
                 ota.OneTimeAccessSelectedItems.Add(sender);
@@ -173,7 +158,7 @@ namespace UnitTestJupiter
             var otao = new TestOneTimeAccessOperator();
             var varinfomgr = new VariableInfo();
             var ota = new Jupiter.Models.OneTimeAccessModel(connection, otao, varinfomgr);
-            Add(ota, "Var1", 12345);
+            Add(ota, "Var1", 12345, BuiltInType.Integer);
             ((VariableInfoBase)ota.OneTimeAccessItems[0]).PropertyChanged += (object sender, System.ComponentModel.PropertyChangedEventArgs e) => {
                 ota.OneTimeAccessSelectedItems = new ObservableCollection<VariableInfoBase>();
                 ota.OneTimeAccessSelectedItems.Add(sender);
@@ -190,8 +175,8 @@ namespace UnitTestJupiter
             var otao = new TestOneTimeAccessOperator();
             var varinfomgr = new VariableInfo();
             var ota = new Jupiter.Models.OneTimeAccessModel(connection, otao, varinfomgr);
-            Add(ota, "Var1", 12345);
-            Add(ota, "Var2", 23456);
+            Add(ota, "Var1", 12345, BuiltInType.Integer);
+            Add(ota, "Var2", 23456, BuiltInType.Integer);
             ota.OneTimeAccessSelectedItems = new ObservableCollection<VariableInfoBase>();
             foreach (VariableInfoBase vib in ota.OneTimeAccessItems)
             {
@@ -202,18 +187,18 @@ namespace UnitTestJupiter
             ((VariableInfoBase)ota.OneTimeAccessItems[0]).IsSelected = true;
             ota.DeleteOneTimeAccessItemsCommand.Execute(null);
             Assert.AreEqual(ota.OneTimeAccessItems.Count, 1);
-            Assert.AreEqual(((VariableInfoBase)ota.OneTimeAccessItems[0]).NodeId, "Var1");
+            Assert.AreEqual(((VariableInfoBase)ota.OneTimeAccessItems[0]).NodeId, "Var2");
         }
 
-        private void Add(Jupiter.Models.OneTimeAccessModel ota, string name, Variant value)
+        private void Add(Jupiter.Models.OneTimeAccessModel ota, string name, Variant value, BuiltInType type)
         {
-            ota.AddToReadWrite(new List<Jupiter.Interfaces.IReference>() { new TestReference() {
-                NodeId = new ExpandedNodeId(name),
-                Type = NodeClass.Variable,
-                Node = new VariableNode() {
-                    DisplayName = name, Value = value
-                },
-            } });
+            ota.AddToReadWrite(new List<Jupiter.Interfaces.IVariableConfiguration>() {
+                new TestReference() {
+                    Type = NodeClass.Variable,
+                    TestBuiltInType = type,
+                    TestVariableNodeId = new NodeId(name),
+                }
+            });
         }
     }
 }
