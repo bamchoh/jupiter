@@ -29,7 +29,7 @@ namespace UnitTestJupiter
             Connected = false;
         }
 
-        Task IConnection.CreateSession(string endpointURI, Opc.Ua.ApplicationConfiguration config)
+        Task IConnection.CreateSession(string endpointURI)
         {
             if (Exception)
                 throw new Exception("CreateSessionException");

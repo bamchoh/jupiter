@@ -17,7 +17,7 @@ namespace Jupiter
             return new VariableConfiguration(id, type);
         }
 
-        private VariableConfiguration(NodeId id, BuiltInType type)
+        public VariableConfiguration(NodeId id, BuiltInType type)
         {
             this._variablenodeid = id;
             this._builtintype = type;
@@ -766,6 +766,12 @@ namespace Jupiter
             {
                 return DataValue.StatusCode;
             }
+
+            set
+            {
+                if (DataValue != null && DataValue.StatusCode != value)
+                    DataValue.StatusCode = value;
+            }
         }
 
         public DateTime ServerTimestamp
@@ -774,6 +780,12 @@ namespace Jupiter
             {
                 return DataValue.ServerTimestamp;
             }
+
+            set
+            {
+                if (DataValue != null && DataValue.ServerTimestamp != value)
+                    DataValue.ServerTimestamp = value;
+            }
         }
 
         public DateTime SourceTimestamp
@@ -781,6 +793,12 @@ namespace Jupiter
             get
             {
                 return DataValue.SourceTimestamp;
+            }
+
+            set
+            {
+                if (DataValue != null && DataValue.SourceTimestamp != value)
+                    DataValue.SourceTimestamp = value;
             }
         }
 

@@ -62,8 +62,7 @@ namespace Jupiter.Models
             {
                 try
                 {
-                    var config = ApplicationConfiguration.Load(null);
-                    client.CreateSession(Endpoint, config).Wait();
+                    client.CreateSession(Endpoint).Wait();
                 }
                 catch (Exception ex)
                 {

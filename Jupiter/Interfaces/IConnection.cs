@@ -12,7 +12,7 @@ namespace Jupiter.Interfaces
     {
         bool Connected { get; set; }
 
-        Task CreateSession(string endpointURI, Opc.Ua.ApplicationConfiguration config);
+        Task CreateSession(string endpointURI);
 
         void Close();
 

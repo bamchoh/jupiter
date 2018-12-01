@@ -263,8 +263,9 @@ namespace Jupiter
             return session.FetchReferences(id);
         }
 
-        public async Task CreateSession(string endpointURI, Opc.Ua.ApplicationConfiguration config)
+        public async Task CreateSession(string endpointURI)
         {
+            var config = ApplicationConfiguration.Load(null);
             config.CertificateValidator.CertificateValidation += new CertificateValidationEventHandler(validateCerts);
             EndpointDescription selectedEndpoint = CoreClientUtils.SelectEndpoint(endpointURI, false, 15000);
             var endpointConfiguration = EndpointConfiguration.Create(config);
@@ -307,59 +308,21 @@ namespace Jupiter
             }
         }
 
-        public void Read(IList<VariableInfoBase> items)
+        public VariableConfiguration NewVariableConfiguration(NodeId id)
         {
-            try
-            {
-                var itemsToRead = new ReadValueIdCollection();
+            var node = FindNode(id);
+            return VariableConfiguration.New(node, session.TypeTree);
+        }
 
-                foreach (var vi in items)
-                {
-                    var rv = new ReadValueId()
-                    {
-                        NodeId = vi.NodeId,
-                        AttributeId = Attributes.Value,
-                        IndexRange = null,
-                        DataEncoding = null,
-                    };
-
-                    itemsToRead.Add(rv);
-                }
-
-                DataValueCollection values;
-                DiagnosticInfoCollection diagnosticInfos;
-
-                ResponseHeader responseHeader = session.Read(
-                    null,
-                    0,
-                    TimestampsToReturn.Both,
-                    itemsToRead,
-                    out values,
-                    out diagnosticInfos);
-
-                ClientBase.ValidateResponse(values, itemsToRead);
-                ClientBase.ValidateDiagnosticInfos(diagnosticInfos, itemsToRead);
-
-                for (int i = 0; i < values.Count; i++)
-                {
-                    var node = FindNode(items[i].NodeId);
-                    var conf = VariableConfiguration.New(node, session.TypeTree);
-                    var vi = variableInfoManager.NewVariableInfo(conf);
-                    vi.SetItem(items[i].NodeId, items[i].ClientHandle, values[i]);
-                    var isSelected = items[i].IsSelected;
-                    vi.SetPrepareValue(items[i].GetPrepareValue());
-                    items[i] = vi;
-                    vi.IsSelected = isSelected;
-                }
-
-                return;
-            }
-            catch (Exception ex)
-            {
-                MessagePassing(ex);
-                Close();
-                return;
-            }
+        public ResponseHeader Read(ReadValueIdCollection itemsToRead, out DataValueCollection values, out DiagnosticInfoCollection diagnosticInfos)
+        {
+            return session.Read(
+                null,
+                0,
+                TimestampsToReturn.Both,
+                itemsToRead,
+                out values,
+                out diagnosticInfos);
         }
 
         public void Write(IList<VariableInfoBase> items)
@@ -376,8 +339,7 @@ namespace Jupiter
 
         private VariableInfoBase NewVariableInfo2(MonitoredItem m, MonitoredItemNotification n)
         {
-            var node = FindNode(m.StartNodeId);
-            var conf = VariableConfiguration.New(node, session.TypeTree);
+            var conf = NewVariableConfiguration(m.StartNodeId);
             var vi = variableInfoManager.NewVariableInfo(conf);
             vi.SetItem(m.StartNodeId, m.ClientHandle, n?.Value);
             return vi;
@@ -436,13 +398,12 @@ namespace Jupiter
 
                 for (int i = 0; i < values.Count; i++)
                 {
-                    var node = FindNode(items[i].NodeId);
-                    var conf = VariableConfiguration.New(node, session.TypeTree);
+                    var conf = NewVariableConfiguration(items[i].NodeId);
                     var vi = variableInfoManager.NewVariableInfo(conf);
-                    values[i].Value.ServerTimestamp = items[i].ServerTimestamp;
-                    values[i].Value.SourceTimestamp = items[i].SourceTimestamp;
-                    values[i].Value.StatusCode = results[i];
-                    if(StatusCode.IsNotGood(results[i]))
+                    vi.ServerTimestamp = items[i].ServerTimestamp;
+                    vi.SourceTimestamp = items[i].SourceTimestamp;
+                    vi.StatusCode = results[i];
+                    if (StatusCode.IsNotGood(results[i]))
                     {
                         values[i].Value.Value = items[i].DataValue.Value;
                     }

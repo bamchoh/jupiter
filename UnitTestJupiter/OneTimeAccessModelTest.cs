@@ -10,11 +10,24 @@ using Prism.Events;
 
 namespace UnitTestJupiter
 {
-    public class TestOneTimeAccessOperator : Jupiter.Interfaces.IOneTimeAccessOperator
+    public class TestOneTimeAccessOperator : IOneTimeAccessOperator
     {
-        public void Read(IList<VariableInfoBase> items)
+        public VariableConfiguration NewVariableConfiguration(NodeId id)
         {
-            throw new NotImplementedException();
+            return new VariableConfiguration(id, BuiltInType.Int16);
+        }
+
+        public ResponseHeader Read(ReadValueIdCollection itemsToRead, out DataValueCollection values, out DiagnosticInfoCollection diagnosticInfos)
+        {
+            values = new DataValueCollection();
+            diagnosticInfos = new DiagnosticInfoCollection();
+
+            foreach(var item in itemsToRead)
+            {
+                values.Add(new DataValue(12345, new StatusCode(0)));
+            }
+
+            return new ResponseHeader();
         }
 
         public void Write(IList<VariableInfoBase> items)
@@ -23,13 +36,15 @@ namespace UnitTestJupiter
         }
     }
 
-    public class TestReference : Jupiter.Interfaces.IVariableConfiguration
+    public class TestVariableConfiguration : Jupiter.Interfaces.IVariableConfiguration
     {
         public NodeClass Type { get; set; }
 
         public BuiltInType TestBuiltInType { get; set; }
 
         public NodeId TestVariableNodeId { get; set; }
+
+        public object Value { get; set; }
 
         public BuiltInType BuiltInType()
         {
@@ -40,6 +55,13 @@ namespace UnitTestJupiter
         {
             return TestVariableNodeId;
         }
+    }
+
+    public class TestPattern
+    {
+        public string Name { get; set; }
+        public BuiltInType Type { get; set; }
+        public object Value { get; set; }
     }
 
     [TestClass]
@@ -190,13 +212,98 @@ namespace UnitTestJupiter
             Assert.AreEqual(((VariableInfoBase)ota.OneTimeAccessItems[0]).NodeId, "Var2");
         }
 
-        private void Add(Jupiter.Models.OneTimeAccessModel ota, string name, Variant value, BuiltInType type)
+        private void ReadCommandBase(string endpoint, List<TestPattern> testPatterns)
         {
-            ota.AddToReadWrite(new List<Jupiter.Interfaces.IVariableConfiguration>() {
-                new TestReference() {
+            var variables = new Dictionary<string, BuiltInType>();
+            foreach (var p in testPatterns)
+            {
+                variables[p.Name] = p.Type;
+            }
+
+            var application = TestServer.Application.GetApplicationInstance();
+            var ba = application.ApplicationConfiguration.ServerConfiguration.BaseAddresses;
+            ba.Add(endpoint);
+            using (var s = TestServer.TestServer.StartServer(application, variables))
+            {
+                foreach (var p in testPatterns)
+                {
+                    s.SetValue(p.Name, p.Value);
+                }
+
+                var ea = new Prism.Events.EventAggregator();
+                var msg = "";
+
+                ea.GetEvent<Jupiter.Events.ErrorNotificationEvent>()
+                    .Subscribe(x => msg = x.Message);
+
+                var varinfomgr = new VariableInfo();
+                var c = new Client(varinfomgr);
+                var references = new OPCUAReference(c, null, ea);
+                var ota = new Jupiter.Models.OneTimeAccessModel(c, c, varinfomgr);
+                ota.EventAggregator = ea;
+                var nodegrid = new Jupiter.Models.NodeInfoDataGridModel(c, c);
+                var nodetree = new Jupiter.Models.NodeTreeModel(c, references, nodegrid, null, ota);
+                c.CreateSession(endpoint).Wait();
+                foreach (OPCUAReference ch in references.Children)
+                {
+                    if (ch.DisplayName == "TestData")
+                    {
+                        nodetree.UpdateVariableNodeListCommand.Execute(ch);
+                        foreach (OPCUAReference vn in nodetree.VariableNodes)
+                        {
+                            nodetree.AddToReadWriteCommand.Execute(new List<OPCUAReference>() { vn });
+                        }
+                    }
+                };
+                ota.ReadCommand.Execute(null);
+                Assert.AreEqual(msg, "");
+                Assert.AreEqual(ota.OneTimeAccessItems.Count, testPatterns.Count);
+                for (int i = 0; i < testPatterns.Count; i++)
+                {
+                    var got = ((VariableInfoBase)ota.OneTimeAccessItems[i]).DataValue.Value.ToString();
+                    var want = testPatterns[i].Value.ToString();
+                    Assert.AreEqual(got, want);
+                }
+            }
+        }
+
+        [TestMethod]
+        public void TestReadCommand1()
+        {
+            var endpoint = "opc.tcp://localhost:62548";
+
+            var testPattern = new List<TestPattern>()
+            {
+                new TestPattern { Name = "Var1", Type = BuiltInType.UInt32, Value = 1234},
+            };
+
+            ReadCommandBase(endpoint, testPattern);
+        }
+
+        [TestMethod]
+        public void TestReadCommand2()
+        {
+            var endpoint = "opc.tcp://localhost:62548";
+
+            var testPattern = new List<TestPattern>();
+
+            for(int i = 0; i < 1000; i++)
+            {
+                var tp = new TestPattern { Name = "Var"+i.ToString(), Type = BuiltInType.UInt32, Value = i };
+                testPattern.Add(tp);
+            };
+
+            ReadCommandBase(endpoint, testPattern);
+        }
+
+        private void Add(Jupiter.Models.OneTimeAccessModel ota, string name, object value, BuiltInType type)
+        {
+            ota.AddToReadWrite(new List<IVariableConfiguration>() {
+                new TestVariableConfiguration() {
                     Type = NodeClass.Variable,
                     TestBuiltInType = type,
                     TestVariableNodeId = new NodeId(name),
+                    Value = value,
                 }
             });
         }

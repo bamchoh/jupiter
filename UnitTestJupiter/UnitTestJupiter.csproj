@@ -125,9 +125,21 @@
       <Project>{589a1771-995b-4dae-9b3b-406dfc54680e}</Project>
       <Name>Jupiter</Name>
     </ProjectReference>
+    <ProjectReference Include="..\opcua\SampleApplications\SDK\Opc.Ua.Configuration\Opc.Ua.Configuration.csproj">
+      <Project>{26f0d36f-1348-4aed-b011-234131871d35}</Project>
+      <Name>Opc.Ua.Configuration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\opcua\SampleApplications\SDK\Opc.Ua.Server\Opc.Ua.Server.csproj">
+      <Project>{4a1b6008-293a-4c85-8d33-4194a446aaf5}</Project>
+      <Name>Opc.Ua.Server</Name>
+    </ProjectReference>
     <ProjectReference Include="..\opcua\Stack\Opc.Ua.Core\Opc.Ua.Core.csproj">
       <Project>{509ed649-ff7f-424a-af61-f5cceff4f974}</Project>
       <Name>Opc.Ua.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TestServer\TestServer.csproj">
+      <Project>{62423f94-39c4-4866-af16-fd7f1e70e4f5}</Project>
+      <Name>TestServer</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />

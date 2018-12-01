@@ -13,10 +13,17 @@ using Prism.Mvvm;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 
+using Opc.Ua;
+using Prism.Events;
+using Unity.Attributes;
+
 namespace Jupiter.Models
 {
     public class OneTimeAccessModel : BindableBase, Interfaces.IOneTimeAccessModel
     {
+        [Dependency]
+        public IEventAggregator EventAggregator { get; set; }
+
         private Interfaces.IVariableInfoManager variableInfoManager;
         private ObservableCollection<VariableInfoBase> _itemsToRead;
         private Interfaces.IOneTimeAccessOperator otaOperator;
@@ -71,7 +78,55 @@ namespace Jupiter.Models
 
         private void OneTimeRead()
         {
-            otaOperator.Read(_itemsToRead);
+            try
+            {
+                var itemsToRead = new ReadValueIdCollection();
+
+                foreach (var vi in _itemsToRead)
+                {
+                    var rv = new ReadValueId()
+                    {
+                        NodeId = vi.NodeId,
+                        AttributeId = Attributes.Value,
+                        IndexRange = null,
+                        DataEncoding = null,
+                    };
+
+                    itemsToRead.Add(rv);
+                }
+
+                DataValueCollection values;
+                DiagnosticInfoCollection diagnosticInfos;
+
+                ResponseHeader responseHeader = otaOperator.Read(
+                    itemsToRead,
+                    out values,
+                    out diagnosticInfos);
+
+                ClientBase.ValidateResponse(values, itemsToRead);
+                ClientBase.ValidateDiagnosticInfos(diagnosticInfos, itemsToRead);
+
+                for (int i = 0; i < values.Count; i++)
+                {
+                    var conf = otaOperator.NewVariableConfiguration(_itemsToRead[i].NodeId);
+                    var vi = variableInfoManager.NewVariableInfo(conf);
+                    vi.SetItem(_itemsToRead[i].NodeId, _itemsToRead[i].ClientHandle, values[i]);
+                    var isSelected = _itemsToRead[i].IsSelected;
+                    vi.SetPrepareValue(_itemsToRead[i].GetPrepareValue());
+                    _itemsToRead[i] = vi;
+                    vi.IsSelected = isSelected;
+                }
+
+                return;
+            }
+            catch (Exception ex)
+            {
+                this.EventAggregator
+                    .GetEvent<Events.ErrorNotificationEvent>()
+                    .Publish(new Events.ErrorNotification(ex));
+                Close();
+                return;
+            }
         }
 
         private void GroupWrite(IList<VariableInfoBase> items)
