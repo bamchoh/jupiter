@@ -91,8 +91,6 @@ namespace Jupiter.Models
         {
             var tempList = new ObservableCollection<VariableInfoBase>();
 
-            var lastSelectedIndex = this.monitoredItemList.IndexOf(this.monitoredItemList[this.monitoredItemList.Count - 1]);
-
             var delItems = new List<uint>();
             foreach (var vi in this.monitoredItemList)
             {
@@ -107,14 +105,6 @@ namespace Jupiter.Models
             }
 
             subscriptionOperator.RemoveMonitoredItem(delItems);
-
-            Utility.SelectDeletedLastIndex(tempList, lastSelectedIndex);
-
-            this.MonitoredItemList.Clear();
-            foreach (var vi in tempList)
-            {
-                this.MonitoredItemList.Add(vi);
-            }
         }
 
         private void Close()

@@ -31,6 +31,7 @@
 
     <DockPanel>
         <DataGrid Grid.Column="1" Grid.Row="1"
+                  PreviewKeyDown="DataGrid_PreviewKeyDown"
                   ItemsSource="{Binding ItemsSource, RelativeSource={RelativeSource AncestorType=local:VariableInfoDataGrid}}"
                   SelectionChanged="DataGrid_SelectionChanged"
                   CanUserAddRows="False" CanUserSortColumns="False" CanUserReorderColumns="False" IsReadOnly="False" AutoGenerateColumns="False">

@@ -48,5 +48,25 @@ namespace Jupiter.UserControls
         {
             this.SelectedItems = ((DataGrid)sender).SelectedItems;
         }
+
+        public ICommand DeleteCommand
+        {
+            get { return (ICommand)GetValue(DeleteCommandProperty); }
+            set { SetValue(DeleteCommandProperty, value); }
+        }
+
+        public static readonly DependencyProperty DeleteCommandProperty =
+            DependencyProperty.Register("DeleteCommand", typeof(object), typeof(VariableInfoDataGrid), new PropertyMetadata(null));
+
+        private void DataGrid_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.Key == Key.Delete)
+            {
+                if(DeleteCommand != null && DeleteCommand.CanExecute(null))
+                {
+                    DeleteCommand.Execute(null);
+                }
+            }
+        }
     }
 }

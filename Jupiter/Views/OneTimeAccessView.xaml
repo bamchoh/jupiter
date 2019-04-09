@@ -30,17 +30,9 @@
                             <Label Content="Write" VerticalContentAlignment="Center" Padding="0,0,0,0"/>
                         </StackPanel>
                     </Button>
-                    <Button Style="{DynamicResource MaterialDesignRaisedLightButton}" Margin="2.5,0,2.5,0" Command="{Binding DeleteOneTimeAccessItemsCommand}">
-                        <StackPanel Orientation="Horizontal">
-                            <Viewbox Width="24" Height="24">
-                                <Canvas Width="24" Height="24">
-                                    <Path Data="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" Fill="Black" />
-                                </Canvas>
-                            </Viewbox>
-                            <Label Content="Delete" VerticalContentAlignment="Center" Padding="0,0,0,0"/>
-                        </StackPanel>
-                    </Button>
                 </StackPanel>
-                <uc:VariableInfoDataGrid ItemsSource="{Binding OneTimeAccessItems, Mode=OneWay}" SelectedItems="{Binding Path=OneTimeAccessSelectedItems, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <uc:VariableInfoDataGrid
+                    ItemsSource="{Binding OneTimeAccessItems, Mode=OneWay}"
+                    SelectedItems="{Binding Path=OneTimeAccessSelectedItems, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             </DockPanel>
 </UserControl>
