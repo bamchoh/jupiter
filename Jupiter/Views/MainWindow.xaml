@@ -47,10 +47,10 @@
             </GroupBox>
             <GridSplitter Grid.Row="1" Height="5" VerticalAlignment="Stretch" Width="Auto" HorizontalAlignment="Stretch" />
             <TabControl Grid.Row="2">
-                <TabItem Header="Subscription Items">
+                <TabItem Header="Subscription">
                     <local:SubscriptionView />
                 </TabItem>
-                <TabItem Header="Read/Write Items">
+                <TabItem Header="Read/Write">
                     <local:OneTimeAccessView />
                 </TabItem>
             </TabControl>
