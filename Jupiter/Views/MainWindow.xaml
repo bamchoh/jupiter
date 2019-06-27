@@ -36,8 +36,6 @@
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <GroupBox Header="Node Tree View" Grid.Column="0">
                 <local:NodeTree
@@ -48,13 +46,14 @@
                                 />
             </GroupBox>
             <GridSplitter Grid.Row="1" Height="5" VerticalAlignment="Stretch" Width="Auto" HorizontalAlignment="Stretch" />
-            <GroupBox Header="Subscription Items" Grid.Row="2" >
-                <local:SubscriptionView />
-            </GroupBox>
-            <GridSplitter Grid.Row="3" Height="5" VerticalAlignment="Stretch" Width="Auto" HorizontalAlignment="Stretch" />
-            <GroupBox Header="One Time Read Items" Grid.Row="5" >
-                <local:OneTimeAccessView />
-            </GroupBox>
+            <TabControl Grid.Row="2">
+                <TabItem Header="Subscription Items">
+                    <local:SubscriptionView />
+                </TabItem>
+                <TabItem Header="Read/Write Items">
+                    <local:OneTimeAccessView />
+                </TabItem>
+            </TabControl>
             <!--
             <GridSplitter Grid.Column="3" Width="5" HorizontalAlignment="Center" />
             <GroupBox Header="Node Information" Grid.Column="4" >
