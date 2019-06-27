@@ -165,7 +165,7 @@ namespace Jupiter
 
                 if (session.Subscriptions.Count() == 0)
                 {
-                    subscription = new Subscription(session.DefaultSubscription) { PublishingInterval = 1000 };
+                    subscription = new Subscription(session.DefaultSubscription) { PublishingInterval = 100 };
                     session.AddSubscription(subscription);
                     subscription.Create();
                 }

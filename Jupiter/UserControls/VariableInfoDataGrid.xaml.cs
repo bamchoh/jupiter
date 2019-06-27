@@ -60,13 +60,39 @@ namespace Jupiter.UserControls
 
         private void DataGrid_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            if(e.Key == Key.Delete)
+            var dg = (DataGrid)sender;
+            if (!isEdit)
             {
-                if(DeleteCommand != null && DeleteCommand.CanExecute(null))
+                switch(e.Key)
                 {
-                    DeleteCommand.Execute(null);
+                    case Key.Delete:
+                        {
+                            if (DeleteCommand != null && DeleteCommand.CanExecute(null))
+                            {
+                                DeleteCommand.Execute(null);
+                            }
+                        }
+                        break;
+                    case Key.Enter:
+                        {
+                            dg.BeginEdit();
+                            e.Handled = true;
+                        }
+                        break;
                 }
             }
+        }
+
+        bool isEdit = false;
+
+        private void DataGrid_BeginningEdit(object sender, DataGridBeginningEditEventArgs e)
+        {
+            isEdit = true;
+        }
+
+        private void DataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        {
+            isEdit = false;
         }
     }
 }
