@@ -37,14 +37,12 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <GroupBox Header="Node Tree View" Grid.Column="0">
-                <local:NodeTree
-                                MouseDoubleClickedCommand="{Binding MouseDoubleClickedCommand}"
-                                AddToReadWriteCommand="{Binding AddToReadWriteCommand}"
-                                UpdateVariableNodeListCommand="{Binding UpdateVariableNodeListCommand}"
-                                NodeSelectedCommand="{Binding NodeSelectedCommand}"
-                                />
-            </GroupBox>
+            <local:NodeTree Grid.Row="0"
+                            MouseDoubleClickedCommand="{Binding MouseDoubleClickedCommand}"
+                            AddToReadWriteCommand="{Binding AddToReadWriteCommand}"
+                            UpdateVariableNodeListCommand="{Binding UpdateVariableNodeListCommand}"
+                            NodeSelectedCommand="{Binding NodeSelectedCommand}"
+                            />
             <GridSplitter Grid.Row="1" Height="5" VerticalAlignment="Stretch" Width="Auto" HorizontalAlignment="Stretch" />
             <TabControl Grid.Row="2">
                 <TabItem Header="Subscription">
