@@ -19,7 +19,8 @@ namespace Jupiter.Models
     {
         private Interfaces.ISubscriptionOperatable subscriptionOperator;
         private Interfaces.IVariableInfoManager variableInfoManager;
-        private ObservableCollection<VariableInfoBase> monitoredItemList = new ObservableCollection<VariableInfoBase>();
+        private ObservableCollection<VariableInfoBase> monitoredItems = new ObservableCollection<VariableInfoBase>();
+        private ObservableCollection<VariableInfoBase> selectedMonitoredItems = new ObservableCollection<VariableInfoBase>();
 
         public ICommand DeleteMonitoredItemsCommand { get; set; }
 
@@ -31,27 +32,28 @@ namespace Jupiter.Models
             this.subscriptionOperator = subscriptionOperator;
             this.variableInfoManager = variableInfoManager;
 
-            BindingOperations.EnableCollectionSynchronization(monitoredItemList, new object());
+            BindingOperations.EnableCollectionSynchronization(monitoredItems, new object());
 
             subscriptionOperator.SessionNotification -= Session_Notificaiton;
             subscriptionOperator.SessionNotification += Session_Notificaiton;
 
             DeleteMonitoredItemsCommand = new Commands.DelegateCommand(
                 (param) => { DeleteMonitoredItems(); },
-                (param) => { return connector.Connected && monitoredItemList.Count > 0; });
+                (param) => { return connector.Connected && monitoredItems.Count > 0; });
 
             connector.ObserveProperty(x => x.Connected).Subscribe(c => { if (!c) Close(); });
         }
 
-        public IList MonitoredSelectedItems {
-            get;
-            set;
+        public IList SelectedMonitoredItems
+        {
+            get { return selectedMonitoredItems;  }
+            set { this.SetProperty(ref selectedMonitoredItems, (ObservableCollection<VariableInfoBase>)value); }
         }
 
-        public IList MonitoredItemList
+        public IList MonitoredItems
         {
-            get { return monitoredItemList; }
-            set { this.SetProperty(ref monitoredItemList, (ObservableCollection<VariableInfoBase>)value); }
+            get { return monitoredItems; }
+            set { this.SetProperty(ref monitoredItems, (ObservableCollection<VariableInfoBase>)value); }
         }
 
         public void AddToSubscription(IList objs)
@@ -60,7 +62,7 @@ namespace Jupiter.Models
             if (items == null || items.Count == 0)
                 return;
 
-            foreach(VariableInfoBase mi in MonitoredItemList)
+            foreach(VariableInfoBase mi in MonitoredItems)
             {
                 mi.IsSelected = false;
             }
@@ -68,7 +70,7 @@ namespace Jupiter.Models
             foreach (var vi in items)
             {
                 vi.IsSelected = true;
-                MonitoredItemList.Add(vi);
+                MonitoredItems.Add(vi);
             }
         }
 
@@ -76,9 +78,9 @@ namespace Jupiter.Models
         {
             foreach(var change in e.Items)
             {
-                for(int i = 0; i < this.monitoredItemList.Count; i++)
+                for(int i = 0; i < this.monitoredItems.Count; i++)
                 {
-                    var vi = this.monitoredItemList[i];
+                    var vi = this.monitoredItems[i];
                     if (vi.ClientHandle == change.ClientHandle)
                     {
                         vi.Update(change);
@@ -92,9 +94,9 @@ namespace Jupiter.Models
             var tempList = new ObservableCollection<VariableInfoBase>();
 
             var delItems = new List<uint>();
-            foreach (var vi in this.monitoredItemList)
+            foreach (var vi in this.monitoredItems)
             {
-                if (MonitoredSelectedItems.Contains(vi))
+                if (SelectedMonitoredItems.Contains(vi))
                 {
                     delItems.Add(vi.ClientHandle);
                 }
@@ -109,7 +111,7 @@ namespace Jupiter.Models
 
         private void Close()
         {
-            MonitoredItemList.Clear();
+            MonitoredItems.Clear();
         }
     }
 }

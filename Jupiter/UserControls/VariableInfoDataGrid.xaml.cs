@@ -79,8 +79,48 @@ namespace Jupiter.UserControls
                             e.Handled = true;
                         }
                         break;
+                    case Key.J:
+                        {
+                            var oldIndex = dg.Items.IndexOf(dg.CurrentItem);
+                            var newIndex = oldIndex + 1;
+
+                            if (newIndex >= dg.Items.Count)
+                                return;
+
+                            MoveCurrentItem(dg, oldIndex, newIndex);
+                        }
+                        break;
+                    case Key.K:
+                        {
+                            var oldIndex = dg.Items.IndexOf(dg.CurrentItem);
+                            var newIndex = oldIndex - 1;
+
+                            if (newIndex < 0)
+                                return;
+
+                            MoveCurrentItem(dg, oldIndex, newIndex);
+                        }
+                        break;
                 }
             }
+        }
+
+        private void MoveCurrentItem(DataGrid dg, int oldIndex, int newIndex)
+        {
+            var item = dg.Items[oldIndex];
+            var itemSource = dg.ItemsSource as IList;
+            itemSource.RemoveAt(oldIndex);
+            itemSource.Insert(newIndex, item);
+            FocusDataGridCell(dg, newIndex);
+        }
+
+        private void FocusDataGridCell(DataGrid dg, int index)
+        {
+            dg.Focus();
+            dg.UpdateLayout();
+            var dgr = dg.ItemContainerGenerator.ContainerFromIndex(index) as DataGridRow;
+            var dgc = dg.CurrentCell.Column.GetCellContent(dgr).Parent as DataGridCell;
+            dgc.Focus();
         }
 
         bool isEdit = false;

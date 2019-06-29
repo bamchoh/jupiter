@@ -12,7 +12,7 @@
             <DockPanel>
                 <uc:VariableInfoDataGrid
                     DeleteCommand="{Binding DeleteMonitoredItemsCommand}"
-                    ItemsSource="{Binding Path=MonitoredItemList}"
-                    SelectedItems="{Binding Path=MonitoredSelectedItems, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    ItemsSource="{Binding Path=MonitoredItems}"
+                    SelectedItems="{Binding Path=SelectedMonitoredItems, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             </DockPanel>
 </UserControl>
