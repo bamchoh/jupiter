@@ -26,8 +26,6 @@ namespace Jupiter.Models
 
         public ConnectionModel(Interfaces.IConnection client)
         {
-            this.Endpoint = "opc.tcp://127.0.0.1:62548";
-
             this.client = client;
 
             this.client.ObserveProperty(x => x.Connected).Subscribe(c => {
@@ -46,7 +44,27 @@ namespace Jupiter.Models
                 (param) => true);
         }
 
-        public string Endpoint { get; set; }
+        private string _endpoint;
+        public string Endpoint {
+            get
+            {
+                if(string.IsNullOrEmpty(_endpoint))
+                {
+                    _endpoint = Properties.Settings.Default.ServerEndpointURL;
+                }
+                return _endpoint;
+            }
+
+            set
+            {
+                if(_endpoint != value)
+                {
+                    _endpoint = value;
+                    Properties.Settings.Default.ServerEndpointURL = _endpoint;
+                    Properties.Settings.Default.Save();
+                }
+            }
+        }
 
         public string ConnectButtonContent
         {

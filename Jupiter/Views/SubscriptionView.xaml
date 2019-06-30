@@ -9,10 +9,11 @@
              Prism:ViewModelLocator.AutoWireViewModel="True"
              HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
              >
-            <DockPanel>
-                <uc:VariableInfoDataGrid
+    <DockPanel>
+        <uc:VariableInfoDataGrid
                     DeleteCommand="{Binding DeleteMonitoredItemsCommand}"
                     ItemsSource="{Binding Path=MonitoredItems}"
-                    SelectedItems="{Binding Path=SelectedMonitoredItems, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-            </DockPanel>
+                    SelectedItems="{Binding Path=SelectedMonitoredItems, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+        </uc:VariableInfoDataGrid>
+    </DockPanel>
 </UserControl>

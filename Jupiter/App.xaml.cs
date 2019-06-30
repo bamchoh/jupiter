@@ -21,6 +21,8 @@ namespace Jupiter
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
+            Jupiter.Properties.Settings.Default.Upgrade();
+
             ViewModelLocationProvider.SetDefaultViewModelFactory(x => this.Container.Resolve(x));
 
             var varinfo = new VariableInfo();
