@@ -22,7 +22,7 @@
         TextOptions.TextRenderingMode="Auto"        
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"        
-        Title="Jupiter" Height="1000" Width="1200">
+        Title="{Binding Title}" Height="1000" Width="1200">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Closing">
             <i:InvokeCommandAction Command="{Binding Path=ClosingCommand}" />
