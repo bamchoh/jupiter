@@ -41,7 +41,7 @@ namespace Jupiter
             this.Container.RegisterType<Interfaces.ISubscriptionModel, Models.SubscriptionModel>(lifetimeManager3);
             this.Container.RegisterType<Interfaces.IOneTimeAccessModel, Models.OneTimeAccessModel>(lifetimeManager4);
 
-            var c = new Client(varinfo);
+            var c = new Client(varinfo, ea);
             this.Container.RegisterInstance<Interfaces.IConnection>(c);
             this.Container.RegisterInstance<Interfaces.IReferenceFetchable>(c);
             this.Container.RegisterInstance<Interfaces.INodeInfoGetter>(c);

@@ -103,11 +103,12 @@ namespace Jupiter
                 if (isExpanded == value)
                     return;
 
-                isExpanded = value;
-
-                if (isExpanded == true)
+                if (value == true)
                 {
-                    this.UpdateChildren();
+                    isExpanded = this.UpdateChildren();
+                } else
+                {
+                    isExpanded = false;
                 }
             }
         }
@@ -194,15 +195,18 @@ namespace Jupiter
             }
         }
 
-        private void UpdateChildren()
+        private bool UpdateChildren()
         {
             var refs = FetchObjectReferences(this.NodeId);
+            if (refs == null || refs.Count == 0)
+            {
+                return false;
+            }
 
             this.Children.Clear();
-            if (refs != null || refs.Count != 0)
-            {
-                this.AddChildren(refs);
-            }
+            this.AddChildren(refs);
+
+            return true;
         }
 
         public void UpdateReferences()

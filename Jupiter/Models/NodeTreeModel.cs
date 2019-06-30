@@ -19,6 +19,7 @@ namespace Jupiter.Models
     {
         private Interfaces.IConnection connector;
         private Interfaces.IReference references;
+        private bool isEnabled;
         private ObservableCollection<OPCUAReference> variableNodes = new ObservableCollection<OPCUAReference>();
 
         public NodeTreeModel(
@@ -32,7 +33,7 @@ namespace Jupiter.Models
             this.references = references;
 
             ReloadCommand = new Commands.DelegateCommand(
-                (param) => { Load(); },
+                (param) => { Update(connector.Connected); },
                 (param) => connector.Connected);
 
             MouseDoubleClickedCommand = new Commands.DelegateCommand(
@@ -52,6 +53,8 @@ namespace Jupiter.Models
                 (param) => true);
 
             this.connector.ObserveProperty(x => x.Connected).Subscribe(c => Update(c));
+
+            Initialize();
         }
 
         public Interfaces.IReference References
@@ -66,6 +69,12 @@ namespace Jupiter.Models
             set { this.SetProperty(ref variableNodes, (ObservableCollection<OPCUAReference>)value); }
         }
 
+        public bool IsEnabled
+        {
+            get { return connector.Connected; }
+            set { this.SetProperty(ref isEnabled, value); }
+        }
+
         public ICommand ReloadCommand { get; set; }
         public ICommand MouseDoubleClickedCommand { get; set; }
         public ICommand AddToReadWriteCommand { get; set; }
@@ -74,25 +83,25 @@ namespace Jupiter.Models
 
         public void Dispose()
         {
-            Close();
-        }
-
-        private void Load()
-        {
-            Close();
-
-            References.UpdateReferences();
+            // Close();
         }
 
         private void Update(bool c)
         {
+            IsEnabled = c;
+
             if (c)
-                Load();
-            else
-                Close();
+            {
+                if (References != null && References.Children.Count > 0)
+                    return;
+
+                Initialize();
+
+                References.UpdateReferences();
+            }
         }
 
-        private void Close()
+        private void Initialize()
         {
             References?.Children.Clear();
 

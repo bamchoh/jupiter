@@ -15,6 +15,8 @@ namespace Jupiter.Interfaces
 
         IList VariableNodes { get; set; }
 
+        bool IsEnabled { get; set; }
+
         ICommand ReloadCommand { get; set; }
         ICommand MouseDoubleClickedCommand { get; set; }
         ICommand AddToReadWriteCommand { get; set; }

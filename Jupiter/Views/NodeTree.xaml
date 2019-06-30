@@ -8,6 +8,7 @@
              xmlns:Prism="http://prismlibrary.com/"
              xmlns:mtrDesign="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
              Prism:ViewModelLocator.AutoWireViewModel="True"
+             IsEnabled="{Binding IsEnabled.Value}"
              xmlns:local2="clr-namespace:Jupiter">
     <UserControl.Resources>
         <ContextMenu x:Key="topLevelMenu">

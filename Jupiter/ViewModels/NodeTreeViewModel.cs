@@ -31,6 +31,7 @@ namespace Jupiter.ViewModels
 
             References = model.ToReactivePropertyAsSynchronized(x => x.References);
             VariableNodes = model.ToReactivePropertyAsSynchronized(x => x.VariableNodes);
+            IsEnabled = model.ToReactivePropertyAsSynchronized(x => x.IsEnabled);
         }
 
         public ICommand ReloadCommand { get; set; }
@@ -41,5 +42,6 @@ namespace Jupiter.ViewModels
 
         public ReactiveProperty<Interfaces.IReference> References { get; }
         public ReactiveProperty<IList> VariableNodes { get; }
+        public ReactiveProperty<bool> IsEnabled { get; }
     }
 }

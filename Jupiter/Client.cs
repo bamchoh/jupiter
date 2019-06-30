@@ -21,10 +21,14 @@ using System.Runtime.CompilerServices;
 using Prism.Mvvm;
 using Opc.Ua.Configuration;
 
+using Prism.Events;
+
 namespace Jupiter
 {
     public class Client : BindableBase, Interfaces.IConnection, Interfaces.IReferenceFetchable, Interfaces.INodeInfoGetter, Interfaces.ISubscriptionOperatable, Interfaces.IOneTimeAccessOperator
     {
+        public IEventAggregator EventAggregator { get; set; }
+
         #region Private Fields
         private Session session;
         private Subscription subscription;
@@ -39,9 +43,11 @@ namespace Jupiter
         #endregion
 
         #region Constructor
-        public Client(Interfaces.IVariableInfoManager variableInfoManager)
+        public Client(Interfaces.IVariableInfoManager variableInfoManager, IEventAggregator ea)
         {
             this.variableInfoManager = variableInfoManager;
+
+            this.EventAggregator = ea;
         }
         #endregion
 
@@ -148,6 +154,8 @@ namespace Jupiter
             catch (Exception ex)
             {
                 MessagePassing(ex);
+
+                Close();
             }
         }
 
@@ -198,6 +206,9 @@ namespace Jupiter
             catch(Exception ex)
             {
                 MessagePassing(ex);
+
+                Close();
+
                 return null;
             }
         }
@@ -279,18 +290,41 @@ namespace Jupiter
                 new UserIdentity(new AnonymousIdentityToken()),
                 null);
 
+            session.KeepAlive += Session_KeepAlive;
             session.PublishError += Session_PublishError;
             Connected = session.Connected;
         }
 
+        private object MessageLockObject = new object();
+
+        private void Session_KeepAlive(Session session, KeepAliveEventArgs e)
+        {
+            lock(MessageLockObject)
+            {
+                if (e.Status != null)
+                {
+                    var message = string.Format("[KeepAlive Error]{0}", e.Status.LocalizedText.Text);
+
+                    MessagePassing(new Exception(message));
+
+                    Close();
+                }
+            }
+        }
+
         private void Session_PublishError(Session session, PublishErrorEventArgs e)
         {
-            var message = "[Publish Error]";
-            message += e.Status.LocalizedText.Text;
-            var msgbox = Commands.ShowMessageCommand.Command;
-            msgbox.Execute(message);
-            // session.Close();
-            Connected = session.Connected;
+            lock (MessageLockObject)
+            {
+                if (e.Status != null)
+                {
+                    var message = string.Format("[Publish Error]{0}", e.Status.LocalizedText.Text);
+
+                    MessagePassing(new Exception(message));
+
+                    Close();
+                }
+            }
         }
 
         public void Close()
@@ -417,20 +451,16 @@ namespace Jupiter
             catch (Exception ex)
             {
                 MessagePassing(ex);
+
+                Close();
             }
         }
 
         private void MessagePassing(Exception ex)
         {
-            var msgbox = Commands.ShowMessageCommand.Command;
-            if (ex.InnerException != null)
-            {
-                msgbox.Execute(ex.InnerException.Message);
-            }
-            else
-            {
-                msgbox.Execute(ex.Message);
-            }
+            this.EventAggregator
+                .GetEvent<Events.ErrorNotificationEvent>()
+                .Publish(new Events.ErrorNotification(ex));
         }
 
         private void Vi_PropertyChanged(object sender, PropertyChangedEventArgs e)
