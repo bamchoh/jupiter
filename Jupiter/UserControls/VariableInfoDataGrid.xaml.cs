@@ -117,6 +117,7 @@ namespace Jupiter.UserControls
         private void FocusDataGridCell(DataGrid dg, int index)
         {
             dg.Focus();
+            dg.ScrollIntoView(dg.Items[index]);
             dg.UpdateLayout();
             var dgr = dg.ItemContainerGenerator.ContainerFromIndex(index) as DataGridRow;
             var dgc = dg.CurrentCell.Column.GetCellContent(dgr).Parent as DataGridCell;
