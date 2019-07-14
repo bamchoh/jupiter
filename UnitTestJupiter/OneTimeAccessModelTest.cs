@@ -237,7 +237,7 @@ namespace UnitTestJupiter
                     .Subscribe(x => msg = x.Message);
 
                 var varinfomgr = new VariableInfo();
-                var c = new Client(varinfomgr);
+                var c = new Client(varinfomgr, ea);
                 var references = new OPCUAReference(c, null, ea);
                 var ota = new Jupiter.Models.OneTimeAccessModel(c, c, varinfomgr);
                 ota.EventAggregator = ea;

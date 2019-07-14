@@ -26,6 +26,25 @@ namespace Jupiter.Views
                         this.ShowMessageAsync("!!Error!!", $"{x.Message}");
                     }));
                 });
+
+
+            eventAggregator.GetEvent<Events.NowLoadingEvent>()
+                .Subscribe(async (x) => {
+                    var dialogView = new Loading();
+                    var vm = new ViewModels.LoadingViewModel(x.SecurityList, x.Endpoint);
+                    dialogView.DataContext = vm;
+                    await x.Semaphore.WaitAsync();
+                    try
+                    {
+                        await MaterialDesignThemes.Wpf.DialogHostEx.ShowDialog(this, dialogView);
+                        x.SelectedIndex = vm.SelectedIndex;
+                    }
+                    finally
+                    {
+                        x.Semaphore.Release();
+                    }
+                });
         }
+
     }
 }

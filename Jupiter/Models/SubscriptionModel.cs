@@ -44,11 +44,7 @@ namespace Jupiter.Models
             connector.ObserveProperty(x => x.Connected).Subscribe(c => { if (!c) Close(); });
         }
 
-        public IList SelectedMonitoredItems
-        {
-            get { return selectedMonitoredItems;  }
-            set { this.SetProperty(ref selectedMonitoredItems, (ObservableCollection<VariableInfoBase>)value); }
-        }
+        public IList SelectedMonitoredItems { get; set; }
 
         public IList MonitoredItems
         {

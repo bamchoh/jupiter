@@ -157,9 +157,11 @@
     <Compile Include="ApplicationConfigure.cs" />
     <Compile Include="Behaviors\TextBoxBehaviors.cs" />
     <Compile Include="Client.cs" />
+    <Compile Include="Commands\AsyncCommand.cs" />
     <Compile Include="Commands\DelegateCommand.cs" />
     <Compile Include="Commands\ShowMessageCommand.cs" />
     <Compile Include="Events\ErrorNotificationEvent.cs" />
+    <Compile Include="Events\NowLoadingEvent.cs" />
     <Compile Include="Interfaces\IConnection.cs" />
     <Compile Include="Interfaces\INodeInfoDataGrid.cs" />
     <Compile Include="Interfaces\INodeInfoGetter.cs" />
@@ -179,6 +181,10 @@
     <Compile Include="Models\SubscriptionModel.cs" />
     <Compile Include="NodeInfo.cs" />
     <Compile Include="OPCUAReference.cs" />
+    <Compile Include="ViewModels\LoadingViewModel.cs" />
+    <Compile Include="Views\Loading.xaml.cs">
+      <DependentUpon>Loading.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Utility.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\NodeInfoDataGridViewModel.cs" />
@@ -206,6 +212,10 @@
     <Compile Include="ValueTemplateSelector.cs" />
     <Compile Include="VariableInfo.cs" />
     <Compile Include="ViewModels\ConnectionViewModel.cs" />
+    <Page Include="Views\Loading.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

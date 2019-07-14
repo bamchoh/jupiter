@@ -31,7 +31,7 @@ namespace Jupiter.ViewModels
             this.ConnectCommand = model.ConnectCommand;
         }
 
-        public ICommand ConnectCommand { get; private set; }
+        public Commands.IAsyncCommand ConnectCommand { get; private set; }
 
         public ReactiveProperty<string> Endpoint { get; set; }
 

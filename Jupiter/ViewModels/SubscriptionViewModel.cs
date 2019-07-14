@@ -17,7 +17,11 @@ namespace Jupiter.ViewModels
     class SubscriptionViewModel : BindableBase
     {
         private Models.SubscriptionModel model;
-        public IList SelectedMonitoredItems { get; set; }
+        public IList SelectedMonitoredItems
+        {
+            get { return model.SelectedMonitoredItems; }
+            set { model.SelectedMonitoredItems = value; }
+        }
 
         public IList MonitoredItems { get; set; }
 

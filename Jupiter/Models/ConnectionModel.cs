@@ -39,9 +39,10 @@ namespace Jupiter.Models
                 }
             });
 
-            this.ConnectCommand = new Commands.DelegateCommand(
-                (param) => { CreateSession(param); },
-                (param) => true);
+            this.ConnectCommand = new Commands.AsyncCommand(async () =>
+            {
+                await CreateSession(null);
+            });
         }
 
         private string _endpoint;
@@ -72,15 +73,16 @@ namespace Jupiter.Models
             set { this.SetProperty(ref connectButtonContent, value); }
         }
 
-        public ICommand ConnectCommand { get; private set; }
+        public Commands.IAsyncCommand ConnectCommand { get; private set; }
+        public Commands.IAsyncCommand DiscoverCommand { get; private set; }
 
-        private void CreateSession(object param)
+        private async Task CreateSession(object param)
         {
             if (!client.Connected)
             {
                 try
                 {
-                    client.CreateSession(Endpoint).Wait();
+                    await client.CreateSession(Endpoint);
                 }
                 catch (Exception ex)
                 {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -48,6 +49,9 @@ namespace Jupiter
             this.variableInfoManager = variableInfoManager;
 
             this.EventAggregator = ea;
+
+            this.config = ApplicationConfiguration.Load(null);
+            config.CertificateValidator.CertificateValidation += new CertificateValidationEventHandler(validateCerts);
         }
         #endregion
 
@@ -274,18 +278,41 @@ namespace Jupiter
             return session.FetchReferences(id);
         }
 
-        public async Task CreateSession(string endpointURI)
+        public EndpointDescriptionCollection Discover(string discoveryUrl, int operationTimeout)
         {
-            var config = ApplicationConfiguration.Load(null);
-            config.CertificateValidator.CertificateValidation += new CertificateValidationEventHandler(validateCerts);
-            EndpointDescription selectedEndpoint = CoreClientUtils.SelectEndpoint(endpointURI, false, 15000);
+            Uri uri = new Uri(discoveryUrl);
+
+            EndpointConfiguration configuration = EndpointConfiguration.Create();
+            if (operationTimeout > 0)
+            {
+                configuration.OperationTimeout = operationTimeout;
+            }
+
+            var endpoints = new EndpointDescriptionCollection();
+
+            using (DiscoveryClient client = DiscoveryClient.Create(uri, configuration))
+            {
+                foreach (var got in client.GetEndpoints(null))
+                {
+                    if (got.EndpointUrl.StartsWith(uri.Scheme))
+                    {
+                        endpoints.Add(got);
+                    }
+                }
+            }
+
+            return endpoints;
+        }
+
+        private async Task _createSession(EndpointDescription endpointDescription)
+        {
             var endpointConfiguration = EndpointConfiguration.Create(config);
-            var endpoint = new ConfiguredEndpoint(null, selectedEndpoint, endpointConfiguration);
+            var endpoint = new ConfiguredEndpoint(null, endpointDescription, endpointConfiguration);
             session = await Session.Create(
-                config, 
-                endpoint, 
-                false, 
-                config.ApplicationName, 
+                config,
+                endpoint,
+                false,
+                config.ApplicationName,
                 60000,
                 new UserIdentity(new AnonymousIdentityToken()),
                 null);
@@ -293,6 +320,40 @@ namespace Jupiter
             session.KeepAlive += Session_KeepAlive;
             session.PublishError += Session_PublishError;
             Connected = session.Connected;
+        }
+
+        public async Task CreateSession(string endpointURI)
+        {
+            var endpoints = await Task.Run(() => Discover(endpointURI, 15000));
+
+            var securityList = new List<string>();
+            foreach (var ed in endpoints)
+            {
+                securityList.Add(string.Format("{0} - {1}",
+                    Opc.Ua.SecurityPolicies.GetDisplayName(ed.SecurityPolicyUri),
+                    ed.SecurityMode));
+            }
+
+            var sem = new SemaphoreSlim(1, 1);
+            var result = new Events.NowLoading()
+            {
+                SecurityList = securityList,
+                Endpoint = endpointURI,
+                Semaphore = sem,
+            };
+            this.EventAggregator
+                .GetEvent<Events.NowLoadingEvent>()
+                .Publish(result);
+            await sem.WaitAsync();
+            try
+            {
+                var i = result.SelectedIndex;
+                await _createSession(endpoints[i]);
+            }
+            finally
+            {
+                sem.Release();
+            }
         }
 
         private object MessageLockObject = new object();
