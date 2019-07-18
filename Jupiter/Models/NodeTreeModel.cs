@@ -13,6 +13,8 @@ using Prism.Mvvm;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 
+using Opc.Ua;
+
 namespace Jupiter.Models
 {
     public class NodeTreeModel : BindableBase, Interfaces.INodeTreeModel
@@ -33,7 +35,7 @@ namespace Jupiter.Models
             this.references = references;
 
             ReloadCommand = new Commands.DelegateCommand(
-                (param) => { Update(connector.Connected); },
+                (param) => { ForceUpdate(); },
                 (param) => connector.Connected);
 
             MouseDoubleClickedCommand = new Commands.DelegateCommand(
@@ -41,7 +43,9 @@ namespace Jupiter.Models
                 (param) => true);
 
             AddToReadWriteCommand = new Commands.DelegateCommand(
-                (param) => { oneTimeAccessM.AddToReadWrite(param as IList); },
+                (param) => {
+                    AddToReadWrite(oneTimeAccessM, param);
+                },
                 (param) => connector.Connected);
 
             NodeSelectedCommand = new Commands.DelegateCommand(
@@ -95,10 +99,15 @@ namespace Jupiter.Models
                 if (References != null && References.Children.Count > 0)
                     return;
 
-                Initialize();
-
-                References.UpdateReferences();
+                ForceUpdate();
             }
+        }
+
+        private void ForceUpdate()
+        {
+            Initialize();
+
+            References.UpdateReferences();
         }
 
         private void Initialize()
@@ -134,5 +143,48 @@ namespace Jupiter.Models
             VariableNodes = tempList;
         }
 
+        private void AddToReadWrite(Interfaces.IOneTimeAccessModel oneTimeAccessM, object param)
+        {
+            var client = connector as Client;
+
+            var itemsToRead = new ReadValueIdCollection();
+
+            var refs = param as IList;
+
+            foreach (OPCUAReference r in refs)
+            {
+                var rv = new ReadValueId()
+                {
+                    NodeId = client.ToNodeId(r.NodeId),
+                    AttributeId = Attributes.DataType
+                };
+
+                itemsToRead.Add(rv);
+            }
+
+            DataValueCollection values;
+            DiagnosticInfoCollection diagnosticInfos;
+
+            ResponseHeader responseHeader = client.Read(
+                itemsToRead,
+                out values,
+                out diagnosticInfos);
+
+            var varconfs = new List<VariableConfiguration>();
+
+            for(int i = 0;i < values.Count;i++)
+            {
+                var id = client.ToNodeId(((OPCUAReference)refs[i]).NodeId);
+                var datatype = values[i].Value as NodeId;
+                var typeinfo = TypeInfo.GetBuiltInType(datatype, client.TypeTable);
+
+                varconfs.Add(new VariableConfiguration(id, typeinfo)
+                {
+                    Type = NodeClass.Variable
+                });
+            }
+
+            oneTimeAccessM.AddToReadWrite(varconfs as IList);
+        }
     }
 }
