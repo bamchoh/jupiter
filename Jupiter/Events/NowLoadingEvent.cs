@@ -20,6 +20,10 @@ namespace Jupiter.Events
 
         public string Endpoint;
 
+        public string UserName;
+
+        public string Password;
+
         public int SelectedIndex;
     }
 }

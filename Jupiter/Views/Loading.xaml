@@ -13,6 +13,15 @@
         <TextBlock Text="{Binding Endpoint, Mode=OneWay}" Style="{StaticResource MaterialDesignSubheadingTextBlock}" Margin="5" />
         <TextBlock Text="Select Security"  Style="{StaticResource MaterialDesignTitleTextBlock}" Margin="5" />
         <ComboBox ItemsSource="{Binding SecurityList, Mode=OneWay}" SelectedIndex="{Binding SelectedIndex}" Margin="5" />
+        <TextBlock Text="Login User"  Style="{StaticResource MaterialDesignTitleTextBlock}" Margin="5" />
+        <DockPanel>
+            <TextBlock Text="User Name"  Style="{StaticResource MaterialDesignSubheadingTextBlock}" Margin="5" />
+            <TextBox Text="{Binding UserName}" Margin="5" />
+        </DockPanel>
+        <DockPanel>
+            <TextBlock Text="Password"  Style="{StaticResource MaterialDesignSubheadingTextBlock}" Margin="5" />
+            <TextBox Text="{Binding Password}" Margin="5" />
+        </DockPanel>
         <Button Content="Connect"
                 Style="{DynamicResource MaterialDesignFlatButton}"
                 Command="{x:Static material:DialogHost.CloseDialogCommand}" Margin="5" />

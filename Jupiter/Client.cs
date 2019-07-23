@@ -304,9 +304,24 @@ namespace Jupiter
             return endpoints;
         }
 
-        private async Task _createSession(EndpointDescription endpointDescription)
+        private async Task _createSession(EndpointDescription endpointDescription, string username, string password)
         {
-            var endpointConfiguration = EndpointConfiguration.Create(config);
+            UserIdentity uid;
+            if (string.IsNullOrEmpty(username))
+            {
+                uid = new UserIdentity(new AnonymousIdentityToken());
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(password))
+                {
+                    password = "";
+                }
+
+                uid = new UserIdentity(username, password);
+            }
+
+        var endpointConfiguration = EndpointConfiguration.Create(config);
             var endpoint = new ConfiguredEndpoint(null, endpointDescription, endpointConfiguration);
             session = await Session.Create(
                 config,
@@ -314,7 +329,7 @@ namespace Jupiter
                 false,
                 config.ApplicationName,
                 60000,
-                new UserIdentity(new AnonymousIdentityToken()),
+                uid,
                 null);
 
             session.KeepAlive += Session_KeepAlive;
@@ -329,7 +344,8 @@ namespace Jupiter
             var securityList = new List<string>();
             foreach (var ed in endpoints)
             {
-                securityList.Add(string.Format("{0} - {1}",
+                securityList.Add(string.Format("{0} - {1} - {2}",
+                    ed.Server.ApplicationName,
                     Opc.Ua.SecurityPolicies.GetDisplayName(ed.SecurityPolicyUri),
                     ed.SecurityMode));
             }
@@ -339,6 +355,8 @@ namespace Jupiter
             {
                 SecurityList = securityList,
                 Endpoint = endpointURI,
+                UserName = "",
+                Password = "",
                 Semaphore = sem,
             };
             this.EventAggregator
@@ -348,7 +366,9 @@ namespace Jupiter
             try
             {
                 var i = result.SelectedIndex;
-                await _createSession(endpoints[i]);
+                var username = result.UserName;
+                var password = result.Password;
+                await _createSession(endpoints[i], username, password);
             }
             finally
             {

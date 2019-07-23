@@ -15,14 +15,63 @@ namespace Jupiter.ViewModels
 {
     public class LoadingViewModel : BindableBase
     {
-        public IList SecurityList { get; }
-        public string Endpoint { get; }
-        public int SelectedIndex { get; set; }
+        private Events.NowLoading model;
 
-        public LoadingViewModel(IList securityList, string endpoint)
+        public IList SecurityList {
+            get
+            {
+                return model.SecurityList;
+            }
+        }
+
+        public string Endpoint {
+            get
+            {
+                return model.Endpoint;
+            }
+        }
+
+        public string UserName
         {
-            SecurityList = securityList;
-            Endpoint = endpoint;
+            get
+            {
+                return model.UserName;
+            }
+
+            set
+            {
+                model.UserName = value;
+            }
+        }
+
+        public string Password
+        {
+            get
+            {
+                return model.Password;
+            }
+
+            set
+            {
+                model.Password = value;
+            }
+        }
+
+        public int SelectedIndex {
+            get
+            {
+                return model.SelectedIndex;
+            }
+
+            set
+            {
+                model.SelectedIndex = value;
+            }
+        }
+
+        public LoadingViewModel(Events.NowLoading model)
+        {
+            this.model = model;
             SelectedIndex = 0;
         }
     }
