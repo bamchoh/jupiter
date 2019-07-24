@@ -14,7 +14,7 @@ namespace UnitTestJupiter
     {
         public VariableConfiguration NewVariableConfiguration(NodeId id)
         {
-            return new VariableConfiguration(id, BuiltInType.Int16);
+            return new VariableConfiguration(id, "", BuiltInType.Int16);
         }
 
         public ResponseHeader Read(ReadValueIdCollection itemsToRead, out DataValueCollection values, out DiagnosticInfoCollection diagnosticInfos)
@@ -41,6 +41,8 @@ namespace UnitTestJupiter
         public NodeClass Type { get; set; }
 
         public BuiltInType TestBuiltInType { get; set; }
+
+        public string DisplayName { get; set; }
 
         public NodeId TestVariableNodeId { get; set; }
 
