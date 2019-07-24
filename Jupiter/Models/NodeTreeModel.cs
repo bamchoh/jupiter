@@ -175,10 +175,11 @@ namespace Jupiter.Models
             for(int i = 0;i < values.Count;i++)
             {
                 var id = client.ToNodeId(((OPCUAReference)refs[i]).NodeId);
+                var name = ((OPCUAReference)refs[i]).DisplayName;
                 var datatype = values[i].Value as NodeId;
                 var typeinfo = TypeInfo.GetBuiltInType(datatype, client.TypeTable);
 
-                varconfs.Add(new VariableConfiguration(id, typeinfo)
+                varconfs.Add(new VariableConfiguration(id, name, typeinfo)
                 {
                     Type = NodeClass.Variable
                 });

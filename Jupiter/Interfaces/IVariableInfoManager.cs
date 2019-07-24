@@ -14,6 +14,8 @@ namespace Jupiter.Interfaces
 
         NodeId VariableNodeId();
 
+        string DisplayName { get; set; }
+
         NodeClass Type { get; set; }
     }
 

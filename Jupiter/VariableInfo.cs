@@ -9,21 +9,24 @@ namespace Jupiter
 {
     public class VariableConfiguration : Interfaces.IVariableConfiguration
     {
-        public static VariableConfiguration New(INode node, ITypeTable table)
+        public static VariableConfiguration New(INode node, string displayname, ITypeTable table)
         {
             var vnode = (VariableNode)node;
             var id = vnode.NodeId;
             var type = TypeInfo.GetBuiltInType(vnode.DataType, table);
-            return new VariableConfiguration(id, type);
+            return new VariableConfiguration(id, displayname, type);
         }
 
-        public VariableConfiguration(NodeId id, BuiltInType type)
+        public VariableConfiguration(NodeId id, string displayname, BuiltInType type)
         {
             this._variablenodeid = id;
             this._builtintype = type;
+            this.DisplayName = displayname;
         }
 
         public NodeClass Type { get; set; }
+
+        public string DisplayName { get; set; }
 
         private BuiltInType _builtintype;
         public BuiltInType BuiltInType()
@@ -109,6 +112,7 @@ namespace Jupiter
             }
 
             vi.NodeId = conf.VariableNodeId();
+            vi.DisplayName = conf.DisplayName;
             vi.Type = conf.BuiltInType().ToString();
             return vi;
         }
@@ -760,6 +764,24 @@ namespace Jupiter
             }
         }
 
+        private string displayname;
+        public string DisplayName
+        {
+            get
+            {
+                return displayname;
+            }
+
+            set
+            {
+                if (displayname == value)
+                    return;
+
+                displayname = value;
+                this.SetProperty("DisplayName");
+            }
+        }
+
         public StatusCode StatusCode
         {
             get
@@ -815,12 +837,14 @@ namespace Jupiter
             this.SetProperty("SourceTimestamp");
         }
 
-        public void SetItem(NodeId nodeid, uint handle, DataValue dv)
+        public void SetItem(NodeId nodeid, string displayname, uint handle, DataValue dv)
         {
             if(nodeid != null)
             {
                 this.NodeId = nodeid;
             }
+
+            this.DisplayName = displayname;
 
             if(handle != 0)
             {

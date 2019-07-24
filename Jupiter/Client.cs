@@ -426,7 +426,7 @@ namespace Jupiter
         public VariableConfiguration NewVariableConfiguration(NodeId id)
         {
             var node = FindNode(id);
-            return VariableConfiguration.New(node, session.TypeTree);
+            return VariableConfiguration.New(node, "", session.TypeTree);
         }
 
         public ResponseHeader Read(ReadValueIdCollection itemsToRead, out DataValueCollection values, out DiagnosticInfoCollection diagnosticInfos)
@@ -456,7 +456,7 @@ namespace Jupiter
         {
             var conf = NewVariableConfiguration(m.StartNodeId);
             var vi = variableInfoManager.NewVariableInfo(conf);
-            vi.SetItem(m.StartNodeId, m.ClientHandle, n?.Value);
+            vi.SetItem(m.StartNodeId, m.DisplayName, m.ClientHandle, n?.Value);
             return vi;
         }
 
@@ -522,7 +522,7 @@ namespace Jupiter
                     {
                         values[i].Value.Value = items[i].DataValue.Value;
                     }
-                    vi.SetItem(items[i].NodeId, items[i].ClientHandle, values[i].Value);
+                    vi.SetItem(items[i].NodeId, items[i].DisplayName, items[i].ClientHandle, values[i].Value);
                     var isSelected = items[i].IsSelected;
                     vi.SetPrepareValue(items[i].GetPrepareValue());
                     items[i] = vi;

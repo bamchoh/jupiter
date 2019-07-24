@@ -38,7 +38,8 @@
                   SelectionChanged="DataGrid_SelectionChanged"
                   CanUserAddRows="False" CanUserSortColumns="False" CanUserReorderColumns="False" IsReadOnly="False" AutoGenerateColumns="False">
             <DataGrid.Columns>
-                <DataGridTextColumn IsReadOnly="True" Header="NodeId" Binding="{Binding NodeId}" />
+                <DataGridTextColumn IsReadOnly="True" Header="Node ID" Binding="{Binding NodeId}" />
+                <DataGridTextColumn IsReadOnly="True" Header="DisplayName" Binding="{Binding DisplayName}" />
                 <DataGridTextColumn IsReadOnly="True" Header="Type" Binding="{Binding Type}" />
                 <DataGridTemplateColumn Header="Value">
                     <DataGridTemplateColumn.CellTemplateSelector>
