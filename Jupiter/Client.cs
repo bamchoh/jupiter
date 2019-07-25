@@ -344,8 +344,9 @@ namespace Jupiter
             var securityList = new List<string>();
             foreach (var ed in endpoints)
             {
-                securityList.Add(string.Format("{0} - {1} - {2}",
+                securityList.Add(string.Format("{0} ({1}) - {2} - {3}",
                     ed.Server.ApplicationName,
+                    ed.EndpointUrl,
                     Opc.Ua.SecurityPolicies.GetDisplayName(ed.SecurityPolicyUri),
                     ed.SecurityMode));
             }
