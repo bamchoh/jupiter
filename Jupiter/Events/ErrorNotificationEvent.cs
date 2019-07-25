@@ -23,6 +23,11 @@ namespace Jupiter.Events
             {
                 Message = ex.Message;
             }
+
+            System.Diagnostics.Trace.WriteLine("--- Exception {{{");
+            System.Diagnostics.Trace.WriteLine(Message);
+            System.Diagnostics.Trace.WriteLine(ex.StackTrace);
+            System.Diagnostics.Trace.WriteLine("--- Exception }}}");
         }
 
         public string Message { get; set; }
