@@ -9,35 +9,40 @@ namespace Jupiter
 {
     public class VariableConfiguration : Interfaces.IVariableConfiguration
     {
-        public static VariableConfiguration New(INode node, string displayname, ITypeTable table)
+        VariableNode node;
+        BuiltInType type;
+        public VariableConfiguration(VariableNode node, BuiltInType type)
         {
-            var vnode = (VariableNode)node;
-            var id = vnode.NodeId;
-            var type = TypeInfo.GetBuiltInType(vnode.DataType, table);
-            return new VariableConfiguration(id, displayname, type);
+            this.node = node;
+            this.type = type;
         }
 
-        public VariableConfiguration(NodeId id, string displayname, BuiltInType type)
-        {
-            this._variablenodeid = id;
-            this._builtintype = type;
-            this.DisplayName = displayname;
+        public string DisplayName {
+            get
+            {
+                return node.DisplayName.Text;
+            }
+
+            set { /* NOPE */ }
         }
 
-        public NodeClass Type { get; set; }
+        public NodeClass Type {
+            get
+            {
+                return node.NodeClass;
+            }
 
-        public string DisplayName { get; set; }
+            set { /* NOPE */ }
+        }
 
-        private BuiltInType _builtintype;
         public BuiltInType BuiltInType()
         {
-            return _builtintype;
+            return type;
         }
 
-        private NodeId _variablenodeid;
         public NodeId VariableNodeId()
         {
-            return _variablenodeid;
+            return node.NodeId;
         }
     }
 
@@ -111,6 +116,7 @@ namespace Jupiter
                     break;
             }
 
+            vi.VariableConfiguration = conf;
             vi.NodeId = conf.VariableNodeId();
             vi.DisplayName = conf.DisplayName;
             vi.Type = conf.BuiltInType().ToString();
@@ -745,6 +751,8 @@ namespace Jupiter
         }
 
         public string Type { get; set; }
+
+        public Interfaces.IVariableConfiguration VariableConfiguration { get; set; }
 
         private NodeId nodeId;
         public NodeId NodeId

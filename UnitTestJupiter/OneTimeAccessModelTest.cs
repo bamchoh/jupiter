@@ -12,11 +12,6 @@ namespace UnitTestJupiter
 {
     public class TestOneTimeAccessOperator : IOneTimeAccessOperator
     {
-        public VariableConfiguration NewVariableConfiguration(NodeId id)
-        {
-            return new VariableConfiguration(id, "", BuiltInType.Int16);
-        }
-
         public ResponseHeader Read(ReadValueIdCollection itemsToRead, out DataValueCollection values, out DiagnosticInfoCollection diagnosticInfos)
         {
             values = new DataValueCollection();
@@ -214,23 +209,43 @@ namespace UnitTestJupiter
             Assert.AreEqual(((VariableInfoBase)ota.OneTimeAccessItems[0]).NodeId, "Var2");
         }
 
-        private void ReadCommandBase(string endpoint, List<TestPattern> testPatterns)
+        private Dictionary<string, BuiltInType> _readCommandBase_CreateTestVariables(List<TestPattern> testPatterns)
         {
             var variables = new Dictionary<string, BuiltInType>();
             foreach (var p in testPatterns)
             {
                 variables[p.Name] = p.Type;
             }
+            return variables;
+        }
 
+        private Opc.Ua.Configuration.ApplicationInstance _readCommandBase_CreateApplication(string endpoint)
+        {
             var application = TestServer.Application.GetApplicationInstance();
-            var ba = application.ApplicationConfiguration.ServerConfiguration.BaseAddresses;
-            ba.Add(endpoint);
+            {
+                var ba = application.ApplicationConfiguration.ServerConfiguration.BaseAddresses;
+                ba.Add(endpoint);
+            }
+            return application;
+        }
+
+        private void _readCommandBase_ServerInit(TestServer.TestServer s, List<TestPattern> testPatterns)
+        {
+            foreach (var p in testPatterns)
+            {
+                s.SetValue(p.Name, p.Value);
+            }
+        }
+
+        private void ReadCommandBase(string endpoint, List<TestPattern> testPatterns)
+        {
+            var variables = _readCommandBase_CreateTestVariables(testPatterns);
+
+            var application = _readCommandBase_CreateApplication(endpoint);
+
             using (var s = TestServer.TestServer.StartServer(application, variables))
             {
-                foreach (var p in testPatterns)
-                {
-                    s.SetValue(p.Name, p.Value);
-                }
+                _readCommandBase_ServerInit(s, testPatterns);
 
                 var ea = new Prism.Events.EventAggregator();
                 var msg = "";
@@ -248,13 +263,13 @@ namespace UnitTestJupiter
                 c.CreateSession(endpoint).Wait();
                 foreach (OPCUAReference ch in references.Children)
                 {
-                    if (ch.DisplayName == "TestData")
+                    if (ch.DisplayName != "TestData")
+                        continue;
+
+                    nodetree.UpdateVariableNodeListCommand.Execute(ch);
+                    foreach (VariableConfiguration vn in nodetree.VariableNodes)
                     {
-                        nodetree.UpdateVariableNodeListCommand.Execute(ch);
-                        foreach (OPCUAReference vn in nodetree.VariableNodes)
-                        {
-                            nodetree.AddToReadWriteCommand.Execute(new List<OPCUAReference>() { vn });
-                        }
+                        nodetree.AddToReadWriteCommand.Execute(new List<VariableConfiguration>() { vn });
                     }
                 };
                 ota.ReadCommand.Execute(null);

@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Collections.ObjectModel;
 using Opc.Ua;
 using System.Collections;
+using System.Collections.Generic;
 using System.Windows.Data;
 using Prism.Events;
 using Unity.Attributes;
@@ -10,7 +11,7 @@ using Jupiter.Interfaces;
 
 namespace Jupiter
 {
-    public class OPCUAReference : INotifyPropertyChanged, Interfaces.IReference, Interfaces.IVariableConfiguration
+    public class OPCUAReference : INotifyPropertyChanged, Interfaces.IReference
     {
         #region Event
         public event PropertyChangedEventHandler PropertyChanged;
@@ -59,19 +60,6 @@ namespace Jupiter
         public string DisplayName { get; set; }
 
         public ExpandedNodeId NodeId { get; set; }
-
-        public BuiltInType BuiltInType()
-        {
-            var vnode = (VariableNode)client.FindNode(this.NodeId);
-            return TypeInfo.GetBuiltInType(vnode.DataType, client.TypeTable);
-        }
-
-        public NodeId VariableNodeId()
-        {
-            var vnode = (VariableNode)client.FindNode(this.NodeId);
-            return vnode.NodeId;
-        }
-
         public NodeClass Type { get; set; }
 
         public string TypeString
@@ -148,26 +136,6 @@ namespace Jupiter
         public Interfaces.IReference NewReference(string name)
         {
             return new OPCUAReference(this.client, null, this.EventAggregator) { DisplayName = name };
-        }
-
-        public ReferenceDescriptionCollection FetchVariableReferences()
-        {
-            try
-            {
-                var id = client.ToNodeId(this.NodeId);
-                var mask = (uint)NodeClass.Variable;
-                var refs = client.FetchReferences(id);
-                client.Browse(id, mask, out refs);
-                return refs;
-            }
-            catch (Exception ex)
-            {
-                this.EventAggregator
-                    .GetEvent<Events.ErrorNotificationEvent>()
-                    .Publish(new Events.ErrorNotification(ex));
-
-                return null;
-            }
         }
 
         private ReferenceDescriptionCollection FetchObjectReferences(ExpandedNodeId enodeid)

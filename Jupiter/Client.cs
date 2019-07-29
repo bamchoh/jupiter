@@ -424,12 +424,6 @@ namespace Jupiter
             }
         }
 
-        public VariableConfiguration NewVariableConfiguration(NodeId id)
-        {
-            var node = FindNode(id);
-            return VariableConfiguration.New(node, "", session.TypeTree);
-        }
-
         public ResponseHeader Read(ReadValueIdCollection itemsToRead, out DataValueCollection values, out DiagnosticInfoCollection diagnosticInfos)
         {
             return session.Read(
@@ -448,14 +442,43 @@ namespace Jupiter
             innerWrite(items, func);
         }
 
+        public List<VariableNode> FetchVariableReferences(ExpandedNodeId expandedNodeId)
+        {
+            try
+            {
+                var id = this.ToNodeId(expandedNodeId);
+                var mask = (uint)NodeClass.Variable;
+                var refs = new ReferenceDescriptionCollection();
+                this.Browse(id, mask, out refs);
+
+                var nodes = new List<VariableNode>();
+                foreach (var reference in refs)
+                {
+                    var vnode = (VariableNode)this.FindNode(reference.NodeId);
+                    nodes.Add(vnode);
+                }
+                return nodes;
+            }
+            catch (Exception ex)
+            {
+                this.EventAggregator
+                    .GetEvent<Events.ErrorNotificationEvent>()
+                    .Publish(new Events.ErrorNotification(ex));
+
+                return null;
+            }
+        }
+
         protected virtual void OnNotified(ClientNotificationEventArgs e)
         {
             SessionNotification?.Invoke(this, e);
         }
 
-        private VariableInfoBase NewVariableInfo2(MonitoredItem m, MonitoredItemNotification n)
+        private VariableInfoBase NewVariableInfo(MonitoredItem m, MonitoredItemNotification n)
         {
-            var conf = NewVariableConfiguration(m.StartNodeId);
+            var node = (VariableNode)FindNode(m.StartNodeId);
+            var type = TypeInfo.GetBuiltInType(node.DataType, session.TypeTree);
+            var conf = new VariableConfiguration(node, type);
             var vi = variableInfoManager.NewVariableInfo(conf);
             vi.SetItem(m.StartNodeId, m.DisplayName, m.ClientHandle, n?.Value);
             return vi;
@@ -514,7 +537,7 @@ namespace Jupiter
 
                 for (int i = 0; i < values.Count; i++)
                 {
-                    var conf = NewVariableConfiguration(items[i].NodeId);
+                    var conf = items[i].VariableConfiguration;
                     var vi = variableInfoManager.NewVariableInfo(conf);
                     vi.ServerTimestamp = items[i].ServerTimestamp;
                     vi.SourceTimestamp = items[i].SourceTimestamp;
@@ -571,7 +594,7 @@ namespace Jupiter
                 if (found == null)
                     continue;
 
-                var vi = NewVariableInfo2(found, change);
+                var vi = NewVariableInfo(found, change);
                 changes.Add(vi);
             }
 

@@ -22,7 +22,7 @@ namespace Jupiter.Models
         private Interfaces.IConnection connector;
         private Interfaces.IReference references;
         private bool isEnabled;
-        private ObservableCollection<OPCUAReference> variableNodes = new ObservableCollection<OPCUAReference>();
+        private ObservableCollection<VariableConfiguration> variableNodes;
 
         public NodeTreeModel(
             Interfaces.IConnection connector, 
@@ -43,13 +43,11 @@ namespace Jupiter.Models
                 (param) => true);
 
             AddToReadWriteCommand = new Commands.DelegateCommand(
-                (param) => {
-                    AddToReadWrite(oneTimeAccessM, param);
-                },
+                (param) => { oneTimeAccessM.AddToReadWrite(param as IList); },
                 (param) => connector.Connected);
 
             NodeSelectedCommand = new Commands.DelegateCommand(
-                (param) => { nodeInfoDataGrid.Update((Interfaces.IReference)param); },
+                (param) => { }, //nodeInfoDataGrid.Update((VariableNode)param); },
                 (param) => true);
 
             UpdateVariableNodeListCommand = new Commands.DelegateCommand(
@@ -70,7 +68,7 @@ namespace Jupiter.Models
         public IList VariableNodes
         {
             get { return variableNodes; }
-            set { this.SetProperty(ref variableNodes, (ObservableCollection<OPCUAReference>)value); }
+            set { this.SetProperty(ref variableNodes, (ObservableCollection<VariableConfiguration>)value); }
         }
 
         public bool IsEnabled
@@ -114,7 +112,7 @@ namespace Jupiter.Models
         {
             References?.Children.Clear();
 
-            VariableNodes = new ObservableCollection<OPCUAReference>();
+            VariableNodes = new ObservableCollection<VariableConfiguration>();
         }
 
         private void SelectionChanged(Interfaces.IReference reference, Interfaces.INodeInfoDataGrid nodeInfoDataGrid)
@@ -124,68 +122,23 @@ namespace Jupiter.Models
 
         private void UpdateVariableNodes(Interfaces.IReference obj)
         {
-            var refs = obj.FetchVariableReferences();
-            var tempList = new ObservableCollection<OPCUAReference>();
+            var client = connector as Client;
 
-            if (refs == null || refs.Count == 0)
+            var nodes = client.FetchVariableReferences(obj.NodeId);
+            var tempList = new ObservableCollection<VariableConfiguration>();
+
+            if (nodes == null || nodes.Count == 0)
             {
                 VariableNodes = tempList;
                 return;
             }
 
-            foreach (var r in refs)
+            foreach (var v in nodes)
             {
-                var child = (OPCUAReference)obj.NewReference(r.DisplayName.ToString());
-                child.NodeId = r.NodeId;
-                child.Type = r.NodeClass;
-                tempList.Add(child);
+                var t = TypeInfo.GetBuiltInType(v.DataType, client.TypeTable);
+                tempList.Add(new VariableConfiguration(v, t));
             }
             VariableNodes = tempList;
-        }
-
-        private void AddToReadWrite(Interfaces.IOneTimeAccessModel oneTimeAccessM, object param)
-        {
-            var client = connector as Client;
-
-            var itemsToRead = new ReadValueIdCollection();
-
-            var refs = param as IList;
-
-            foreach (OPCUAReference r in refs)
-            {
-                var rv = new ReadValueId()
-                {
-                    NodeId = client.ToNodeId(r.NodeId),
-                    AttributeId = Attributes.DataType
-                };
-
-                itemsToRead.Add(rv);
-            }
-
-            DataValueCollection values;
-            DiagnosticInfoCollection diagnosticInfos;
-
-            ResponseHeader responseHeader = client.Read(
-                itemsToRead,
-                out values,
-                out diagnosticInfos);
-
-            var varconfs = new List<VariableConfiguration>();
-
-            for(int i = 0;i < values.Count;i++)
-            {
-                var id = client.ToNodeId(((OPCUAReference)refs[i]).NodeId);
-                var name = ((OPCUAReference)refs[i]).DisplayName;
-                var datatype = values[i].Value as NodeId;
-                var typeinfo = TypeInfo.GetBuiltInType(datatype, client.TypeTable);
-
-                varconfs.Add(new VariableConfiguration(id, name, typeinfo)
-                {
-                    Type = NodeClass.Variable
-                });
-            }
-
-            oneTimeAccessM.AddToReadWrite(varconfs as IList);
         }
     }
 }

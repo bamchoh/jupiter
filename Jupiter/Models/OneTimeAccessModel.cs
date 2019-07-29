@@ -108,7 +108,7 @@ namespace Jupiter.Models
 
                 for (int i = 0; i < values.Count; i++)
                 {
-                    var conf = otaOperator.NewVariableConfiguration(_itemsToRead[i].NodeId);
+                    var conf = _itemsToRead[i].VariableConfiguration;
                     var vi = variableInfoManager.NewVariableInfo(conf);
                     vi.SetItem(_itemsToRead[i].NodeId, _itemsToRead[i].DisplayName, _itemsToRead[i].ClientHandle, values[i]);
                     var isSelected = _itemsToRead[i].IsSelected;

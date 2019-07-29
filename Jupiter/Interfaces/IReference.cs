@@ -19,8 +19,6 @@ namespace Jupiter.Interfaces
 
         void UpdateReferences();
 
-        ReferenceDescriptionCollection FetchVariableReferences();
-
         IReference NewReference(string name);
 
         IEventAggregator GetEventAggregator();

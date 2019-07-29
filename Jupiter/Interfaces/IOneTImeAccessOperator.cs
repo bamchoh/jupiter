@@ -13,7 +13,5 @@ namespace Jupiter.Interfaces
         ResponseHeader Read(ReadValueIdCollection itemsToRead, out DataValueCollection values, out DiagnosticInfoCollection diagnosticInfos);
 
         void Write(IList<VariableInfoBase> items);
-
-        VariableConfiguration NewVariableConfiguration(NodeId id);
     }
 }
