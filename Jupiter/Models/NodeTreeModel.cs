@@ -14,11 +14,16 @@ using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 
 using Opc.Ua;
+using Prism.Events;
+using Unity.Attributes;
 
 namespace Jupiter.Models
 {
     public class NodeTreeModel : BindableBase, Interfaces.INodeTreeModel
     {
+        [Dependency]
+        public IEventAggregator EventAggregator { get; set; }
+
         private Interfaces.IConnection connector;
         private Interfaces.IReference references;
         private bool isEnabled;
@@ -122,23 +127,37 @@ namespace Jupiter.Models
 
         private void UpdateVariableNodes(Interfaces.IReference obj)
         {
-            var client = connector as Client;
-
-            var nodes = client.FetchVariableReferences(obj.NodeId);
             var tempList = new ObservableCollection<VariableConfiguration>();
 
-            if (nodes == null || nodes.Count == 0)
+            try
             {
-                VariableNodes = tempList;
-                return;
-            }
+                var client = connector as Client;
 
-            foreach (var v in nodes)
-            {
-                var t = TypeInfo.GetBuiltInType(v.DataType, client.TypeTable);
-                tempList.Add(new VariableConfiguration(v, t));
+                var nodes = new List<VariableNode>();
+
+                client.FetchVariableReferences(obj.NodeId, ref nodes);
+
+                if (nodes == null || nodes.Count == 0)
+                {
+                    VariableNodes = tempList;
+                    return;
+                }
+
+                foreach (var v in nodes)
+                {
+                    var t = TypeInfo.GetBuiltInType(v.DataType, client.TypeTable);
+                    tempList.Add(new VariableConfiguration(v, t));
+                }
+
+                VariableNodes = tempList;
             }
-            VariableNodes = tempList;
+            catch (Exception ex)
+            {
+                this.EventAggregator
+                    .GetEvent<Events.ErrorNotificationEvent>()
+                    .Publish(new Events.ErrorNotification(ex));
+                VariableNodes = tempList;
+            }
         }
     }
 }
