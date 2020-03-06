@@ -6,6 +6,7 @@
              xmlns:b="clr-namespace:Jupiter.Behaviors"
              xmlns:local="clr-namespace:Jupiter.UserControls"
              xmlns:local2="clr-namespace:Jupiter"
+             xmlns:materialDesign="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
              HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
              >
     <UserControl.Resources>
@@ -16,7 +17,7 @@
             <TextBox Text="{Binding Path=WriteValue, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" b:TextBoxBehaviors.IsFocusSelect="True" />
         </DataTemplate>
         <DataTemplate x:Key="BoolType">
-            <CheckBox IsChecked="{Binding Path=Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <CheckBox IsChecked="{Binding Path=Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsTabStop="False" />
         </DataTemplate>
         <DataTemplate x:Key="VariantTypeForShowPrepareValue">
             <TextBlock Text="{Binding Path=PrepareValue}" />
@@ -25,7 +26,7 @@
             <TextBox Text="{Binding Path=PrepareValue, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" b:TextBoxBehaviors.IsFocusSelect="True"/>
         </DataTemplate>
         <DataTemplate x:Key="BoolTypePrepareValue">
-            <CheckBox IsChecked="{Binding Path=PrepareValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <CheckBox IsChecked="{Binding Path=PrepareValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsTabStop="False" />
         </DataTemplate>
     </UserControl.Resources>
 

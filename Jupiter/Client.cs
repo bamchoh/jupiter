@@ -163,14 +163,34 @@ namespace Jupiter
             }
         }
 
-        public IList<VariableInfoBase> AddToSubscription(IList objs)
+        public async Task<IList<VariableInfoBase>> AddToSubscription(IList objs)
         {
+
+            /*
+            var id = this.ToNodeId(expandedNodeId);
+            var mask = (uint)NodeClass.Variable;
+            ReferenceDescriptionCollection refs;
+            this.Browse(id, mask, out refs);
+
+            try
+            {
+                FindNodes(refs, ref nodes);
+            }
+            catch (Exception ex)
+            {
+
+            }
+            */
+
+            System.Diagnostics.Debug.WriteLine("---------------------------------------------------------");
+            System.Diagnostics.Debug.WriteLine("----------- (START) Add To Subscription -----------------");
+
             try
             {
                 if (objs == null || objs.Count == 0)
                     return null;
 
-                var viList = variableInfoManager.GenerateVariableInfoList(objs);
+                var viList = await Task.Run(() => variableInfoManager.GenerateVariableInfoList(objs));
 
                 if (viList.Count == 0)
                     return viList;
@@ -214,6 +234,11 @@ namespace Jupiter
                 Close();
 
                 return null;
+            }
+            finally
+            {
+                System.Diagnostics.Debug.WriteLine("----------- (END) Add To Subscription -----------------");
+                System.Diagnostics.Debug.WriteLine("-------------------------------------------------------");
             }
         }
 
@@ -292,10 +317,16 @@ namespace Jupiter
 
             using (DiscoveryClient client = DiscoveryClient.Create(uri, configuration))
             {
-                foreach (var got in client.GetEndpoints(null))
+                EndpointDescriptionCollection endpointCollection = null;
+
+                client.GetEndpoints(null, client.Endpoint.EndpointUrl, null, null, out endpointCollection);
+
+                for(int i=0;i<endpointCollection.Count();i++)
                 {
-                    if (got.EndpointUrl.StartsWith(uri.Scheme))
+                    var got = endpointCollection[i];
+                    if (got.EndpointUrl == discoveryUrl)
                     {
+                        System.Diagnostics.Debug.WriteLine(string.Format("## [{2}] Endpoint URL:{0}#{1}", got.EndpointUrl, got.SecurityMode, i));
                         endpoints.Add(got);
                     }
                 }
@@ -321,7 +352,7 @@ namespace Jupiter
                 uid = new UserIdentity(username, password);
             }
 
-        var endpointConfiguration = EndpointConfiguration.Create(config);
+            var endpointConfiguration = EndpointConfiguration.Create(config);
             var endpoint = new ConfiguredEndpoint(null, endpointDescription, endpointConfiguration);
             session = await Session.Create(
                 config,
@@ -344,9 +375,12 @@ namespace Jupiter
             var securityList = new List<string>();
             foreach (var ed in endpoints)
             {
-                securityList.Add(string.Format("{0} ({1}) - {2} - {3}",
+                var discoveryURL = "";
+                if (ed.Server.DiscoveryUrls.Count() != 0)
+                    discoveryURL = ed.Server.DiscoveryUrls[0];
+
+                securityList.Add(string.Format("{0} - {1} - {2}",
                     ed.Server.ApplicationName,
-                    ed.EndpointUrl,
                     Opc.Ua.SecurityPolicies.GetDisplayName(ed.SecurityPolicyUri),
                     ed.SecurityMode));
             }
@@ -364,6 +398,7 @@ namespace Jupiter
                 .GetEvent<Events.NowLoadingEvent>()
                 .Publish(result);
             await sem.WaitAsync();
+
             try
             {
                 var i = result.SelectedIndex;
@@ -445,11 +480,70 @@ namespace Jupiter
         public void FetchVariableReferences(ExpandedNodeId expandedNodeId, ref List<VariableNode> nodes)
         {
             var id = this.ToNodeId(expandedNodeId);
+
             var mask = (uint)NodeClass.Variable;
             ReferenceDescriptionCollection refs;
             this.Browse(id, mask, out refs);
 
-            FindNodes(refs, ref nodes);
+            try
+            {
+                foreach (var r in refs)
+                {
+                    var rid = this.ToNodeId(r.NodeId);
+                    var node = session.ReadNode(rid);
+                    nodes.Add((VariableNode)node);
+                }
+            }
+            catch (Exception ex)
+            {
+                string Message;
+                string StackTrace;
+                if (ex.InnerException != null)
+                {
+                    Message = ex.InnerException.Message;
+                    StackTrace = ex.InnerException.StackTrace;
+                }
+                else
+                {
+                    Message = ex.Message;
+                    StackTrace = ex.StackTrace;
+                }
+
+                System.Diagnostics.Trace.WriteLine("--- Exception in FindNodes {{{");
+                System.Diagnostics.Trace.WriteLine(Message);
+                System.Diagnostics.Trace.WriteLine(StackTrace);
+                System.Diagnostics.Trace.WriteLine("--- Exception in FindNodes }}}");
+            }
+
+            /*
+            ReferenceDescriptionCollection refs;
+            this.Browse(id, mask, out refs);
+
+            try
+            {
+                FindNodes(refs, ref nodes);
+            }
+            catch(Exception ex)
+            {
+                string Message;
+                string StackTrace;
+                if (ex.InnerException != null)
+                {
+                    Message = ex.InnerException.Message;
+                    StackTrace = ex.InnerException.StackTrace;
+                }
+                else
+                {
+                    Message = ex.Message;
+                    StackTrace = ex.StackTrace;
+                }
+
+                System.Diagnostics.Trace.WriteLine("--- Exception in FindNodes {{{");
+                System.Diagnostics.Trace.WriteLine(Message);
+                System.Diagnostics.Trace.WriteLine(StackTrace);
+                System.Diagnostics.Trace.WriteLine("--- Exception in FindNodes }}}");
+            }
+            */
         }
 
         public void FindNodes(ReferenceDescriptionCollection refs, ref List<VariableNode> nodes)
@@ -486,9 +580,9 @@ namespace Jupiter
                 attributes.Add(Attributes.Symmetric, null);
                 attributes.Add(Attributes.ContainsNoLoops, null);
                 attributes.Add(Attributes.DataTypeDefinition, null);
-                attributes.Add(Attributes.RolePermissions, null);
-                attributes.Add(Attributes.UserRolePermissions, null);
-                attributes.Add(Attributes.AccessRestrictions, null);
+                // attributes.Add(Attributes.RolePermissions, null);
+                // attributes.Add(Attributes.UserRolePermissions, null);
+                // attributes.Add(Attributes.AccessRestrictions, null);
                 attributes.Add(Attributes.AccessLevelEx, null);
 
                 attr4node.Add(attributes);
@@ -927,6 +1021,7 @@ namespace Jupiter
             }
 
             // RolePermissions Attribute
+            /*
             value = attributes[Attributes.RolePermissions];
 
             if (value != null)
@@ -943,8 +1038,10 @@ namespace Jupiter
                     }
                 }
             }
+            */
 
             // UserRolePermissions Attribute
+            /*
             value = attributes[Attributes.UserRolePermissions];
 
             if (value != null)
@@ -961,14 +1058,17 @@ namespace Jupiter
                     }
                 }
             }
+            */
 
             // AccessRestrictions Attribute
+            /*
             value = attributes[Attributes.AccessRestrictions];
 
             if (value != null)
             {
                 node.AccessRestrictions = (ushort)attributes[Attributes.AccessRestrictions].GetValue(typeof(ushort));
             }
+            */
 
             return node;
         }
@@ -980,7 +1080,7 @@ namespace Jupiter
 
         private VariableInfoBase NewVariableInfo(MonitoredItem m, MonitoredItemNotification n)
         {
-            var node = (VariableNode)FindNode(m.StartNodeId);
+            var node = (VariableNode)session.ReadNode(m.StartNodeId);
             var type = TypeInfo.GetBuiltInType(node.DataType, session.TypeTree);
             var conf = new VariableConfiguration(node, type);
             var vi = variableInfoManager.NewVariableInfo(conf);
@@ -1087,28 +1187,56 @@ namespace Jupiter
             e.Accept = true;
         }
 
+        object syncObject = new object();
+
         private void Session_Notification(Session session, NotificationEventArgs e)
         {
-            // get the changes.
-            var changes = new List<VariableInfoBase>();
-
-            foreach (var change in e.NotificationMessage.GetDataChanges(false))
+            lock(syncObject)
             {
-                var found = subscription.FindItemByClientHandle(change.ClientHandle);
-                if (found == null)
-                    continue;
+                System.Diagnostics.Debug.WriteLine("---------------------------------------------------------");
+                System.Diagnostics.Debug.WriteLine("----------- (START) Session Notification ----------------");
 
-                var vi = NewVariableInfo(found, change);
-                changes.Add(vi);
+                try
+                {
+                    // get the changes.
+                    var changes = new List<VariableInfoBase>();
+
+                    var datachanges = e.NotificationMessage.GetDataChanges(false);
+
+                    System.Diagnostics.Debug.WriteLine("Data Changes Count: {0}", datachanges.Count());
+
+                    foreach (var change in datachanges)
+                    {
+                        var found = subscription.FindItemByClientHandle(change.ClientHandle);
+                        if(found == null)
+                            System.Diagnostics.Debug.WriteLine("** FindItemByClientHandle: null");
+                        else
+                            System.Diagnostics.Debug.WriteLine(string.Format("** FindItemByClientHandle: {0}", found.DisplayName));
+
+
+                        if (found == null)
+                            continue;
+
+                        System.Diagnostics.Debug.WriteLine("** (Start) NewVariableInfo");
+                        var vi = NewVariableInfo(found, change);
+                        System.Diagnostics.Debug.WriteLine("** ( End ) NewVariableInfo");
+                        changes.Add(vi);
+                    }
+
+                    // check if nothing more to do.
+                    if (changes.Count == 0)
+                    {
+                        return;
+                    }
+
+                    OnNotified(new ClientNotificationEventArgs(changes));
+                }
+                finally
+                {
+                    System.Diagnostics.Debug.WriteLine("----------- ( END ) Session Notification ----------------");
+                    System.Diagnostics.Debug.WriteLine("---------------------------------------------------------");
+                }
             }
-
-            // check if nothing more to do.
-            if (changes.Count == 0)
-            {
-                return;
-            }
-
-            OnNotified(new ClientNotificationEventArgs(changes));
         }
 
 

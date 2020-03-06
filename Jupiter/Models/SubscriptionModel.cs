@@ -52,9 +52,9 @@ namespace Jupiter.Models
             set { this.SetProperty(ref monitoredItems, (ObservableCollection<VariableInfoBase>)value); }
         }
 
-        public void AddToSubscription(IList objs)
+        public async Task AddToSubscription(IList objs)
         {
-            var items = subscriptionOperator.AddToSubscription(objs);
+            var items = await subscriptionOperator.AddToSubscription(objs);
             if (items == null || items.Count == 0)
                 return;
 

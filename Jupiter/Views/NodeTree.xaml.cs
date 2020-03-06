@@ -76,7 +76,20 @@ namespace Jupiter.Views
         private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var dg = (DataGrid)sender;
-            this.SelectedItems = dg.SelectedItems;
+            this.SelectedItems = new List<object>();
+
+            // dg.SelectedItems をそのまま渡すと
+            // 一番初めに選択したアイテムが先頭の要素
+            // として登録されてしまうので、Itemsをベースに
+            // 詰めなおしをしている。
+            foreach(var item in dg.Items)
+            {
+                if (dg.SelectedItems.Contains(item))
+                {
+                    this.SelectedItems.Add(item);
+                }
+            }
+
             if(this.SelectedItems.Count == 1)
             {
                 NodeSelectedCommand.Execute(dg.SelectedItem);

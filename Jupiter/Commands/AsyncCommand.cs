@@ -36,9 +36,9 @@ namespace Jupiter.Commands
 
     public class AsyncCommand : AsyncCommandBase
     {
-        private readonly Func<Task> _command;
+        private readonly Func<object, Task> _command;
 
-        public AsyncCommand(Func<Task> command)
+        public AsyncCommand(Func<object, Task> command)
         {
             _command = command;
         }
@@ -50,7 +50,7 @@ namespace Jupiter.Commands
 
         public override Task ExecuteAsync(object parameter)
         {
-            return _command();
+            return _command(parameter);
         }
     }
 }

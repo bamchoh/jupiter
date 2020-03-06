@@ -79,28 +79,6 @@ namespace Jupiter.UserControls
                             e.Handled = true;
                         }
                         break;
-                    case Key.J:
-                        {
-                            var oldIndex = dg.Items.IndexOf(dg.CurrentItem);
-                            var newIndex = oldIndex + 1;
-
-                            if (newIndex >= dg.Items.Count)
-                                return;
-
-                            MoveCurrentItem(dg, oldIndex, newIndex);
-                        }
-                        break;
-                    case Key.K:
-                        {
-                            var oldIndex = dg.Items.IndexOf(dg.CurrentItem);
-                            var newIndex = oldIndex - 1;
-
-                            if (newIndex < 0)
-                                return;
-
-                            MoveCurrentItem(dg, oldIndex, newIndex);
-                        }
-                        break;
                 }
             }
         }

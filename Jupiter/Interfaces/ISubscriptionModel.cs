@@ -10,7 +10,7 @@ namespace Jupiter.Interfaces
 {
     public interface ISubscriptionModel
     {
-        void AddToSubscription(IList objs);
+        Task AddToSubscription(IList objs);
 
         ICommand DeleteMonitoredItemsCommand { get; set; }
     }

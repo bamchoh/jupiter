@@ -22,13 +22,14 @@ namespace Jupiter
             if(!fi.Exists)
             {
                 var config = DefaultConfiguration();
+                config.SaveToFile(filepath);
+
                 config.Validate(ApplicationType.Client).Wait();
                 var dirpath = System.IO.Path.GetDirectoryName(filepath);
-                if(!System.IO.Directory.Exists(dirpath))
+                if (!System.IO.Directory.Exists(dirpath))
                 {
                     System.IO.Directory.CreateDirectory(dirpath);
                 }
-                config.SaveToFile(filepath);
                 return config;
             }
 

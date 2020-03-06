@@ -32,7 +32,6 @@ namespace Jupiter.Models
         public NodeTreeModel(
             Interfaces.IConnection connector, 
             Interfaces.IReference references,
-            Interfaces.INodeInfoDataGrid nodeInfoDataGrid,
             Interfaces.ISubscriptionModel subscriptionM,
             Interfaces.IOneTimeAccessModel oneTimeAccessM)
         {
@@ -43,9 +42,10 @@ namespace Jupiter.Models
                 (param) => { ForceUpdate(); },
                 (param) => connector.Connected);
 
-            MouseDoubleClickedCommand = new Commands.DelegateCommand(
-                (param) => { subscriptionM.AddToSubscription(param as IList); },
-                (param) => true);
+            MouseDoubleClickedCommand = new Commands.AsyncCommand(async (param) =>
+            {
+                await subscriptionM.AddToSubscription(param as IList);
+            });
 
             AddToReadWriteCommand = new Commands.DelegateCommand(
                 (param) => { oneTimeAccessM.AddToReadWrite(param as IList); },

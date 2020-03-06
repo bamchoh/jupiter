@@ -39,7 +39,7 @@ namespace Jupiter.Models
                 }
             });
 
-            this.ConnectCommand = new Commands.AsyncCommand(async () =>
+            this.ConnectCommand = new Commands.AsyncCommand(async (param) =>
             {
                 await CreateSession(null);
             });
