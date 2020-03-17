@@ -127,36 +127,29 @@ namespace Jupiter.Models
 
         private void UpdateVariableNodes(Interfaces.IReference obj)
         {
-            var tempList = new ObservableCollection<VariableConfiguration>();
+            var nodes = new ObservableCollection<VariableConfiguration>();
 
             try
             {
                 var client = connector as Client;
 
-                var nodes = new List<VariableNode>();
+                var tmp = new List<VariableConfiguration>();
 
-                client.FetchVariableReferences(obj.NodeId, ref nodes);
+                client.FetchVariableReferences(obj.NodeId, ref tmp);
 
-                if (nodes == null || nodes.Count == 0)
+                foreach(var v in tmp)
                 {
-                    VariableNodes = tempList;
-                    return;
+                    nodes.Add(v);
                 }
 
-                foreach (var v in nodes)
-                {
-                    var t = TypeInfo.GetBuiltInType(v.DataType, client.TypeTable);
-                    tempList.Add(new VariableConfiguration(v, t));
-                }
-
-                VariableNodes = tempList;
+                VariableNodes = nodes;
             }
             catch (Exception ex)
             {
                 this.EventAggregator
                     .GetEvent<Events.ErrorNotificationEvent>()
                     .Publish(new Events.ErrorNotification(ex));
-                VariableNodes = tempList;
+                VariableNodes = nodes;
             }
         }
     }

@@ -366,6 +366,8 @@ namespace TestServer
             variable.UserAccessLevel = AccessLevels.CurrentReadOrWrite;
             variable.Historizing = false;
 
+            variable.OnReadUserRolePermissions = OnReadUserRolePermissions;
+
             if (valueRank == ValueRanks.OneDimension)
             {
                 variable.ArrayDimensions = new ReadOnlyList<uint>(new List<uint> { 0 });
@@ -470,6 +472,14 @@ namespace TestServer
             }
         }
         #endregion
+
+        private ServiceResult OnReadUserRolePermissions(
+        ISystemContext context,
+        NodeState node,
+        ref RolePermissionTypeCollection value)
+        {
+            return StatusCodes.BadUserAccessDenied;
+        }
 
         private ServiceResult OnWriteAnalog(
             ISystemContext context,

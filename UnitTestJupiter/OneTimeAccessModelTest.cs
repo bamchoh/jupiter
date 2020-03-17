@@ -259,7 +259,23 @@ namespace UnitTestJupiter
                 var ota = new Jupiter.Models.OneTimeAccessModel(c, c, varinfomgr);
                 ota.EventAggregator = ea;
                 var nodegrid = new Jupiter.Models.NodeInfoDataGridModel(c, c);
-                var nodetree = new Jupiter.Models.NodeTreeModel(c, references, nodegrid, null, ota);
+                var nodetree = new Jupiter.Models.NodeTreeModel(c, references, null, ota);
+
+                c.EventAggregator
+                    .GetEvent<Jupiter.Events.NowLoadingEvent>()
+                    .Subscribe((x) =>
+                    {
+                        for(int i=0;i<x.SecurityList.Count;i++)
+                        {
+                            if(x.SecurityList[i].EndsWith("None"))
+                            {
+                                Console.WriteLine(x.SecurityList[i]);
+                                x.SelectedIndex = i;
+                                break;
+                            }
+                        }
+                    });
+
                 c.CreateSession(endpoint).Wait();
                 foreach (OPCUAReference ch in references.Children)
                 {

@@ -9,9 +9,9 @@ namespace Jupiter
 {
     public class VariableConfiguration : Interfaces.IVariableConfiguration
     {
-        VariableNode node;
+        Node node;
         BuiltInType type;
-        public VariableConfiguration(VariableNode node, BuiltInType type)
+        public VariableConfiguration(Node node, BuiltInType type)
         {
             this.node = node;
             this.type = type;
