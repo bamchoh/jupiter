@@ -12,6 +12,7 @@ using Prism.Mvvm;
 
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
+using Opc.Ua;
 
 namespace Jupiter.ViewModels
 {

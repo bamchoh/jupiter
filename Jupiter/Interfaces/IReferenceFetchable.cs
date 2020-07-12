@@ -13,8 +13,6 @@ namespace Jupiter.Interfaces
 
         ResponseHeader Browse(NodeId id, uint mask, out ReferenceDescriptionCollection refs);
 
-        INode FindNode(ExpandedNodeId id);
-
         NodeId ToNodeId(ExpandedNodeId id);
 
         ITypeTable TypeTable { get; }

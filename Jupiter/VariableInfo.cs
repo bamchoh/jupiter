@@ -7,42 +7,47 @@ using System.Collections;
 
 namespace Jupiter
 {
+
     public class VariableConfiguration : Interfaces.IVariableConfiguration
     {
-        Node node;
-        BuiltInType type;
-        public VariableConfiguration(Node node, BuiltInType type)
+        public VariableConfiguration(NodeId id, string displayName, NodeClass nodeClass, BuiltInType builtInType)
         {
-            this.node = node;
-            this.type = type;
+            this.displayName = displayName;
+            this.nodeClass = nodeClass;
+            this.builtInType = builtInType;
+            this.id = id;
         }
 
+        string displayName;
         public string DisplayName {
             get
             {
-                return node.DisplayName.Text;
+                return displayName;
             }
 
             set { /* NOPE */ }
         }
 
-        public NodeClass Type {
+        NodeClass nodeClass;
+        public NodeClass NodeClass {
             get
             {
-                return node.NodeClass;
+                return nodeClass;
             }
 
             set { /* NOPE */ }
         }
 
+        BuiltInType builtInType;
         public BuiltInType BuiltInType()
         {
-            return type;
+            return builtInType;
         }
 
+        NodeId id;
         public NodeId VariableNodeId()
         {
-            return node.NodeId;
+            return id;
         }
     }
 
@@ -56,7 +61,7 @@ namespace Jupiter
             var addList = new List<VariableInfoBase>();
             foreach (Interfaces.IVariableConfiguration obj in objs)
             {
-                if (obj.Type != NodeClass.Variable)
+                if (obj.NodeClass != NodeClass.Variable)
                 {
                     continue;
                 }
@@ -839,6 +844,8 @@ namespace Jupiter
         public void Update(VariableInfoBase vi)
         {
             this.DataValue = vi.DataValue;
+            this.Type = vi.DataValue.WrappedValue.TypeInfo.BuiltInType.ToString();
+            this.SetProperty("Type");
             this.SetProperty("Value");
             this.SetProperty("StatusCode");
             this.SetProperty("ServerTimestamp");

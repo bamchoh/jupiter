@@ -16,7 +16,7 @@ namespace Jupiter.Interfaces
 
         string DisplayName { get; set; }
 
-        NodeClass Type { get; set; }
+        NodeClass NodeClass { get; set; }
     }
 
     public interface IVariableInfoManager

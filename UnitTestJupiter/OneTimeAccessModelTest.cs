@@ -33,7 +33,7 @@ namespace UnitTestJupiter
 
     public class TestVariableConfiguration : Jupiter.Interfaces.IVariableConfiguration
     {
-        public NodeClass Type { get; set; }
+        public NodeClass NodeClass { get; set; }
 
         public BuiltInType TestBuiltInType { get; set; }
 
@@ -260,6 +260,7 @@ namespace UnitTestJupiter
                 ota.EventAggregator = ea;
                 var nodegrid = new Jupiter.Models.NodeInfoDataGridModel(c, c);
                 var nodetree = new Jupiter.Models.NodeTreeModel(c, references, null, ota);
+                nodetree.EventAggregator = ea;
 
                 c.EventAggregator
                     .GetEvent<Jupiter.Events.NowLoadingEvent>()
@@ -333,7 +334,7 @@ namespace UnitTestJupiter
         {
             ota.AddToReadWrite(new List<IVariableConfiguration>() {
                 new TestVariableConfiguration() {
-                    Type = NodeClass.Variable,
+                    NodeClass = NodeClass.Variable,
                     TestBuiltInType = type,
                     TestVariableNodeId = new NodeId(name),
                     Value = value,

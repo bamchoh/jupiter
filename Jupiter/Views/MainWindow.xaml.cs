@@ -43,6 +43,12 @@ namespace Jupiter.Views
                         x.Semaphore.Release();
                     }
                 });
+
+            eventAggregator.GetEvent<Events.SelectedIndexForTabControlChangedEvent>()
+                .Subscribe(async (x) =>
+                {
+                    tabCtrl.SelectedIndex = x.SelectedIndex;
+                });
         }
 
     }

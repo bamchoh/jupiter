@@ -32,6 +32,8 @@ namespace Jupiter.ViewModels
             ClosingCommand = new Commands.DelegateCommand(
                 (param) => { client.Close(); },
                 (param) => true);
+
+            SelectedIndexForTabControl = 1;
         }
 
         public string Title
@@ -45,6 +47,8 @@ namespace Jupiter.ViewModels
                 return string.Format("{0}(Version: {1}, Build: {2})", assemblyTitle, asmFileVersion, asmVersion);
             }
         }
+
+        public int SelectedIndexForTabControl { get; set; }
 
         #endregion
     }

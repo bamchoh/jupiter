@@ -169,6 +169,7 @@
     <Compile Include="Commands\DelegateCommand.cs" />
     <Compile Include="Commands\ShowMessageCommand.cs" />
     <Compile Include="Events\ErrorNotificationEvent.cs" />
+    <Compile Include="Events\SelectedIndexForTabControlChangedEvent.cs" />
     <Compile Include="Events\NowLoadingEvent.cs" />
     <Compile Include="Interfaces\IConnection.cs" />
     <Compile Include="Interfaces\INodeInfoDataGrid.cs" />

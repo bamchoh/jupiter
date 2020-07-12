@@ -44,11 +44,15 @@ namespace Jupiter.Models
 
             MouseDoubleClickedCommand = new Commands.AsyncCommand(async (param) =>
             {
-                await subscriptionM.AddToSubscription(param as IList);
+                await subscriptionM.AddToSubscription((IList)param);
+                ChangeSelectedIndexForTabContorol(0);
             });
 
             AddToReadWriteCommand = new Commands.DelegateCommand(
-                (param) => { oneTimeAccessM.AddToReadWrite(param as IList); },
+                (param) => {
+                    oneTimeAccessM.AddToReadWrite((IList)param);
+                    ChangeSelectedIndexForTabContorol(1);
+                },
                 (param) => connector.Connected);
 
             NodeSelectedCommand = new Commands.DelegateCommand(
@@ -62,6 +66,13 @@ namespace Jupiter.Models
             this.connector.ObserveProperty(x => x.Connected).Subscribe(c => Update(c));
 
             Initialize();
+        }
+
+        public void ChangeSelectedIndexForTabContorol(int i)
+        {
+            this.EventAggregator
+                .GetEvent<Events.SelectedIndexForTabControlChangedEvent>()
+                .Publish(new Events.SelectedIndexForTabControlChangedArgs() { SelectedIndex = i });
         }
 
         public Interfaces.IReference References
@@ -127,29 +138,23 @@ namespace Jupiter.Models
 
         private void UpdateVariableNodes(Interfaces.IReference obj)
         {
-            var nodes = new ObservableCollection<VariableConfiguration>();
-
             try
             {
                 var client = connector as Client;
 
-                var tmp = new List<VariableConfiguration>();
+                var refs = client.FetchVariableReferences(obj.NodeId);
 
-                client.FetchVariableReferences(obj.NodeId, ref tmp);
-
-                foreach(var v in tmp)
+                if(refs != null && refs.Count != 0)
                 {
-                    nodes.Add(v);
+                    VariableNodes = refs;
                 }
-
-                VariableNodes = nodes;
             }
             catch (Exception ex)
             {
                 this.EventAggregator
                     .GetEvent<Events.ErrorNotificationEvent>()
                     .Publish(new Events.ErrorNotification(ex));
-                VariableNodes = nodes;
+                Initialize();
             }
         }
     }

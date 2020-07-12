@@ -170,9 +170,9 @@ namespace Jupiter.Models
             }
         }
 
-        public void AddToReadWrite(IList objs)
+        public void AddToReadWrite(IList refs)
         {
-            var items = variableInfoManager.GenerateVariableInfoList(objs);
+            var items = variableInfoManager.GenerateVariableInfoList(refs);
             if (items == null || items.Count == 0)
                 return;
 

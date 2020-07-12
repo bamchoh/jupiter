@@ -23,6 +23,7 @@ using Prism.Mvvm;
 using Opc.Ua.Configuration;
 
 using Prism.Events;
+using System.CodeDom;
 
 namespace Jupiter
 {
@@ -68,7 +69,7 @@ namespace Jupiter
         {
             var nodeInfoList = new List<NodeInfo>();
 
-            var n = FindNode(nodeid) as ILocalNode;
+            var n = session.NodeCache.Find(nodeid) as ILocalNode;
 
             if (n == null)
             {
@@ -104,7 +105,7 @@ namespace Jupiter
             {
                 IReference reference = references[ii];
 
-                ILocalNode property = FindNode(reference.TargetId) as ILocalNode;
+                ILocalNode property = session.NodeCache.Find(reference.TargetId) as ILocalNode;
 
                 if (property == null)
                 {
@@ -240,11 +241,6 @@ namespace Jupiter
                 System.Diagnostics.Debug.WriteLine("----------- (END) Add To Subscription -----------------");
                 System.Diagnostics.Debug.WriteLine("-------------------------------------------------------");
             }
-        }
-
-        public INode FindNode(ExpandedNodeId id)
-        {
-            return session.NodeCache.Find(id);
         }
 
         public NodeId ToNodeId(ExpandedNodeId id)
@@ -477,7 +473,7 @@ namespace Jupiter
             innerWrite(items, func);
         }
 
-        public void FetchVariableReferences(ExpandedNodeId expandedNodeId, ref List<VariableConfiguration> nodes)
+        public ObservableCollection<VariableConfiguration> FetchVariableReferences(ExpandedNodeId expandedNodeId)
         {
             var id = this.ToNodeId(expandedNodeId);
 
@@ -492,35 +488,56 @@ namespace Jupiter
             ReferenceDescriptionCollection refs;
             this.Browse(id, mask, out refs);
 
-            try
-            {
-                foreach (var r in refs)
-                {
-                    var rid = this.ToNodeId(r.NodeId);
-                    var node = (VariableNode)session.NodeCache.Find(rid);
-                    var t = TypeInfo.GetBuiltInType(node.DataType, this.TypeTable);
-                    nodes.Add(new VariableConfiguration(node, t));
-                }
-            }
-            catch (Exception ex)
-            {
-                string Message;
-                string StackTrace;
-                if (ex.InnerException != null)
-                {
-                    Message = ex.InnerException.Message;
-                    StackTrace = ex.InnerException.StackTrace;
-                }
-                else
-                {
-                    Message = ex.Message;
-                    StackTrace = ex.StackTrace;
-                }
+            List<BuiltInType> types;
+            this.ReadBuiltInType(refs, out types);
 
-                System.Diagnostics.Trace.WriteLine("--- Exception in FindNodes {{{");
-                System.Diagnostics.Trace.WriteLine(Message);
-                System.Diagnostics.Trace.WriteLine(StackTrace);
-                System.Diagnostics.Trace.WriteLine("--- Exception in FindNodes }}}");
+            var varConfigurations = new ObservableCollection<VariableConfiguration>();
+
+            for(int i=0;i<refs.Count;i++)
+            {
+                var r = refs[i];
+                var t = types[i];
+                varConfigurations.Add(new VariableConfiguration(this.ToNodeId(r.NodeId), r.DisplayName.Text, r.NodeClass, t));
+            }
+
+            return varConfigurations;
+        }
+
+        private void ReadBuiltInType(ReferenceDescriptionCollection refs, out List<BuiltInType> types)
+        {
+            if (refs.Count == 0)
+            {
+                types = new List<BuiltInType>();
+                return;
+            }
+
+            var nodesToRead = new ReadValueIdCollection();
+            foreach (var r in refs)
+            {
+                var nodeToRead = new ReadValueId();
+                nodeToRead.NodeId = this.ToNodeId(r.NodeId);
+                nodeToRead.AttributeId = Attributes.Value;
+                nodesToRead.Add(nodeToRead);
+            }
+
+            DataValueCollection results = null;
+            DiagnosticInfoCollection diagnosticInfos = null;
+
+            session.Read(
+                null,
+                0,
+                TimestampsToReturn.Neither,
+                nodesToRead,
+                out results,
+                out diagnosticInfos);
+
+            ClientBase.ValidateResponse(results, nodesToRead);
+            ClientBase.ValidateDiagnosticInfos(diagnosticInfos, nodesToRead);
+
+            types = new List<BuiltInType>();
+            foreach(var r in results)
+            {
+                types.Add(r.WrappedValue.TypeInfo.BuiltInType);
             }
         }
 
@@ -531,9 +548,8 @@ namespace Jupiter
 
         private VariableInfoBase NewVariableInfo(MonitoredItem m, MonitoredItemNotification n)
         {
-            var node = (VariableNode)session.NodeCache.Find(m.StartNodeId);
-            var type = TypeInfo.GetBuiltInType(node.DataType, session.TypeTree);
-            var conf = new VariableConfiguration(node, type);
+            var builtInType = n.Value.WrappedValue.TypeInfo.BuiltInType;
+            var conf = new VariableConfiguration(m.StartNodeId, m.DisplayName, m.NodeClass, builtInType);
             var vi = variableInfoManager.NewVariableInfo(conf);
             vi.SetItem(m.StartNodeId, m.DisplayName, m.ClientHandle, n?.Value);
             return vi;

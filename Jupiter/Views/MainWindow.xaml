@@ -49,7 +49,7 @@
                             NodeSelectedCommand="{Binding NodeSelectedCommand}"
                             />
                     <GridSplitter Grid.Row="1" Height="5" VerticalAlignment="Stretch" Width="Auto" HorizontalAlignment="Stretch" />
-                    <TabControl Grid.Row="2">
+                    <TabControl Grid.Row="2" x:Name="tabCtrl">
                         <TabItem Header="Subscription">
                             <local:SubscriptionView />
                         </TabItem>
