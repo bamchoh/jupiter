@@ -321,10 +321,7 @@ namespace Jupiter
                 {
                     var got = endpointCollection[i];
 
-                    if (got.EndpointUrl.Trim('/') == discoveryUrl)
-                    {
-                        endpoints.Add(got);
-                    }
+                    endpoints.Add(got);
                 }
             }
 
@@ -368,15 +365,21 @@ namespace Jupiter
         {
             var endpoints = await Task.Run(() => Discover(endpointURI, 15000));
 
-            var securityList = new List<string>();
+            var securityList = new SortedDictionary<string, List<string>>();
             foreach (var ed in endpoints)
             {
                 var discoveryURL = "";
                 if (ed.Server.DiscoveryUrls.Count() != 0)
                     discoveryURL = ed.Server.DiscoveryUrls[0];
 
-                securityList.Add(string.Format("{0} - {1} - {2}",
-                    ed.Server.ApplicationName,
+                var key = string.Format("{0} - {1}",
+                    ed.EndpointUrl,
+                    ed.Server.ApplicationName);
+
+                if (!securityList.ContainsKey(key))
+                    securityList[key] = new List<string>();
+
+                securityList[key].Add(string.Format("{0} - {1}",
                     Opc.Ua.SecurityPolicies.GetDisplayName(ed.SecurityPolicyUri),
                     ed.SecurityMode));
             }
@@ -385,7 +388,7 @@ namespace Jupiter
             var result = new Events.NowLoading()
             {
                 SecurityList = securityList,
-                Endpoint = endpointURI,
+                Endpoints = securityList.Keys.ToList(),
                 UserName = "",
                 Password = "",
                 Semaphore = sem,

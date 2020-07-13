@@ -16,9 +16,9 @@ namespace Jupiter.Events
     {
         public SemaphoreSlim Semaphore;
 
-        public List<string> SecurityList;
+        public SortedDictionary<string, List<string>> SecurityList;
 
-        public string Endpoint;
+        public List<string> Endpoints;
 
         public string UserName;
 

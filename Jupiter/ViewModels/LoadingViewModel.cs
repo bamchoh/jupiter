@@ -20,14 +20,14 @@ namespace Jupiter.ViewModels
         public IList SecurityList {
             get
             {
-                return model.SecurityList;
+                return model.SecurityList[SelectedItem];
             }
         }
 
-        public string Endpoint {
+        public IList Endpoints {
             get
             {
-                return model.Endpoint;
+                return model.Endpoints;
             }
         }
 
@@ -69,10 +69,13 @@ namespace Jupiter.ViewModels
             }
         }
 
+        public string SelectedItem { get; set; }
+
         public LoadingViewModel(Events.NowLoading model)
         {
             this.model = model;
             SelectedIndex = 0;
+            SelectedItem = model.SecurityList.First().Key;
         }
     }
 }
