@@ -7,6 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Opc.Ua;
 using System.Collections.ObjectModel;
 using Prism.Events;
+using System.Linq;
 
 namespace UnitTestJupiter
 {
@@ -266,11 +267,12 @@ namespace UnitTestJupiter
                     .GetEvent<Jupiter.Events.NowLoadingEvent>()
                     .Subscribe((x) =>
                     {
-                        for(int i=0;i<x.SecurityList.Count;i++)
+                        var first = x.SecurityList.First().Value;
+                        for(int i=0;i<first.Count;i++)
                         {
-                            if(x.SecurityList[i].EndsWith("None"))
+                            if(first[i].EndsWith("None"))
                             {
-                                Console.WriteLine(x.SecurityList[i]);
+                                Console.WriteLine(first[i]);
                                 x.SelectedIndex = i;
                                 break;
                             }
