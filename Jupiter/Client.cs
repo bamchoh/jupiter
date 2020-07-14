@@ -25,6 +25,7 @@ using Opc.Ua.Configuration;
 using Prism.Events;
 using System.CodeDom;
 using System.Net;
+using System.ComponentModel.DataAnnotations;
 
 namespace Jupiter
 {
@@ -567,7 +568,7 @@ namespace Jupiter
             {
                 var nodeToRead = new ReadValueId();
                 nodeToRead.NodeId = this.ToNodeId(r.NodeId);
-                nodeToRead.AttributeId = Attributes.Value;
+                nodeToRead.AttributeId = Attributes.DataType;
                 nodesToRead.Add(nodeToRead);
             }
 
@@ -588,7 +589,7 @@ namespace Jupiter
             types = new List<BuiltInType>();
             foreach(var r in results)
             {
-                types.Add(r.WrappedValue.TypeInfo.BuiltInType);
+                types.Add(TypeInfo.GetBuiltInType((NodeId)r.Value));
             }
         }
 
