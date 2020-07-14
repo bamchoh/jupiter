@@ -25,5 +25,7 @@ namespace Jupiter.Events
         public string Password;
 
         public int SelectedIndex;
+
+        public string SelectedItem;
     }
 }

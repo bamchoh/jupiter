@@ -24,6 +24,7 @@ using Opc.Ua.Configuration;
 
 using Prism.Events;
 using System.CodeDom;
+using System.Net;
 
 namespace Jupiter
 {
@@ -366,8 +367,10 @@ namespace Jupiter
             var endpoints = await Task.Run(() => Discover(endpointURI, 15000));
 
             var securityList = new SortedDictionary<string, List<string>>();
-            foreach (var ed in endpoints)
+            var endpointIndex = new SortedDictionary<string, List<int>>();
+            for(int i = 0;i<endpoints.Count;i++)
             {
+                var ed = endpoints[i];
                 var discoveryURL = "";
                 if (ed.Server.DiscoveryUrls.Count() != 0)
                     discoveryURL = ed.Server.DiscoveryUrls[0];
@@ -382,6 +385,11 @@ namespace Jupiter
                 securityList[key].Add(string.Format("{0} - {1}",
                     Opc.Ua.SecurityPolicies.GetDisplayName(ed.SecurityPolicyUri),
                     ed.SecurityMode));
+
+                if (!endpointIndex.ContainsKey(key))
+                    endpointIndex[key] = new List<int>();
+
+                endpointIndex[key].Add(i);
             }
 
             var sem = new SemaphoreSlim(1, 1);
@@ -398,9 +406,49 @@ namespace Jupiter
                 .Publish(result);
             await sem.WaitAsync();
 
+            System.Diagnostics.Trace.WriteLine("--- endpoints ---");
+            foreach(var ed in endpoints)
+            {
+                var key = string.Format("{0} - {1} - {2} - {3}",
+                    ed.EndpointUrl,
+                    ed.Server.ApplicationName,
+                    Opc.Ua.SecurityPolicies.GetDisplayName(ed.SecurityPolicyUri),
+                    ed.SecurityMode);
+
+                System.Diagnostics.Trace.WriteLine(key);
+            }
+
+            System.Diagnostics.Trace.WriteLine("--- security lists ---");
+            foreach(var s in securityList)
+            {
+                System.Diagnostics.Trace.WriteLine(string.Format("--- key: {0}", s.Key));
+                foreach(var v in s.Value)
+                {
+                    System.Diagnostics.Trace.WriteLine(string.Format("---   val: {0}", v));
+                }
+            }
+
             try
             {
-                var i = result.SelectedIndex;
+                var k = result.SelectedItem;
+                var i = endpointIndex[k][result.SelectedIndex];
+
+                System.Diagnostics.Trace.WriteLine("--- selected item ---");
+                System.Diagnostics.Trace.WriteLine(string.Format("---   {0}", k));
+
+                System.Diagnostics.Trace.WriteLine("--- selected index ---");
+                System.Diagnostics.Trace.WriteLine(string.Format("---   {0}", result.SelectedIndex));
+
+                System.Diagnostics.Trace.WriteLine("--- index ---");
+                System.Diagnostics.Trace.WriteLine(string.Format("---   {0}", i));
+
+                System.Diagnostics.Trace.WriteLine("--- selected endpoint ---");
+                System.Diagnostics.Trace.WriteLine(string.Format("{0} - {1} - {2} - {3}",
+                    endpoints[i].EndpointUrl,
+                    endpoints[i].Server.ApplicationName,
+                    Opc.Ua.SecurityPolicies.GetDisplayName(endpoints[i].SecurityPolicyUri),
+                    endpoints[i].SecurityMode));
+
                 var username = result.UserName;
                 var password = result.Password;
                 await _createSession(endpoints[i], username, password);

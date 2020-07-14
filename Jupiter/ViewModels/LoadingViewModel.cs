@@ -69,7 +69,18 @@ namespace Jupiter.ViewModels
             }
         }
 
-        public string SelectedItem { get; set; }
+        public string SelectedItem {
+            get
+            {
+                return model.SelectedItem;
+            }
+
+            set
+            {
+                model.SelectedItem = value;
+                this.RaisePropertyChanged("SecurityList");
+            }
+        }
 
         public LoadingViewModel(Events.NowLoading model)
         {
