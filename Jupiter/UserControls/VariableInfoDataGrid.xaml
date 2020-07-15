@@ -33,8 +33,6 @@
     <DockPanel>
         <DataGrid Grid.Column="1" Grid.Row="1"
                   PreviewKeyDown="DataGrid_PreviewKeyDown"
-                  BeginningEdit="DataGrid_BeginningEdit"
-                  CellEditEnding="DataGrid_CellEditEnding"
                   ItemsSource="{Binding ItemsSource, RelativeSource={RelativeSource AncestorType=local:VariableInfoDataGrid}}"
                   SelectionChanged="DataGrid_SelectionChanged"
                   CanUserAddRows="False" CanUserSortColumns="False" CanUserReorderColumns="False" IsReadOnly="False" AutoGenerateColumns="False">

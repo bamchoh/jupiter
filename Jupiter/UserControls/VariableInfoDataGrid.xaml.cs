@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Collections;
+using System.Windows.Controls.Primitives;
 
 namespace Jupiter.UserControls
 {
@@ -61,7 +62,9 @@ namespace Jupiter.UserControls
         private void DataGrid_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             var dg = (DataGrid)sender;
-            if (!isEdit)
+            var content = dg.CurrentColumn.GetCellContent(dg.CurrentItem);
+            var cell = (DataGridCell)content.Parent;
+            if (!cell.IsEditing)
             {
                 switch(e.Key)
                 {
@@ -100,18 +103,6 @@ namespace Jupiter.UserControls
             var dgr = dg.ItemContainerGenerator.ContainerFromIndex(index) as DataGridRow;
             var dgc = dg.CurrentCell.Column.GetCellContent(dgr).Parent as DataGridCell;
             dgc.Focus();
-        }
-
-        bool isEdit = false;
-
-        private void DataGrid_BeginningEdit(object sender, DataGridBeginningEditEventArgs e)
-        {
-            isEdit = true;
-        }
-
-        private void DataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
-        {
-            isEdit = false;
         }
     }
 }
