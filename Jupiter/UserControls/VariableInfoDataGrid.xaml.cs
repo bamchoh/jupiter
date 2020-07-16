@@ -62,26 +62,49 @@ namespace Jupiter.UserControls
         private void DataGrid_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             var dg = (DataGrid)sender;
-            var content = dg.CurrentColumn.GetCellContent(dg.CurrentItem);
-            var cell = (DataGridCell)content.Parent;
-            if (!cell.IsEditing)
+            if (dg == null)
+                return;
+
+            var elem = dg.CurrentColumn.GetCellContent(dg.CurrentItem);
+            var checkbox = GetElement<CheckBox>(elem);
+
+            if (checkbox != null)
             {
                 switch(e.Key)
                 {
-                    case Key.Delete:
+                    case Key.Space:
                         {
-                            if (DeleteCommand != null && DeleteCommand.CanExecute(null))
-                            {
-                                DeleteCommand.Execute(null);
-                            }
-                        }
-                        break;
-                    case Key.Enter:
-                        {
-                            dg.BeginEdit();
+                            checkbox.IsChecked = !checkbox.IsChecked;
                             e.Handled = true;
+                            break;
                         }
-                        break;
+                }
+            }
+            else
+            {
+                var cell = e.OriginalSource as DataGridCell;
+                if (cell == null)
+                    return;
+
+                if (!cell.IsEditing)
+                {
+                    switch (e.Key)
+                    {
+                        case Key.Delete:
+                            {
+                                if (DeleteCommand != null && DeleteCommand.CanExecute(null))
+                                {
+                                    DeleteCommand.Execute(null);
+                                }
+                            }
+                            break;
+                        case Key.Enter:
+                            {
+                                dg.BeginEdit();
+                                e.Handled = true;
+                            }
+                            break;
+                    }
                 }
             }
         }
@@ -103,6 +126,42 @@ namespace Jupiter.UserControls
             var dgr = dg.ItemContainerGenerator.ContainerFromIndex(index) as DataGridRow;
             var dgc = dg.CurrentCell.Column.GetCellContent(dgr).Parent as DataGridCell;
             dgc.Focus();
+        }
+
+        private T GetElement<T>(DependencyObject reference) where T : FrameworkElement
+        {
+            if (reference is T)
+                return reference as T;
+
+            DependencyObject elem = null;
+            for(int i = 0;i < VisualTreeHelper.GetChildrenCount(reference);i++)
+            {
+                elem = GetChildElement<T>(reference, i);
+                if (elem != null)
+                    break;
+            }
+
+            return elem as T;
+        }
+
+        private T GetChildElement<T>(DependencyObject reference, int j) where T : FrameworkElement
+        {
+            var child = VisualTreeHelper.GetChild(reference, j);
+            if (child == null)
+                return null;
+
+            if (child is T)
+                return child as T;
+
+            DependencyObject elem = reference;
+            for(int i=0;i<VisualTreeHelper.GetChildrenCount(child);i++)
+            {
+                elem = GetChildElement<T>(child, i);
+                if (elem != null)
+                    break;
+            }
+
+            return elem as T;
         }
     }
 }
