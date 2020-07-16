@@ -26,6 +26,7 @@ using Prism.Events;
 using System.CodeDom;
 using System.Net;
 using System.ComponentModel.DataAnnotations;
+using System.Collections.Specialized;
 
 namespace Jupiter
 {
@@ -367,8 +368,9 @@ namespace Jupiter
         {
             var endpoints = await Task.Run(() => Discover(endpointURI, 15000));
 
-            var securityList = new SortedDictionary<string, List<string>>();
-            var endpointIndex = new SortedDictionary<string, List<int>>();
+            var securityList = new Dictionary<string, List<string>>();
+            var endpointUrls = new List<string>();
+            var endpointIndex = new Dictionary<string, List<int>>();
             for(int i = 0;i<endpoints.Count;i++)
             {
                 var ed = endpoints[i];
@@ -381,7 +383,10 @@ namespace Jupiter
                     ed.Server.ApplicationName);
 
                 if (!securityList.ContainsKey(key))
+                {
                     securityList[key] = new List<string>();
+                    endpointUrls.Add(key);
+                }
 
                 securityList[key].Add(string.Format("{0} - {1}",
                     Opc.Ua.SecurityPolicies.GetDisplayName(ed.SecurityPolicyUri),
@@ -397,7 +402,7 @@ namespace Jupiter
             var result = new Events.NowLoading()
             {
                 SecurityList = securityList,
-                Endpoints = securityList.Keys.ToList(),
+                Endpoints = endpointUrls,
                 UserName = "",
                 Password = "",
                 Semaphore = sem,
