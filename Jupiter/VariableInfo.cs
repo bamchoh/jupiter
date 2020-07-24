@@ -4,10 +4,20 @@ using Opc.Ua.Client;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections;
+using System.Linq;
+using Prism.Mvvm;
+using Prism.Commands;
+using System.ComponentModel.DataAnnotations;
+using System.Runtime.CompilerServices;
+using Jupiter.Converter;
+using System.Windows;
+using System.Runtime.Serialization;
+using Microsoft.SqlServer.Server;
+using System.Windows.Forms;
+using System.Globalization;
 
 namespace Jupiter
 {
-
     public class VariableConfiguration : Interfaces.IVariableConfiguration
     {
         public VariableConfiguration(NodeId id, string displayName, NodeClass nodeClass, BuiltInType builtInType)
@@ -129,8 +139,52 @@ namespace Jupiter
         }
     }
 
+    public interface IWrappedValueConverter
+    {
+        object Convert();
+
+        object ConvertBack(object value);
+    }
+
+    public class WrappedValue<T> : BindableBase, IWrappedValueConverter
+    {
+        public WrappedValue(T initValue, string format, Func<object, string, string> convFn, Func<object, string, object> convBackFn)
+        {
+            this.Value = initValue;
+            this.Format = format;
+            this.convFn = convFn;
+            this.convBackFn = convBackFn;
+        }
+
+        public T Value { get; set; }
+
+        public string Format { get; set; }
+
+        private Func<object, string, string> convFn;
+        public object Convert()
+        {
+            return convFn(Value, Format);
+        }
+
+        private Func<object, string, object> convBackFn;
+        public object ConvertBack(object value)
+        {
+            return convBackFn(value, Format);
+        }
+    }
+
     public class BooleanVariableInfo : VariableInfoBase
     {
+        public BooleanVariableInfo()
+        {
+            Formats = new List<string>
+            {
+                FormatType.BOOL,
+            };
+
+            FormatSelectedItem = FormatType.BOOL;
+        }
+
         public bool Value
         {
             get
@@ -148,7 +202,7 @@ namespace Jupiter
             set
             {
                 DataValue.Value = value;
-                this.SetProperty("WriteValue");
+                this.RaisePropertyChanged("WriteValue");
             }
         }
 
@@ -166,526 +220,1113 @@ namespace Jupiter
 
     public class SByteVariableInfo : VariableInfoBase
     {
-        public sbyte Value
+        public SByteVariableInfo()
         {
-            get
+            Formats = new List<string>
             {
-                if (DataValue.Value == null)
-                    return 0;
-                else
-                    return (sbyte)DataValue.Value;
-            }
+                FormatType.DEC,
+                FormatType.HEX,
+                FormatType.OCT,
+            };
+
+            FormatSelectedItem = FormatType.DEC;
+
+            _value = NewValue(0, FormatSelectedItem);
+
+            PrepareValue = NewValue(0, FormatSelectedItem);
         }
 
-        public sbyte WriteValue
+        private WrappedValue<sbyte> _value;
+        public WrappedValue<sbyte> Value
         {
-            get
-            {
-                if (DataValue.Value == null)
-                    return 0;
-                else
-                    return (sbyte)DataValue.Value;
-            }
+            get { return _value; }
+        }
+
+        public WrappedValue<sbyte> WriteValue
+        {
+            get { return Value; }
 
             set
             {
-                DataValue.Value = value;
-                this.SetProperty("WriteValue");
+                DataValue.Value = value.Value;
+                this.SetProperty(ref this._value, value);
             }
         }
 
-        public sbyte PrepareValue { get; set; }
+        public WrappedValue<sbyte> PrepareValue { get; set; }
+
         public override object GetPrepareValue()
         {
-            return PrepareValue;
+            return PrepareValue.Value;
         }
 
         public override void SetPrepareValue(object obj)
         {
-            PrepareValue = (sbyte)obj;
+            PrepareValue.Value = (sbyte)obj;
+        }
+
+        public override void UpdateWrappedValue()
+        {
+            if (_value == null)
+                return;
+
+            if (DataValue.Value != null)
+            {
+                _value.Value = (sbyte)DataValue.Value;
+            }
+            _value.Format = FormatSelectedItem;
+            PrepareValue.Format = FormatSelectedItem;
+        }
+
+        public static WrappedValue<sbyte> NewValue(sbyte newValue, string format)
+        {
+            return new WrappedValue<sbyte>(newValue, format, ConvertFn, ConvertBackFn);
+        }
+
+        private static string ConvertFn(object value, string format)
+        {
+            switch (format)
+            {
+                case FormatType.DEC:
+                    return Convert.ToString((sbyte)value, 10);
+                case FormatType.HEX:
+                    return ((sbyte)value).ToString("X2");
+                case FormatType.OCT:
+                    var convVal = (byte)((0x7F & (sbyte)value) + (0x80 & (sbyte)value));
+                    return Convert.ToString(convVal, 8);
+            }
+            return value.ToString();
+        }
+
+        private static object ConvertBackFn(object value, string format)
+        {
+            var inputString = value as string;
+            switch (format)
+            {
+                case FormatType.DEC:
+                    return NewValue(System.Convert.ToSByte(inputString, 10), format);
+                case FormatType.HEX:
+                    return NewValue(System.Convert.ToSByte(inputString, 16), format);
+                case FormatType.OCT:
+                    return NewValue(System.Convert.ToSByte(inputString, 8), format);
+            }
+            return value.ToString();
         }
     }
 
     public class ByteVariableInfo : VariableInfoBase
     {
-        public byte Value
+        public ByteVariableInfo()
         {
-            get
+            Formats = new List<string>
             {
-                if (DataValue.Value == null)
-                    return 0;
-                else
-                    return (byte)DataValue.Value;
-            }
+                FormatType.DEC,
+                FormatType.HEX,
+                FormatType.OCT,
+            };
+
+            FormatSelectedItem = FormatType.DEC;
+
+            _value = NewValue(0, FormatSelectedItem);
+
+            PrepareValue = NewValue(0, FormatSelectedItem);
         }
 
-        public byte WriteValue
+        private WrappedValue<byte> _value;
+        public WrappedValue<byte> Value
         {
-            get
-            {
-                if (DataValue.Value == null)
-                    return 0;
-                else
-                    return (byte)DataValue.Value;
-            }
+            get { return _value; }
+        }
+
+        public WrappedValue<byte> WriteValue
+        {
+            get { return Value; }
 
             set
             {
-                DataValue.Value = value;
-                this.SetProperty("WriteValue");
+                DataValue.Value = value.Value;
+                this.SetProperty(ref this._value, value);
             }
         }
 
-        public byte PrepareValue { get; set; }
+        public WrappedValue<byte> PrepareValue { get; set; }
+
         public override object GetPrepareValue()
         {
-            return PrepareValue;
+            return PrepareValue.Value;
         }
 
         public override void SetPrepareValue(object obj)
         {
-            PrepareValue = (byte)obj;
+            PrepareValue.Value = (byte)obj;
+        }
+
+        public override void UpdateWrappedValue()
+        {
+            if (_value == null)
+                return;
+
+            if(DataValue.Value != null)
+            {
+                _value.Value = (byte)DataValue.Value;
+            }
+            _value.Format = FormatSelectedItem;
+            PrepareValue.Format = FormatSelectedItem;
+        }
+
+        public static WrappedValue<byte> NewValue(byte newValue, string format)
+        {
+            return new WrappedValue<byte>(newValue, format, ConvertFn, ConvertBackFn);
+        }
+
+        private static string ConvertFn(object value, string format)
+        {
+            switch (format)
+            {
+                case FormatType.DEC:
+                    return Convert.ToString((byte)value, 10);
+                case FormatType.HEX:
+                    return ((byte)value).ToString("X2");
+                case FormatType.OCT:
+                    return Convert.ToString((byte)value, 8);
+            }
+            return value.ToString();
+        }
+
+        private static object ConvertBackFn(object value, string format)
+        {
+            var inputString = value as string;
+            switch (format)
+            {
+                case FormatType.DEC:
+                    return NewValue(System.Convert.ToByte(inputString, 10), format);
+                case FormatType.HEX:
+                    return NewValue(System.Convert.ToByte(inputString, 16), format);
+                case FormatType.OCT:
+                    return NewValue(System.Convert.ToByte(inputString, 8), format);
+            }
+            return value.ToString();
         }
     }
 
     public class UInt16VariableInfo : VariableInfoBase
     {
-        public UInt16 Value
+        public UInt16VariableInfo()
         {
-            get
+            Formats = new List<string>
             {
-                if (DataValue.Value == null)
-                    return 0;
-                else
-                    return (UInt16)DataValue.Value;
-            }
+                FormatType.DEC,
+                FormatType.HEX,
+                FormatType.OCT,
+            };
+
+            FormatSelectedItem = FormatType.DEC;
+
+            _value = NewValue(0, FormatSelectedItem);
+
+            PrepareValue = NewValue(0, FormatSelectedItem);
         }
 
-        public UInt16 WriteValue
+        private WrappedValue<UInt16> _value;
+        public WrappedValue<UInt16> Value
         {
-            get
-            {
-                if (DataValue.Value == null)
-                    return 0;
-                else
-                    return (UInt16)DataValue.Value;
-            }
+            get { return _value; }
+        }
+
+        public WrappedValue<UInt16> WriteValue
+        {
+            get { return Value; }
 
             set
             {
-                DataValue.Value = value;
-                this.SetProperty("WriteValue");
+                DataValue.Value = value.Value;
+                this.SetProperty(ref this._value, value);
             }
         }
 
-        public UInt16 PrepareValue { get; set; }
+        public WrappedValue<UInt16> PrepareValue { get; set; }
+
         public override object GetPrepareValue()
         {
-            return PrepareValue;
+            return PrepareValue.Value;
         }
 
         public override void SetPrepareValue(object obj)
         {
-            PrepareValue = (UInt16)obj;
+            PrepareValue.Value = (UInt16)obj;
+        }
+
+        public override void UpdateWrappedValue()
+        {
+            if (_value == null)
+                return;
+
+            if (DataValue.Value != null)
+            {
+                _value.Value = (UInt16)DataValue.Value;
+            }
+            _value.Format = FormatSelectedItem;
+            PrepareValue.Format = FormatSelectedItem;
+        }
+
+        public static WrappedValue<UInt16> NewValue(UInt16 newValue, string format)
+        {
+            return new WrappedValue<UInt16>(newValue, format, ConvertFn, ConvertBackFn);
+        }
+
+        private static string ConvertFn(object value, string format)
+        {
+            switch (format)
+            {
+                case FormatType.DEC:
+                    return Convert.ToString((UInt16)value, 10);
+                case FormatType.HEX:
+                    return ((UInt16)value).ToString("X4");
+                case FormatType.OCT:
+                    return Convert.ToString((UInt16)value, 8);
+            }
+            return value.ToString();
+        }
+
+        private static object ConvertBackFn(object value, string format)
+        {
+            var inputString = value as string;
+            switch (format)
+            {
+                case FormatType.DEC:
+                    return NewValue(System.Convert.ToUInt16(inputString, 10), format);
+                case FormatType.HEX:
+                    return NewValue(System.Convert.ToUInt16(inputString, 16), format);
+                case FormatType.OCT:
+                    return NewValue(System.Convert.ToUInt16(inputString, 8), format);
+            }
+            return value.ToString();
         }
     }
 
     public class Int16VariableInfo : VariableInfoBase
     {
-        public Int16 Value
+        public Int16VariableInfo()
         {
-            get
+            Formats = new List<string>
             {
-                if (DataValue.Value == null)
-                    return 0;
-                else
-                    return (Int16)DataValue.Value;
-            }
+                FormatType.DEC,
+                FormatType.HEX,
+                FormatType.OCT,
+            };
+
+            FormatSelectedItem = FormatType.DEC;
+
+            _value = NewValue(0, FormatSelectedItem);
+
+            PrepareValue = NewValue(0, FormatSelectedItem);
         }
 
-        public Int16 WriteValue
+        private WrappedValue<Int16> _value;
+        public WrappedValue<Int16> Value
         {
-            get
-            {
-                if (DataValue.Value == null)
-                    return 0;
-                else
-                    return (Int16)DataValue.Value;
-            }
+            get { return _value; }
+        }
+
+        public WrappedValue<Int16> WriteValue
+        {
+            get { return Value; }
 
             set
             {
-                DataValue.Value = value;
-                this.SetProperty("WriteValue");
+                DataValue.Value = value.Value;
+                this.SetProperty(ref this._value, value);
             }
         }
 
-        public Int16 PrepareValue { get; set; }
+        public WrappedValue<Int16> PrepareValue { get; set; }
+
         public override object GetPrepareValue()
         {
-            return PrepareValue;
+            return PrepareValue.Value;
         }
 
         public override void SetPrepareValue(object obj)
         {
-            PrepareValue = (Int16)obj;
+            PrepareValue.Value = (Int16)obj;
+        }
+
+        public override void UpdateWrappedValue()
+        {
+            if (_value == null)
+                return;
+
+            if (DataValue.Value != null)
+            {
+                _value.Value = (Int16)DataValue.Value;
+            }
+            _value.Format = FormatSelectedItem;
+            PrepareValue.Format = FormatSelectedItem;
+        }
+
+        public static WrappedValue<Int16> NewValue(Int16 newValue, string format)
+        {
+            return new WrappedValue<Int16>(newValue, format, ConvertFn, ConvertBackFn);
+        }
+
+        private static string ConvertFn(object value, string format)
+        {
+            switch (format)
+            {
+                case FormatType.DEC:
+                    return Convert.ToString((Int16)value, 10);
+                case FormatType.HEX:
+                    return ((Int16)value).ToString("X4");
+                case FormatType.OCT:
+                    var convVal = (UInt16)((0x7FFF & (Int16)value) + (0x8000 & (Int16)value));
+                    return Convert.ToString(convVal, 8);
+            }
+            return value.ToString();
+        }
+
+        private static object ConvertBackFn(object value, string format)
+        {
+            var inputString = value as string;
+            switch (format)
+            {
+                case FormatType.DEC:
+                    return NewValue(System.Convert.ToInt16(inputString, 10), format);
+                case FormatType.HEX:
+                    return NewValue(System.Convert.ToInt16(inputString, 16), format);
+                case FormatType.OCT:
+                    return NewValue(System.Convert.ToInt16(inputString, 8), format);
+            }
+            return value.ToString();
         }
     }
 
     public class UInt32VariableInfo : VariableInfoBase
     {
-        public UInt32 Value
+        public UInt32VariableInfo()
         {
-            get
+            Formats = new List<string>
             {
-                if (DataValue.Value == null)
-                    return 0;
-                else
-                    return (UInt32)DataValue.Value;
-            }
+                FormatType.DEC,
+                FormatType.HEX,
+                FormatType.OCT,
+            };
+
+            FormatSelectedItem = FormatType.DEC;
+
+            _value = NewValue(0, FormatSelectedItem);
+
+            PrepareValue = NewValue(0, FormatSelectedItem);
         }
 
-        public UInt32 WriteValue
+        private WrappedValue<UInt32> _value;
+        public WrappedValue<UInt32> Value
         {
-            get
-            {
-                if (DataValue.Value == null)
-                    return 0;
-                else
-                    return (UInt32)DataValue.Value;
-            }
+            get { return _value; }
+        }
+
+        public WrappedValue<UInt32> WriteValue
+        {
+            get { return Value; }
 
             set
             {
-                DataValue.Value = value;
-                this.SetProperty("WriteValue");
+                DataValue.Value = value.Value;
+                this.SetProperty(ref this._value, value);
             }
         }
 
-        public UInt32 PrepareValue { get; set; }
+        public WrappedValue<UInt32> PrepareValue { get; set; }
+
         public override object GetPrepareValue()
         {
-            return PrepareValue;
+            return PrepareValue.Value;
         }
 
         public override void SetPrepareValue(object obj)
         {
-            PrepareValue = (UInt32)obj;
+            PrepareValue.Value = (UInt32)obj;
+        }
+
+        public override void UpdateWrappedValue()
+        {
+            if (_value == null)
+                return;
+
+            if (DataValue.Value != null)
+            {
+                _value.Value = (UInt32)DataValue.Value;
+            }
+            _value.Format = FormatSelectedItem;
+            PrepareValue.Format = FormatSelectedItem;
+        }
+
+        public static WrappedValue<UInt32> NewValue(UInt32 newValue, string format)
+        {
+            return new WrappedValue<UInt32>(newValue, format, ConvertFn, ConvertBackFn);
+        }
+
+        private static string ConvertFn(object value, string format)
+        {
+            switch (format)
+            {
+                case FormatType.DEC:
+                    return Convert.ToString((UInt32)value, 10);
+                case FormatType.HEX:
+                    return ((UInt32)value).ToString("X8");
+                case FormatType.OCT:
+                    return Convert.ToString((UInt32)value, 8);
+            }
+            return value.ToString();
+        }
+
+        private static object ConvertBackFn(object value, string format)
+        {
+            var inputString = value as string;
+            switch (format)
+            {
+                case FormatType.DEC:
+                    return NewValue(System.Convert.ToUInt32(inputString, 10), format);
+                case FormatType.HEX:
+                    return NewValue(System.Convert.ToUInt32(inputString, 16), format);
+                case FormatType.OCT:
+                    return NewValue(System.Convert.ToUInt32(inputString, 8), format);
+            }
+            return value.ToString();
         }
     }
 
     public class Int32VariableInfo : VariableInfoBase
     {
-        public Int32 Value
+        public Int32VariableInfo()
         {
-            get
+            Formats = new List<string>
             {
-                if (DataValue.Value == null)
-                    return 0;
-                else
-                    return (Int32)DataValue.Value;
-            }
+                FormatType.DEC,
+                FormatType.HEX,
+                FormatType.OCT,
+            };
+
+            FormatSelectedItem = FormatType.DEC;
+
+            _value = NewValue(0, FormatSelectedItem);
+
+            PrepareValue = NewValue(0, FormatSelectedItem);
         }
 
-        public Int32 WriteValue
+        private WrappedValue<Int32> _value;
+        public WrappedValue<Int32> Value
         {
-            get
-            {
-                if (DataValue.Value == null)
-                    return 0;
-                else
-                    return (Int32)DataValue.Value;
-            }
+            get { return _value; }
+        }
+
+        public WrappedValue<Int32> WriteValue
+        {
+            get { return Value; }
 
             set
             {
-                DataValue.Value = value;
-                this.SetProperty("WriteValue");
+                DataValue.Value = value.Value;
+                this.SetProperty(ref this._value, value);
             }
         }
 
-        public Int32 PrepareValue { get; set; }
+        public WrappedValue<Int32> PrepareValue { get; set; }
+
         public override object GetPrepareValue()
         {
-            return PrepareValue;
+            return PrepareValue.Value;
         }
 
         public override void SetPrepareValue(object obj)
         {
-            PrepareValue = (Int32)obj;
+            PrepareValue.Value = (Int32)obj;
+        }
+
+        public override void UpdateWrappedValue()
+        {
+            if (_value == null)
+                return;
+
+            if (DataValue.Value != null)
+            {
+                _value.Value = (Int32)DataValue.Value;
+            }
+            _value.Format = FormatSelectedItem;
+            PrepareValue.Format = FormatSelectedItem;
+        }
+
+        public static WrappedValue<Int32> NewValue(Int32 newValue, string format)
+        {
+            return new WrappedValue<Int32>(newValue, format, ConvertFn, ConvertBackFn);
+        }
+
+        private static string ConvertFn(object value, string format)
+        {
+            switch (format)
+            {
+                case FormatType.DEC:
+                    return Convert.ToString((Int32)value, 10);
+                case FormatType.HEX:
+                    return ((Int32)value).ToString("X8");
+                case FormatType.OCT:
+                    var convVal = (UInt32)(((UInt32)0x7FFFFFFF & (Int32)value) + ((UInt32)0x80000000 & (Int32)value));
+                    return Convert.ToString(convVal, 8);
+            }
+            return value.ToString();
+        }
+
+        private static object ConvertBackFn(object value, string format)
+        {
+            var inputString = value as string;
+            switch (format)
+            {
+                case FormatType.DEC:
+                    return NewValue(System.Convert.ToInt32(inputString, 10), format);
+                case FormatType.HEX:
+                    return NewValue(System.Convert.ToInt32(inputString, 16), format);
+                case FormatType.OCT:
+                    return NewValue(System.Convert.ToInt32(inputString, 8), format);
+            }
+            return value.ToString();
         }
     }
 
     public class Int64VariableInfo : VariableInfoBase
     {
-        public Int64 Value
+        public Int64VariableInfo()
         {
-            get
+            Formats = new List<string>
             {
-                if (DataValue.Value == null)
-                    return 0;
-                else
-                    return (Int64)DataValue.Value;
-            }
+                FormatType.DEC,
+                FormatType.HEX,
+                FormatType.OCT,
+            };
+
+            FormatSelectedItem = FormatType.DEC;
+
+            _value = NewValue(0, FormatSelectedItem);
+
+            PrepareValue = NewValue(0, FormatSelectedItem);
         }
 
-        public Int64 WriteValue
+        private WrappedValue<Int64> _value;
+        public WrappedValue<Int64> Value
         {
-            get
-            {
-                if (DataValue.Value == null)
-                    return 0;
-                else
-                    return (Int64)DataValue.Value;
-            }
+            get { return _value; }
+        }
+
+        public WrappedValue<Int64> WriteValue
+        {
+            get { return Value; }
 
             set
             {
-                DataValue.Value = value;
-                this.SetProperty("WriteValue");
+                DataValue.Value = value.Value;
+                this.SetProperty(ref this._value, value);
             }
         }
 
-        public Int64 PrepareValue { get; set; }
+        public WrappedValue<Int64> PrepareValue { get; set; }
+
         public override object GetPrepareValue()
         {
-            return PrepareValue;
+            return PrepareValue.Value;
         }
 
         public override void SetPrepareValue(object obj)
         {
-            PrepareValue = (Int64)obj;
+            PrepareValue.Value = (Int64)obj;
+        }
+
+        public override void UpdateWrappedValue()
+        {
+            if (_value == null)
+                return;
+
+            if (DataValue.Value != null)
+            {
+                _value.Value = (Int64)DataValue.Value;
+            }
+            _value.Format = FormatSelectedItem;
+            PrepareValue.Format = FormatSelectedItem;
+        }
+
+        public static WrappedValue<Int64> NewValue(Int64 newValue, string format)
+        {
+            return new WrappedValue<Int64>(newValue, format, ConvertFn, ConvertBackFn);
+        }
+
+        private static string ConvertFn(object value, string format)
+        {
+            switch (format)
+            {
+                case FormatType.DEC:
+                    return Convert.ToString((Int64)value, 10);
+                case FormatType.HEX:
+                    return ((Int64)value).ToString("X16");
+                case FormatType.OCT:
+                    return Convert.ToString((Int64)value, 8);
+            }
+            return value.ToString();
+        }
+
+        private static object ConvertBackFn(object value, string format)
+        {
+            var inputString = value as string;
+            switch (format)
+            {
+                case FormatType.DEC:
+                    return NewValue(System.Convert.ToInt64(inputString, 10), format);
+                case FormatType.HEX:
+                    return NewValue(System.Convert.ToInt64(inputString, 16), format);
+                case FormatType.OCT:
+                    return NewValue(System.Convert.ToInt64(inputString, 8), format);
+            }
+            return value.ToString();
         }
     }
 
     public class UInt64VariableInfo : VariableInfoBase
     {
-        public UInt64 Value
+        public UInt64VariableInfo()
         {
-            get
+            Formats = new List<string>
             {
-                if (DataValue.Value == null)
-                    return 0;
-                else
-                    return (UInt64)DataValue.Value;
-            }
+                FormatType.DEC,
+                FormatType.HEX,
+                FormatType.OCT,
+            };
+
+            FormatSelectedItem = FormatType.DEC;
+
+            _value = NewValue(0, FormatSelectedItem);
+
+            PrepareValue = NewValue(0, FormatSelectedItem);
         }
 
-        public UInt64 WriteValue
+        private WrappedValue<UInt64> _value;
+        public WrappedValue<UInt64> Value
         {
-            get
-            {
-                if (DataValue.Value == null)
-                    return 0;
-                else
-                    return (UInt64)DataValue.Value;
-            }
+            get { return _value; }
+        }
+
+        public WrappedValue<UInt64> WriteValue
+        {
+            get { return Value; }
 
             set
             {
-                DataValue.Value = value;
-                this.SetProperty("WriteValue");
+                DataValue.Value = value.Value;
+                this.SetProperty(ref this._value, value);
             }
         }
 
-        public UInt64 PrepareValue { get; set; }
+        public WrappedValue<UInt64> PrepareValue { get; set; }
+
         public override object GetPrepareValue()
         {
-            return PrepareValue;
+            return PrepareValue.Value;
         }
 
         public override void SetPrepareValue(object obj)
         {
-            PrepareValue = (UInt64)obj;
+            PrepareValue.Value = (UInt64)obj;
+        }
+
+        public override void UpdateWrappedValue()
+        {
+            if (_value == null)
+                return;
+
+            if (DataValue.Value != null)
+            {
+                _value.Value = (UInt64)DataValue.Value;
+            }
+            _value.Format = FormatSelectedItem;
+            PrepareValue.Format = FormatSelectedItem;
+        }
+
+        public static WrappedValue<UInt64> NewValue(UInt64 newValue, string format)
+        {
+            return new WrappedValue<UInt64>(newValue, format, ConvertFn, ConvertBackFn);
+        }
+
+        private static string ConvertFn(object value, string format)
+        {
+            switch (format)
+            {
+                case FormatType.DEC:
+                    return Convert.ToString((UInt64)value);
+                case FormatType.HEX:
+                    return ((UInt64)value).ToString("X16");
+                case FormatType.OCT:
+                    var v = (UInt64)value;
+                    List<byte> list = new List<byte>();
+                    if (v == 0)
+                    {
+                        list.Add(0);
+                    }
+                    else
+                    {
+                        while (v > 0)
+                        {
+                            list.Add((byte)(v % 8));
+                            v /= 8;
+                        }
+                    }
+
+                    string s = "";
+                    for (int i = list.Count - 1; i >= 0; i--)
+                    {
+                        s += list[i].ToString();
+                    }
+                    return s;
+            }
+            return value.ToString();
+        }
+
+        private static object ConvertBackFn(object value, string format)
+        {
+            var inputString = value as string;
+            switch (format)
+            {
+                case FormatType.DEC:
+                    return NewValue(System.Convert.ToUInt64(inputString, 10), format);
+                case FormatType.HEX:
+                    return NewValue(System.Convert.ToUInt64(inputString, 16), format);
+                case FormatType.OCT:
+                    return NewValue(System.Convert.ToUInt64(inputString, 8), format);
+            }
+            return value.ToString();
         }
     }
 
     public class FloatVariableInfo : VariableInfoBase
     {
-        public float Value
+        public FloatVariableInfo()
         {
-            get
+            Formats = new List<string>
             {
-                if (DataValue.Value == null)
-                    return 0;
-                else
-                    return (float)DataValue.Value;
-            }
+                FormatType.FLOAT,
+            };
+
+            FormatSelectedItem = FormatType.FLOAT;
+
+            _value = NewValue((float)0.0, FormatSelectedItem);
+
+            PrepareValue = NewValue((float)0.0, FormatSelectedItem);
         }
 
-        public float WriteValue
+        private WrappedValue<float> _value;
+        public WrappedValue<float> Value
         {
-            get
-            {
-                if (DataValue.Value == null)
-                    return 0;
-                else
-                    return (float)DataValue.Value;
-            }
+            get { return _value; }
+        }
+
+        public WrappedValue<float> WriteValue
+        {
+            get { return Value; }
 
             set
             {
-                DataValue.Value = value;
-                this.SetProperty("WriteValue");
+                DataValue.Value = value.Value;
+                this.SetProperty(ref this._value, value);
             }
         }
 
-        public float PrepareValue { get; set; }
+        public WrappedValue<float> PrepareValue { get; set; }
+
         public override object GetPrepareValue()
         {
-            return PrepareValue;
+            return PrepareValue.Value;
         }
 
         public override void SetPrepareValue(object obj)
         {
-            PrepareValue = (float)obj;
+            PrepareValue.Value = (float)obj;
+        }
+
+        public override void UpdateWrappedValue()
+        {
+            if (_value == null)
+                return;
+
+            if (DataValue.Value != null)
+            {
+                _value.Value = (float)DataValue.Value;
+            }
+            _value.Format = FormatSelectedItem;
+            PrepareValue.Format = FormatSelectedItem;
+        }
+
+        public static WrappedValue<float> NewValue(float newValue, string format)
+        {
+            return new WrappedValue<float>(newValue, format, ConvertFn, ConvertBackFn);
+        }
+
+        private static string ConvertFn(object value, string format)
+        {
+            return value.ToString();
+        }
+
+        private static object ConvertBackFn(object value, string format)
+        {
+            var inputString = value as string;
+            var newValue = float.Parse(inputString, CultureInfo.InvariantCulture.NumberFormat);
+            return NewValue(newValue, format);
         }
     }
 
     public class DoubleVariableInfo : VariableInfoBase
     {
-        public Double Value
+        public DoubleVariableInfo()
         {
-            get
+            Formats = new List<string>
             {
-                if (DataValue.Value == null)
-                    return 0;
-                else
-                    return (Double)DataValue.Value;
-            }
+                FormatType.FLOAT,
+            };
+
+            FormatSelectedItem = FormatType.FLOAT;
+
+            _value = NewValue(0.0, FormatSelectedItem);
+
+            PrepareValue = NewValue(0.0, FormatSelectedItem);
         }
 
-        public Double WriteValue
+        private WrappedValue<double> _value;
+        public WrappedValue<double> Value
         {
-            get
-            {
-                if (DataValue.Value == null)
-                    return 0;
-                else
-                    return (Double)DataValue.Value;
-            }
+            get { return _value; }
+        }
+
+        public WrappedValue<double> WriteValue
+        {
+            get { return Value; }
 
             set
             {
-                DataValue.Value = value;
-                this.SetProperty("WriteValue");
+                DataValue.Value = value.Value;
+                this.SetProperty(ref this._value, value);
             }
         }
 
-        public Double PrepareValue { get; set; }
+        public WrappedValue<double> PrepareValue { get; set; }
+
         public override object GetPrepareValue()
         {
-            return PrepareValue;
+            return PrepareValue.Value;
         }
 
         public override void SetPrepareValue(object obj)
         {
-            PrepareValue = (Double)obj;
+            PrepareValue.Value = (double)obj;
+        }
+
+        public override void UpdateWrappedValue()
+        {
+            if (_value == null)
+                return;
+
+            if (DataValue.Value != null)
+            {
+                _value.Value = (double)DataValue.Value;
+            }
+            _value.Format = FormatSelectedItem;
+            PrepareValue.Format = FormatSelectedItem;
+        }
+
+        public static WrappedValue<double> NewValue(double newValue, string format)
+        {
+            return new WrappedValue<double>(newValue, format, ConvertFn, ConvertBackFn);
+        }
+
+        private static string ConvertFn(object value, string format)
+        {
+            return value.ToString();
+        }
+
+        private static object ConvertBackFn(object value, string format)
+        {
+            var inputString = value as string;
+            var newValue = double.Parse(inputString, CultureInfo.InvariantCulture.NumberFormat);
+            return NewValue(newValue, format);
         }
     }
 
     public class StringVariableInfo : VariableInfoBase
     {
-        public String Value
+        public StringVariableInfo()
         {
-            get
+            Formats = new List<string>
             {
-                if (DataValue.Value == null)
-                {
-                    return null;
-                }
-                else
-                {
-                    if(DataValue.Value is String[])
-                    {
-                        var ss = "";
-                        foreach(var s in (String[])DataValue.Value)
-                        {
-                            ss += s + ";";
-                        }
-                        return ss;
-                    }
-                    else
-                    {
-                        return DataValue.Value.ToString();
-                    }
-                }
-            }
+                FormatType.STRING,
+            };
+
+            FormatSelectedItem = FormatType.STRING;
+
+            _value = NewValue("", FormatSelectedItem);
+
+            PrepareValue = NewValue("", FormatSelectedItem);
         }
 
-        public String WriteValue
+        private WrappedValue<string> _value;
+        public WrappedValue<string> Value
         {
-            get
-            {
-                if (DataValue.Value == null)
-                    return null;
-                else
-                    return (String)DataValue.Value;
-            }
+            get { return _value; }
+        }
+
+        public WrappedValue<string> WriteValue
+        {
+            get { return _value; }
 
             set
             {
-                DataValue.Value = value;
-                this.SetProperty("WriteValue");
+                DataValue.Value = value.Value;
+                this.SetProperty(ref this._value, value);
             }
         }
 
-        public String PrepareValue { get; set; }
+        public WrappedValue<string> PrepareValue { get; set; }
+
         public override object GetPrepareValue()
         {
-            return PrepareValue;
+            return PrepareValue.Value;
         }
 
         public override void SetPrepareValue(object obj)
         {
-            PrepareValue = (String)obj;
+            PrepareValue.Value = (String)obj;
+        }
+
+        public override void UpdateWrappedValue()
+        {
+            if (_value == null)
+                return;
+
+            if (DataValue.Value != null)
+            {
+                _value.Value = (string)DataValue.Value;
+            }
+            _value.Format = FormatSelectedItem;
+            PrepareValue.Format = FormatSelectedItem;
+        }
+
+        public static WrappedValue<string> NewValue(string newValue, string format)
+        {
+            return new WrappedValue<string>(newValue, format, ConvertFn, ConvertBackFn);
+        }
+
+        private static string ConvertFn(object value, string format)
+        {
+            if (value == null)
+                return "";
+            else
+                return value.ToString();
+        }
+
+        private static object ConvertBackFn(object value, string format)
+        {
+            var inputValue = value as string;
+            if(inputValue== null)
+            {
+                return NewValue("", format);
+            }
+            else
+            {
+                return NewValue(inputValue, format);
+            }
         }
     }
 
     public class DateTimeVariableInfo : VariableInfoBase
     {
-        public DateTime Value
+        public DateTimeVariableInfo()
         {
-            get
+            Formats = new List<string>
             {
-                if (DataValue.Value == null)
-                    return DateTime.Now;
-                else
-                    return (DateTime)DataValue.Value;
-            }
+                FormatType.DATE_AND_TIME,
+            };
+
+            FormatSelectedItem = FormatType.DATE_AND_TIME;
+
+            _value = NewValue(DateTime.MinValue, FormatSelectedItem);
+
+            PrepareValue = NewValue(DateTime.MinValue, FormatSelectedItem);
         }
 
-        public DateTime WriteValue
+        private WrappedValue<DateTime> _value;
+        public WrappedValue<DateTime> Value
         {
-            get
-            {
-                if (DataValue.Value == null)
-                    return DateTime.Now;
-                else
-                    return (DateTime)DataValue.Value;
-            }
+            get { return _value; }
+        }
+
+        public WrappedValue<DateTime> WriteValue
+        {
+            get { return Value; }
 
             set
             {
-                DataValue.Value = value;
-                this.SetProperty("WriteValue");
+                DataValue.Value = value.Value;
+                this.SetProperty(ref this._value, value);
             }
         }
 
-        public DateTime PrepareValue { get; set; }
+        public WrappedValue<DateTime> PrepareValue { get; set; }
+
         public override object GetPrepareValue()
         {
-            return PrepareValue;
+            return PrepareValue.Value;
         }
 
         public override void SetPrepareValue(object obj)
         {
-            PrepareValue = (DateTime)obj;
+            PrepareValue.Value = (DateTime)obj;
+        }
+
+        public override void UpdateWrappedValue()
+        {
+            if (_value == null)
+                return;
+
+            if (DataValue.Value != null)
+            {
+                _value.Value = (DateTime)DataValue.Value;
+            }
+            _value.Format = FormatSelectedItem;
+            PrepareValue.Format = FormatSelectedItem;
+        }
+
+        private static readonly string DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss.fff";
+
+        public static WrappedValue<DateTime> NewValue(DateTime newValue, string format)
+        {
+            return new WrappedValue<DateTime>(newValue, format, ConvertFn, ConvertBackFn);
+        }
+
+        private static string ConvertFn(object value, string format)
+        {
+            return ((DateTime)value).ToString(DATE_TIME_FORMAT);
+        }
+
+        private static object ConvertBackFn(object value, string format)
+        {
+            var dt = DateTime.ParseExact((string)value, DATE_TIME_FORMAT, null);
+            return NewValue(dt, format);
         }
     }
 
     public class VariantVariableInfo : VariableInfoBase
     {
+        public VariantVariableInfo()
+        {
+            Formats = new List<string>
+            {
+                FormatType.VARIANT
+            };
+
+            FormatSelectedItem = FormatType.VARIANT;
+        }
+
         public object Value
         {
             get
@@ -707,7 +1348,7 @@ namespace Jupiter
             set
             {
                 DataValue.Value = value;
-                this.SetProperty("WriteValue");
+                this.RaisePropertyChanged("WriteValue");
             }
         }
 
@@ -724,83 +1365,61 @@ namespace Jupiter
         }
     }
 
-    public abstract class VariableInfoBase : INotifyPropertyChanged
+    public abstract class VariableInfoBase : BindableBase
     {
-        private bool isSelected;
-        public bool IsSelected
+        public List<string> Formats { get; protected set; }
+
+        public virtual object ConvertBack(object value)
         {
-            get
-            {
-                return isSelected;
-            }
-
-            set
-            {
-                if (isSelected == value)
-                    return;
-
-                isSelected = value;
-                this.SetProperty("IsSelected");
-            }
+            return this;
         }
 
         public VariableInfoBase()
         {
             this.DataValue = new DataValue(StatusCodes.UncertainInitialValue);
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void SetProperty(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            errorsContainer = new ErrorsContainer<string>(OnErrorsChanged);
         }
 
         public string Type { get; set; }
 
         public Interfaces.IVariableConfiguration VariableConfiguration { get; set; }
 
+        private string fmtItem;
+        public string FormatSelectedItem
+        {
+            get { return fmtItem; }
+            set {
+                this.SetProperty(ref fmtItem, value);
+                this.UpdateWrappedValue();
+                this.RaisePropertyChanged("Value");
+                this.RaisePropertyChanged("PrepareValue");
+            }
+        }
+
+        private bool isSelected;
+        public bool IsSelected
+        {
+            get { return isSelected; }
+            set { this.SetProperty(ref isSelected, value); }
+        }
+
         private NodeId nodeId;
         public NodeId NodeId
         {
-            get
-            {
-                return nodeId;
-            }
-
-            set
-            {
-                if (nodeId == value)
-                    return;
-
-                nodeId = value;
-                this.SetProperty("NodeId");
-            }
+            get { return nodeId; }
+            set { this.SetProperty(ref nodeId, value); }
         }
 
         private string displayname;
         public string DisplayName
         {
-            get
-            {
-                return displayname;
-            }
-
-            set
-            {
-                if (displayname == value)
-                    return;
-
-                displayname = value;
-                this.SetProperty("DisplayName");
-            }
+            get { return displayname; }
+            set { this.SetProperty(ref displayname, value); }
         }
 
         public StatusCode StatusCode
         {
-            get
-            {
-                return DataValue.StatusCode;
-            }
+            get { return DataValue.StatusCode; }
 
             set
             {
@@ -811,10 +1430,7 @@ namespace Jupiter
 
         public DateTime ServerTimestamp
         {
-            get
-            {
-                return DataValue.ServerTimestamp;
-            }
+            get { return DataValue.ServerTimestamp; }
 
             set
             {
@@ -825,10 +1441,7 @@ namespace Jupiter
 
         public DateTime SourceTimestamp
         {
-            get
-            {
-                return DataValue.SourceTimestamp;
-            }
+            get { return DataValue.SourceTimestamp; }
 
             set
             {
@@ -839,17 +1452,19 @@ namespace Jupiter
 
         public uint ClientHandle;
 
-        public DataValue DataValue;
-
-        public void Update(VariableInfoBase vi)
+        private DataValue dataValue;
+        public DataValue DataValue
         {
-            this.DataValue = vi.DataValue;
-            this.Type = vi.DataValue.WrappedValue.TypeInfo.BuiltInType.ToString();
-            this.SetProperty("Type");
-            this.SetProperty("Value");
-            this.SetProperty("StatusCode");
-            this.SetProperty("ServerTimestamp");
-            this.SetProperty("SourceTimestamp");
+            get { return dataValue; }
+            set
+            {
+                this.dataValue = value;
+                this.UpdateWrappedValue();
+                this.RaisePropertyChanged("Value");
+                this.RaisePropertyChanged("StatusCode");
+                this.RaisePropertyChanged("ServerTimestamp");
+                this.RaisePropertyChanged("SourceTimestamp");
+            }
         }
 
         public void SetItem(NodeId nodeid, string displayname, uint handle, DataValue dv)
@@ -870,14 +1485,47 @@ namespace Jupiter
                 return;
 
             this.DataValue = dv;
-            this.SetProperty("Value");
-            this.SetProperty("StatusCode");
-            this.SetProperty("ServerTimestamp");
-            this.SetProperty("SourceTimestamp");
         }
+
+        public virtual void UpdateWrappedValue() { }
 
         public abstract object GetPrepareValue();
 
         public abstract void SetPrepareValue(object obj);
+
+        private ErrorsContainer<string> errorsContainer;
+        protected void OnErrorsChanged([CallerMemberName] string propertyName = null)
+        {
+            this.ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
+        }
+
+        public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
+
+        public System.Collections.IEnumerable GetErrors(string propertyName)
+        {
+            return this.errorsContainer.GetErrors(propertyName);
+        }
+
+        public bool HasErrors
+        {
+            get { return this.errorsContainer.HasErrors; }
+        }
+
+        protected bool ValidateProperty(object value, [CallerMemberName] string propertyName = null)
+        {
+            var context = new ValidationContext(this) { MemberName = propertyName };
+            var validationErrors = new List<System.ComponentModel.DataAnnotations.ValidationResult>();
+            if (!Validator.TryValidateProperty(value, context, validationErrors))
+            {
+                var errors = validationErrors.Select(error => error.ErrorMessage);
+                this.errorsContainer.SetErrors(propertyName, errors);
+                return true;
+            }
+            else
+            {
+                this.errorsContainer.ClearErrors(propertyName);
+                return false;
+            }
+        }
     }
 }

@@ -274,6 +274,7 @@ namespace UnitTestJupiter
                             {
                                 Console.WriteLine(first[i]);
                                 x.SelectedIndex = i;
+                                x.SelectedItem = x.Endpoints.First();
                                 break;
                             }
                         }

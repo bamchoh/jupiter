@@ -168,6 +168,7 @@
     <Compile Include="Commands\AsyncCommand.cs" />
     <Compile Include="Commands\DelegateCommand.cs" />
     <Compile Include="Commands\ShowMessageCommand.cs" />
+    <Compile Include="Converter\DecToHexConverter.cs" />
     <Compile Include="Events\ErrorNotificationEvent.cs" />
     <Compile Include="Events\SelectedIndexForTabControlChangedEvent.cs" />
     <Compile Include="Events\NowLoadingEvent.cs" />

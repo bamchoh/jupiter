@@ -108,13 +108,7 @@ namespace Jupiter.Models
 
                 for (int i = 0; i < values.Count; i++)
                 {
-                    var conf = _itemsToRead[i].VariableConfiguration;
-                    var vi = variableInfoManager.NewVariableInfo(conf);
-                    vi.SetItem(_itemsToRead[i].NodeId, _itemsToRead[i].DisplayName, _itemsToRead[i].ClientHandle, values[i]);
-                    var isSelected = _itemsToRead[i].IsSelected;
-                    vi.SetPrepareValue(_itemsToRead[i].GetPrepareValue());
-                    _itemsToRead[i] = vi;
-                    vi.IsSelected = isSelected;
+                    _itemsToRead[i].DataValue = values[i];
                 }
 
                 return;

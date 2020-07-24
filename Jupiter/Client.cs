@@ -651,6 +651,7 @@ namespace Jupiter
                         }
                     }
                 }
+
                 StatusCodeCollection results = null;
                 DiagnosticInfoCollection diagnosticInfos = null;
 
@@ -665,20 +666,7 @@ namespace Jupiter
 
                 for (int i = 0; i < values.Count; i++)
                 {
-                    var conf = items[i].VariableConfiguration;
-                    var vi = variableInfoManager.NewVariableInfo(conf);
-                    vi.ServerTimestamp = items[i].ServerTimestamp;
-                    vi.SourceTimestamp = items[i].SourceTimestamp;
-                    vi.StatusCode = results[i];
-                    if (StatusCode.IsNotGood(results[i]))
-                    {
-                        values[i].Value.Value = items[i].DataValue.Value;
-                    }
-                    vi.SetItem(items[i].NodeId, items[i].DisplayName, items[i].ClientHandle, values[i].Value);
-                    var isSelected = items[i].IsSelected;
-                    vi.SetPrepareValue(items[i].GetPrepareValue());
-                    items[i] = vi;
-                    vi.IsSelected = isSelected;
+                    items[i].DataValue = values[i].Value;
                 }
             }
             catch (Exception ex)

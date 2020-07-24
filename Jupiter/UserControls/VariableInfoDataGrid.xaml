@@ -6,27 +6,41 @@
              xmlns:b="clr-namespace:Jupiter.Behaviors"
              xmlns:local="clr-namespace:Jupiter.UserControls"
              xmlns:local2="clr-namespace:Jupiter"
+             xmlns:converter="clr-namespace:Jupiter.Converter"
              xmlns:materialDesign="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
              HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
              >
     <UserControl.Resources>
+        <converter:DecToHexConverter x:Key="DecToHexConverter" />
         <DataTemplate x:Key="VariantTypeForShow">
             <TextBlock Text="{Binding Path=Value}" />
         </DataTemplate>
+        <DataTemplate x:Key="DefaultTypeForShow">
+            <TextBlock Text="{Binding Path=Value, Converter={StaticResource DecToHexConverter}}" />
+        </DataTemplate>
         <DataTemplate x:Key="VariantTypeForEdit">
-            <TextBox Text="{Binding Path=WriteValue, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" b:TextBoxBehaviors.IsFocusSelect="True" />
+            <TextBox Text="{Binding Path=WriteValue, Mode=OneWay, UpdateSourceTrigger=LostFocus}" b:TextBoxBehaviors.IsFocusSelect="True" />
+        </DataTemplate>
+        <DataTemplate x:Key="DefaultTypeForEdit">
+            <TextBox Text="{Binding Path=WriteValue, Converter={StaticResource DecToHexConverter}, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" b:TextBoxBehaviors.IsFocusSelect="True" />
         </DataTemplate>
         <DataTemplate x:Key="BoolType">
             <CheckBox IsChecked="{Binding Path=Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsTabStop="False"/>
+        </DataTemplate>
+        <DataTemplate x:Key="BoolTypePrepareValue">
+            <CheckBox IsChecked="{Binding Path=PrepareValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsTabStop="False" />
         </DataTemplate>
         <DataTemplate x:Key="VariantTypeForShowPrepareValue">
             <TextBlock Text="{Binding Path=PrepareValue}" />
         </DataTemplate>
         <DataTemplate x:Key="VariantTypeForEditPrepareValue">
-            <TextBox Text="{Binding Path=PrepareValue, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" b:TextBoxBehaviors.IsFocusSelect="True"/>
+            <TextBox Text="{Binding Path=PrepareValue, Mode=OneWay}" b:TextBoxBehaviors.IsFocusSelect="True"/>
         </DataTemplate>
-        <DataTemplate x:Key="BoolTypePrepareValue">
-            <CheckBox IsChecked="{Binding Path=PrepareValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsTabStop="False" />
+        <DataTemplate x:Key="DefaultTypeForShowPrepareValue">
+            <TextBlock Text="{Binding Path=PrepareValue, Converter={StaticResource DecToHexConverter}}" />
+        </DataTemplate>
+        <DataTemplate x:Key="DefaultTypeForEditPrepareValue">
+            <TextBox Text="{Binding Path=PrepareValue, Converter={StaticResource DecToHexConverter}, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" b:TextBoxBehaviors.IsFocusSelect="True"/>
         </DataTemplate>
     </UserControl.Resources>
 
@@ -40,15 +54,24 @@
                 <DataGridTextColumn IsReadOnly="True" Header="Node ID" Binding="{Binding NodeId}" />
                 <DataGridTextColumn IsReadOnly="True" Header="DisplayName" Binding="{Binding DisplayName}" />
                 <DataGridTextColumn IsReadOnly="True" Header="Type" Binding="{Binding Type}" />
+                <DataGridTemplateColumn IsReadOnly="True" Header="Format">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <ComboBox ItemsSource="{Binding Formats}" SelectedItem="{Binding FormatSelectedItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
                 <DataGridTemplateColumn Header="Value">
                     <DataGridTemplateColumn.CellTemplateSelector>
                         <local2:ValueTemplateSelector
+			                DefaultTemplate="{StaticResource DefaultTypeForShow}"
 			                VariantTemplate="{StaticResource VariantTypeForShow}"
 			                BoolTemplate="{StaticResource BoolType}"
 			                />
                     </DataGridTemplateColumn.CellTemplateSelector>
                     <DataGridTemplateColumn.CellEditingTemplateSelector>
                         <local2:ValueTemplateSelector
+			                DefaultTemplate="{StaticResource DefaultTypeForEdit}"
 			                VariantTemplate="{StaticResource VariantTypeForEdit}"
 			                BoolTemplate="{StaticResource BoolType}"
 			                />
@@ -58,12 +81,14 @@
                 <DataGridTemplateColumn Header="Prepare Value">
                     <DataGridTemplateColumn.CellTemplateSelector>
                         <local2:ValueTemplateSelector
+			                DefaultTemplate="{StaticResource DefaultTypeForShowPrepareValue}"
 			                VariantTemplate="{StaticResource VariantTypeForShowPrepareValue}"
 			                BoolTemplate="{StaticResource BoolTypePrepareValue}"
 			                />
                     </DataGridTemplateColumn.CellTemplateSelector>
                     <DataGridTemplateColumn.CellEditingTemplateSelector>
                         <local2:ValueTemplateSelector
+			                DefaultTemplate="{StaticResource DefaultTypeForEditPrepareValue}"
 			                VariantTemplate="{StaticResource VariantTypeForEditPrepareValue}"
 			                BoolTemplate="{StaticResource BoolTypePrepareValue}"
 			                />

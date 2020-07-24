@@ -8,6 +8,9 @@ namespace Jupiter
         public DataTemplate VariantTemplate
         { get; set; }
 
+        public DataTemplate DefaultTemplate
+        { get; set; }
+
         public DataTemplate BoolTemplate
         { get; set; }
 
@@ -22,40 +25,40 @@ namespace Jupiter
                 return BoolTemplate;
 
             if (item is SByteVariableInfo)
-                return VariantTemplate;
+                return DefaultTemplate;
 
             if (item is ByteVariableInfo)
-                return VariantTemplate;
+                return DefaultTemplate;
 
             if (item is Int16VariableInfo)
-                return VariantTemplate;
+                return DefaultTemplate;
 
             if (item is UInt16VariableInfo)
-                return VariantTemplate;
+                return DefaultTemplate;
 
             if (item is Int32VariableInfo)
-                return VariantTemplate;
+                return DefaultTemplate;
 
             if (item is UInt32VariableInfo)
-                return VariantTemplate;
+                return DefaultTemplate;
 
             if (item is Int64VariableInfo)
-                return VariantTemplate;
+                return DefaultTemplate;
 
             if (item is UInt64VariableInfo)
-                return VariantTemplate;
+                return DefaultTemplate;
 
             if (item is FloatVariableInfo)
-                return VariantTemplate;
+                return DefaultTemplate;
 
             if (item is DoubleVariableInfo)
-                return VariantTemplate;
+                return DefaultTemplate;
 
             if (item is StringVariableInfo)
-                return VariantTemplate;
+                return DefaultTemplate;
 
             if (item is DateTimeVariableInfo)
-                return VariantTemplate;
+                return DefaultTemplate;
 
             if (item is VariantVariableInfo)
                 return VariantTemplate;

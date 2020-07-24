@@ -80,7 +80,7 @@ namespace Jupiter.Models
                     var vi = this.monitoredItems[i];
                     if (vi.ClientHandle == change.ClientHandle)
                     {
-                        vi.Update(change);
+                        vi.DataValue = change.DataValue;
                     }
                 }
             }
