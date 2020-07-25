@@ -24,5 +24,13 @@ namespace Jupiter.Views
         {
             InitializeComponent();
         }
+
+        private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            var vm = (Jupiter.ViewModels.LoadingViewModel)this.DataContext;
+            var pb = (PasswordBox)e.OriginalSource;
+
+            vm.Password = pb.SecurePassword;
+        }
     }
 }

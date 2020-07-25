@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Prism.Events;
 using System.Threading;
+using System.Security;
 
 namespace Jupiter.Events
 {
@@ -22,7 +23,7 @@ namespace Jupiter.Events
 
         public string UserName;
 
-        public string Password;
+        public SecureString Password;
 
         public int SelectedIndex;
 

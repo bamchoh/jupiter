@@ -13,6 +13,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Security;
+using System.Runtime.InteropServices;
 using System.ComponentModel;
 using System.Collections.ObjectModel;
 using Opc.Ua;
@@ -331,7 +333,7 @@ namespace Jupiter
             return endpoints;
         }
 
-        private async Task _createSession(EndpointDescription endpointDescription, string username, string password)
+        private async Task _createSession(EndpointDescription endpointDescription, string username, SecureString password)
         {
             UserIdentity uid;
             if (string.IsNullOrEmpty(username))
@@ -340,12 +342,12 @@ namespace Jupiter
             }
             else
             {
-                if (string.IsNullOrEmpty(password))
+                if (password == null)
                 {
-                    password = "";
+                    password = new SecureString();
                 }
 
-                uid = new UserIdentity(username, password);
+                uid = new UserIdentity(username, Marshal.PtrToStringUni(Marshal.SecureStringToGlobalAllocUnicode(password)));
             }
 
             var endpointConfiguration = EndpointConfiguration.Create(config);
@@ -404,7 +406,7 @@ namespace Jupiter
                 SecurityList = securityList,
                 Endpoints = endpointUrls,
                 UserName = "",
-                Password = "",
+                Password = new SecureString(),
                 Semaphore = sem,
             };
             this.EventAggregator

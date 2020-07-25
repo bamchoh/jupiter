@@ -3,6 +3,7 @@ using System.Collections;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Security;
 
 using Prism.Commands;
 using Prism.Interactivity.InteractionRequest;
@@ -44,7 +45,7 @@ namespace Jupiter.ViewModels
             }
         }
 
-        public string Password
+        public SecureString Password
         {
             get
             {

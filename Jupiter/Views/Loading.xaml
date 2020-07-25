@@ -20,7 +20,7 @@
         </DockPanel>
         <DockPanel>
             <TextBlock Text="Password"  Style="{StaticResource MaterialDesignSubheadingTextBlock}" Margin="5" />
-            <TextBox Text="{Binding Password}" Margin="5" />
+            <PasswordBox Margin="5" PasswordChanged="PasswordBox_PasswordChanged" />
         </DockPanel>
         <Button Content="Connect"
                 Style="{DynamicResource MaterialDesignFlatButton}"
