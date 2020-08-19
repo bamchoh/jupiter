@@ -191,6 +191,7 @@
     <Compile Include="Models\SubscriptionModel.cs" />
     <Compile Include="NodeInfo.cs" />
     <Compile Include="OPCUAReference.cs" />
+    <Compile Include="ServerAndEndpointsPair.cs" />
     <Compile Include="ViewModels\LoadingViewModel.cs" />
     <Compile Include="Views\Loading.xaml.cs">
       <DependentUpon>Loading.xaml</DependentUpon>
