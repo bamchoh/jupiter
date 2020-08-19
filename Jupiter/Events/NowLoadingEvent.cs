@@ -15,11 +15,9 @@ namespace Jupiter.Events
 
     public class NowLoading
     {
+        public List<ServerAndEndpointsPair> ServerList;
+
         public SemaphoreSlim Semaphore;
-
-        public Dictionary<string, List<string>> SecurityList;
-
-        public List<string> Endpoints;
 
         public string UserName;
 
@@ -27,6 +25,6 @@ namespace Jupiter.Events
 
         public int SelectedIndex;
 
-        public string SelectedItem;
+        public int SelectedServerIndex;
     }
 }

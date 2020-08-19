@@ -29,9 +29,42 @@ using System.CodeDom;
 using System.Net;
 using System.ComponentModel.DataAnnotations;
 using System.Collections.Specialized;
+using System.Security.Policy;
 
 namespace Jupiter
 {
+    public class ServerAndEndpointsPair
+    {
+        public string DiscoveryURL { get; }
+        public string ApplicationName { get; }
+        public EndpointDescriptionCollection Endpoints { get; set; }
+
+        public ServerAndEndpointsPair(string discoveryURL, string applicationName)
+        {
+            DiscoveryURL = discoveryURL;
+            ApplicationName = applicationName;
+        }
+
+        public override string ToString()
+        {
+            return string.Format("{0} - {1}", ApplicationName, DiscoveryURL);
+        }
+
+        public static List<string> SecurityList(List<ServerAndEndpointsPair> servers, int selectedIndex)
+        {
+            var list = new List<string>();
+
+            foreach (var endpoint in servers[selectedIndex].Endpoints)
+            {
+                list.Add(string.Format("{0} - {1}",
+                    Opc.Ua.SecurityPolicies.GetDisplayName(endpoint.SecurityPolicyUri),
+                    endpoint.SecurityMode));
+            }
+
+            return list;
+        }
+    }
+
     public class Client : BindableBase, Interfaces.IConnection, Interfaces.IReferenceFetchable, Interfaces.INodeInfoGetter, Interfaces.ISubscriptionOperatable, Interfaces.IOneTimeAccessOperator
     {
         public IEventAggregator EventAggregator { get; set; }
@@ -304,7 +337,7 @@ namespace Jupiter
             return session.FetchReferences(id);
         }
 
-        public EndpointDescriptionCollection Discover(string discoveryUrl, int operationTimeout)
+        public List<ServerAndEndpointsPair> Discover(string discoveryUrl, int operationTimeout)
         {
             Uri uri = new Uri(discoveryUrl);
 
@@ -314,23 +347,34 @@ namespace Jupiter
                 configuration.OperationTimeout = operationTimeout;
             }
 
-            var endpoints = new EndpointDescriptionCollection();
-
+            ApplicationDescriptionCollection servers;
             using (DiscoveryClient client = DiscoveryClient.Create(uri, configuration))
             {
-                EndpointDescriptionCollection endpointCollection = null;
+                servers = client.FindServers(null);
+            }
 
-                client.GetEndpoints(null, client.Endpoint.EndpointUrl, null, null, out endpointCollection);
+            var discoveredServers = new List<ServerAndEndpointsPair>();
 
-                for (int i=0;i<endpointCollection.Count();i++)
+            foreach (var s in servers)
+            {
+                foreach(var url in s.DiscoveryUrls)
                 {
-                    var got = endpointCollection[i];
+                    var discoveredServer = new ServerAndEndpointsPair(url, s.ApplicationName.Text);
 
-                    endpoints.Add(got);
+                    using (DiscoveryClient client = DiscoveryClient.Create(new Uri(url), configuration))
+                    {
+                        EndpointDescriptionCollection endpointCollection = null;
+
+                        client.GetEndpoints(null, url, null, null, out endpointCollection);
+
+                        discoveredServer.Endpoints = endpointCollection;
+                    }
+
+                    discoveredServers.Add(discoveredServer);
                 }
             }
 
-            return endpoints;
+            return discoveredServers;
         }
 
         private async Task _createSession(EndpointDescription endpointDescription, string username, SecureString password)
@@ -368,43 +412,12 @@ namespace Jupiter
 
         public async Task CreateSession(string endpointURI)
         {
-            var endpoints = await Task.Run(() => Discover(endpointURI, 15000));
-
-            var securityList = new Dictionary<string, List<string>>();
-            var endpointUrls = new List<string>();
-            var endpointIndex = new Dictionary<string, List<int>>();
-            for(int i = 0;i<endpoints.Count;i++)
-            {
-                var ed = endpoints[i];
-                var discoveryURL = "";
-                if (ed.Server.DiscoveryUrls.Count() != 0)
-                    discoveryURL = ed.Server.DiscoveryUrls[0];
-
-                var key = string.Format("{0} - {1}",
-                    ed.EndpointUrl,
-                    ed.Server.ApplicationName);
-
-                if (!securityList.ContainsKey(key))
-                {
-                    securityList[key] = new List<string>();
-                    endpointUrls.Add(key);
-                }
-
-                securityList[key].Add(string.Format("{0} - {1}",
-                    Opc.Ua.SecurityPolicies.GetDisplayName(ed.SecurityPolicyUri),
-                    ed.SecurityMode));
-
-                if (!endpointIndex.ContainsKey(key))
-                    endpointIndex[key] = new List<int>();
-
-                endpointIndex[key].Add(i);
-            }
+            var servers = await Task.Run(() => Discover(endpointURI, 15000));
 
             var sem = new SemaphoreSlim(1, 1);
             var result = new Events.NowLoading()
             {
-                SecurityList = securityList,
-                Endpoints = endpointUrls,
+                ServerList = servers,
                 UserName = "",
                 Password = new SecureString(),
                 Semaphore = sem,
@@ -412,54 +425,14 @@ namespace Jupiter
             this.EventAggregator
                 .GetEvent<Events.NowLoadingEvent>()
                 .Publish(result);
+
             await sem.WaitAsync();
-
-            System.Diagnostics.Trace.WriteLine("--- endpoints ---");
-            foreach(var ed in endpoints)
-            {
-                var key = string.Format("{0} - {1} - {2} - {3}",
-                    ed.EndpointUrl,
-                    ed.Server.ApplicationName,
-                    Opc.Ua.SecurityPolicies.GetDisplayName(ed.SecurityPolicyUri),
-                    ed.SecurityMode);
-
-                System.Diagnostics.Trace.WriteLine(key);
-            }
-
-            System.Diagnostics.Trace.WriteLine("--- security lists ---");
-            foreach(var s in securityList)
-            {
-                System.Diagnostics.Trace.WriteLine(string.Format("--- key: {0}", s.Key));
-                foreach(var v in s.Value)
-                {
-                    System.Diagnostics.Trace.WriteLine(string.Format("---   val: {0}", v));
-                }
-            }
 
             try
             {
-                var k = result.SelectedItem;
-                var i = endpointIndex[k][result.SelectedIndex];
+                var endpoint = servers[result.SelectedServerIndex].Endpoints[result.SelectedIndex];
 
-                System.Diagnostics.Trace.WriteLine("--- selected item ---");
-                System.Diagnostics.Trace.WriteLine(string.Format("---   {0}", k));
-
-                System.Diagnostics.Trace.WriteLine("--- selected index ---");
-                System.Diagnostics.Trace.WriteLine(string.Format("---   {0}", result.SelectedIndex));
-
-                System.Diagnostics.Trace.WriteLine("--- index ---");
-                System.Diagnostics.Trace.WriteLine(string.Format("---   {0}", i));
-
-                System.Diagnostics.Trace.WriteLine("--- selected endpoint ---");
-                System.Diagnostics.Trace.WriteLine(string.Format("{0} - {1} - {2} - {3}",
-                    endpoints[i].EndpointUrl,
-                    endpoints[i].Server.ApplicationName,
-                    Opc.Ua.SecurityPolicies.GetDisplayName(endpoints[i].SecurityPolicyUri),
-                    endpoints[i].SecurityMode));
-
-                var username = result.UserName;
-                var password = result.Password;
-                await _createSession(endpoints[i], username, password);
+                await _createSession(endpoint, result.UserName, result.Password);
             }
             finally
             {

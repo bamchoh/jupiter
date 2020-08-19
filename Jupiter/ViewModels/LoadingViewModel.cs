@@ -21,14 +21,14 @@ namespace Jupiter.ViewModels
         public IList SecurityList {
             get
             {
-                return model.SecurityList[SelectedItem];
+                return ServerAndEndpointsPair.SecurityList(model.ServerList, SelectedServerIndex);
             }
         }
 
         public IList Endpoints {
             get
             {
-                return model.Endpoints;
+                return model.ServerList;
             }
         }
 
@@ -70,15 +70,15 @@ namespace Jupiter.ViewModels
             }
         }
 
-        public string SelectedItem {
+        public int SelectedServerIndex {
             get
             {
-                return model.SelectedItem;
+                return model.SelectedServerIndex;
             }
 
             set
             {
-                model.SelectedItem = value;
+                model.SelectedServerIndex = value;
                 this.RaisePropertyChanged("SecurityList");
             }
         }
@@ -87,7 +87,7 @@ namespace Jupiter.ViewModels
         {
             this.model = model;
             SelectedIndex = 0;
-            SelectedItem = model.SecurityList.First().Key;
+            SelectedServerIndex = 0;
         }
     }
 }

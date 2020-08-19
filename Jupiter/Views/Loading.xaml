@@ -10,7 +10,7 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <StackPanel Margin="16">
         <TextBlock Text="Endpoint" Style="{StaticResource MaterialDesignTitleTextBlock}" Margin="5" />
-        <ComboBox ItemsSource="{Binding Endpoints, Mode=OneWay}" SelectedItem="{Binding SelectedItem}" Margin="5" />
+        <ComboBox ItemsSource="{Binding Endpoints, Mode=OneWay}" SelectedIndex="{Binding SelectedServerIndex}" Margin="5" />
         <TextBlock Text="Select Security"  Style="{StaticResource MaterialDesignTitleTextBlock}" Margin="5" />
         <ComboBox ItemsSource="{Binding SecurityList, Mode=OneWay}" SelectedIndex="{Binding SelectedIndex}" Margin="5" />
         <TextBlock Text="Login User"  Style="{StaticResource MaterialDesignTitleTextBlock}" Margin="5" />
