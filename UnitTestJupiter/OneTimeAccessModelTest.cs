@@ -267,14 +267,14 @@ namespace UnitTestJupiter
                     .GetEvent<Jupiter.Events.NowLoadingEvent>()
                     .Subscribe((x) =>
                     {
-                        var first = x.SecurityList.First().Value;
-                        for(int i=0;i<first.Count;i++)
+                        var first = x.ServerList.First();
+                        for(int i=0;i<first.Endpoints.Count;i++)
                         {
-                            if(first[i].EndsWith("None"))
+                            if(first.Endpoints[i].SecurityMode.ToString().EndsWith("None"))
                             {
-                                Console.WriteLine(first[i]);
+                                Console.WriteLine(first.Endpoints[i].SecurityMode);
                                 x.SelectedIndex = i;
-                                x.SelectedItem = x.Endpoints.First();
+                                x.SelectedServerIndex = 0;
                                 break;
                             }
                         }
