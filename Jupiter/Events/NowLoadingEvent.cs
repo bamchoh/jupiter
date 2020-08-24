@@ -29,5 +29,7 @@ namespace Jupiter.Events
         public int SelectedServerIndex;
 
         public Client Client;
+
+        public bool Result;
     }
 }

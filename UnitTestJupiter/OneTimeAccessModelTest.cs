@@ -278,6 +278,7 @@ namespace UnitTestJupiter
                                 Console.WriteLine(first.Endpoints[i].SecurityMode);
                                 x.SelectedIndex = i;
                                 x.SelectedServerIndex = 0;
+                                x.Result = true;
                                 break;
                             }
                         }

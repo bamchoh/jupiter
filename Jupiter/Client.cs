@@ -422,6 +422,7 @@ namespace Jupiter
                 Client = this,
                 Semaphore = sem,
             };
+
             this.EventAggregator
                 .GetEvent<Events.NowLoadingEvent>()
                 .Publish(result);
@@ -430,6 +431,9 @@ namespace Jupiter
 
             try
             {
+                if (!result.Result)
+                    return;
+
                 var endpoint = servers[result.SelectedServerIndex].Endpoints[result.SelectedIndex];
 
                 await _createSession(endpoint, result.UserName, result.Password);

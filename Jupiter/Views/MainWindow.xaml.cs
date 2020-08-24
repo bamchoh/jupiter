@@ -36,7 +36,7 @@ namespace Jupiter.Views
                     await x.Semaphore.WaitAsync();
                     try
                     {
-                        await MaterialDesignThemes.Wpf.DialogHostEx.ShowDialog(this, dialogView);
+                        x.Result = (bool)await MaterialDesignThemes.Wpf.DialogHostEx.ShowDialog(this, dialogView);
                     }
                     finally
                     {
