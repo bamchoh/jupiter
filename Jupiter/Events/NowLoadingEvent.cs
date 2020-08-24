@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Prism.Events;
 using System.Threading;
 using System.Security;
+using System.Windows.Input;
 
 namespace Jupiter.Events
 {
@@ -26,5 +27,7 @@ namespace Jupiter.Events
         public int SelectedIndex;
 
         public int SelectedServerIndex;
+
+        public Client Client;
     }
 }

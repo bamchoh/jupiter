@@ -11,6 +11,8 @@ using Prism.Mvvm;
 
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
+using System.Windows.Input;
+using System.Windows.Documents;
 
 namespace Jupiter.ViewModels
 {
@@ -21,7 +23,10 @@ namespace Jupiter.ViewModels
         public IList SecurityList {
             get
             {
-                return ServerAndEndpointsPair.SecurityList(model.ServerList, SelectedServerIndex);
+                var s = ServerAndEndpointsPair.SecurityList(model.ServerList, SelectedServerIndex);
+                if (s.Count != 0)
+                    SelectedIndex = 0;
+                return s;
             }
         }
 
@@ -67,6 +72,7 @@ namespace Jupiter.ViewModels
             set
             {
                 model.SelectedIndex = value;
+                this.RaisePropertyChanged("SelectedIndex");
             }
         }
 
@@ -80,14 +86,31 @@ namespace Jupiter.ViewModels
             {
                 model.SelectedServerIndex = value;
                 this.RaisePropertyChanged("SecurityList");
+                this.RaisePropertyChanged("SecurityListIsNotZero");
             }
         }
+
+        public bool SecurityListIsNotZero
+        {
+            get
+            {
+                return SecurityList.Count != 0;
+            }
+        }
+
+        public ICommand Browse { get; }
 
         public LoadingViewModel(Events.NowLoading model)
         {
             this.model = model;
             SelectedIndex = 0;
             SelectedServerIndex = 0;
+            Browse = new Commands.DelegateCommand((param) =>
+            {
+                model.Client.BrowseSecurityList(model.ServerList[SelectedServerIndex]);
+                this.RaisePropertyChanged("SecurityList");
+                this.RaisePropertyChanged("SecurityListIsNotZero");
+            }, (param) => true);
         }
     }
 }

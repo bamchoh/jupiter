@@ -315,10 +315,27 @@ namespace Jupiter
                 configuration.OperationTimeout = operationTimeout;
             }
 
+            System.Diagnostics.Trace.WriteLine("--- uri ---");
+            System.Diagnostics.Trace.WriteLine(uri.ToString());
+
             ApplicationDescriptionCollection servers;
             using (DiscoveryClient client = DiscoveryClient.Create(uri, configuration))
             {
                 servers = client.FindServers(null);
+            }
+
+            System.Diagnostics.Trace.WriteLine("--- End Find Servers ---");
+            foreach(var s in servers)
+            {
+                System.Diagnostics.Trace.WriteLine("--- Start of Server ---");
+                System.Diagnostics.Trace.WriteLine(string.Format("  ApplicationName    : {0}", s.ApplicationName));
+                System.Diagnostics.Trace.WriteLine(string.Format("  ApplicationUri     : {0}", s.ApplicationUri));
+                System.Diagnostics.Trace.WriteLine(string.Format("  # of DiscoveryURLs : {0}", s.DiscoveryUrls.Count));
+                foreach(var url in s.DiscoveryUrls)
+                {
+                    System.Diagnostics.Trace.WriteLine(string.Format("    DiscoveryURL : {0}", url));
+                }
+                System.Diagnostics.Trace.WriteLine("--- End   of Server ---");
             }
 
             var discoveredServers = new List<ServerAndEndpointsPair>();
@@ -327,22 +344,36 @@ namespace Jupiter
             {
                 foreach(var url in s.DiscoveryUrls)
                 {
-                    var discoveredServer = new ServerAndEndpointsPair(url, s.ApplicationName.Text);
+                    System.Diagnostics.Trace.WriteLine("--- In foreach(s.DiscoveryUrls) ---");
 
-                    using (DiscoveryClient client = DiscoveryClient.Create(new Uri(url), configuration))
-                    {
-                        EndpointDescriptionCollection endpointCollection = null;
-
-                        client.GetEndpoints(null, url, null, null, out endpointCollection);
-
-                        discoveredServer.Endpoints = endpointCollection;
-                    }
+                    var discoveredServer = new ServerAndEndpointsPair(url, s.ApplicationName.Text, configuration);
 
                     discoveredServers.Add(discoveredServer);
                 }
             }
 
+            System.Diagnostics.Trace.WriteLine("--- End of Discover method ---");
+
             return discoveredServers;
+        }
+
+        public void BrowseSecurityList(ServerAndEndpointsPair discoveredServer)
+        {
+            var url = discoveredServer.DiscoveryURL;
+            var configuration = discoveredServer.EndpointConfiguration;
+
+            using (DiscoveryClient client = DiscoveryClient.Create(new Uri(url), configuration))
+            {
+                EndpointDescriptionCollection endpointCollection = null;
+
+                System.Diagnostics.Trace.WriteLine("--- Begin of GetEndpoints ---");
+
+                client.GetEndpoints(null, url, null, null, out endpointCollection);
+
+                System.Diagnostics.Trace.WriteLine("--- End   of GetEndpoints ---");
+
+                discoveredServer.Endpoints = endpointCollection;
+            }
         }
 
         private async Task _createSession(EndpointDescription endpointDescription, string username, SecureString password)
@@ -388,6 +419,7 @@ namespace Jupiter
                 ServerList = servers,
                 UserName = "",
                 Password = new SecureString(),
+                Client = this,
                 Semaphore = sem,
             };
             this.EventAggregator
