@@ -268,6 +268,9 @@ namespace UnitTestJupiter
                     .Subscribe((x) =>
                     {
                         var first = x.ServerList.First();
+
+                        x.Client.BrowseSecurityList(first);
+
                         for(int i=0;i<first.Endpoints.Count;i++)
                         {
                             if(first.Endpoints[i].SecurityMode.ToString().EndsWith("None"))
