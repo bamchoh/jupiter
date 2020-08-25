@@ -33,6 +33,22 @@ using System.Security.Policy;
 
 namespace Jupiter
 {
+    class TrimmedUri : Uri
+    {
+        public TrimmedUri(string uri) : base(uri) { }
+
+        public override string ToString()
+        {
+            var path = base.ToString();
+            var last = path.LastIndexOf('/');
+            if (last == (path.Length - 1))
+            {
+                path = path.Substring(0, path.Length - 1);
+            }
+            return path;
+        }
+    }
+
     public class Client : BindableBase, Interfaces.IConnection, Interfaces.IReferenceFetchable, Interfaces.INodeInfoGetter, Interfaces.ISubscriptionOperatable, Interfaces.IOneTimeAccessOperator
     {
         public IEventAggregator EventAggregator { get; set; }
@@ -307,7 +323,7 @@ namespace Jupiter
 
         public List<ServerAndEndpointsPair> Discover(string discoveryUrl, int operationTimeout)
         {
-            Uri uri = new Uri(discoveryUrl);
+            Uri uri = new TrimmedUri(discoveryUrl);
 
             EndpointConfiguration configuration = EndpointConfiguration.Create();
             if (operationTimeout > 0)
