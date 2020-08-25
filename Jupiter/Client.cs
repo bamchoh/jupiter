@@ -661,6 +661,7 @@ namespace Jupiter
 
                 for (int i = 0; i < values.Count; i++)
                 {
+                    values[i].Value.StatusCode = results[i];
                     items[i].DataValue = values[i].Value;
                 }
             }

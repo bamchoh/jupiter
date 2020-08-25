@@ -12,6 +12,7 @@
              >
     <UserControl.Resources>
         <converter:DecToHexConverter x:Key="DecToHexConverter" />
+        <converter:StatusCodeColorConverter x:Key="StatusCodeColorConverter" />
         <DataTemplate x:Key="VariantTypeForShow">
             <TextBlock Text="{Binding Path=Value}" />
         </DataTemplate>
@@ -77,7 +78,13 @@
 			                />
                     </DataGridTemplateColumn.CellEditingTemplateSelector>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn IsReadOnly="True" Header="StatusCode" Binding="{Binding StatusCode}" />
+                <DataGridTextColumn IsReadOnly="True" Header="StatusCode" Binding="{Binding StatusCode}">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Foreground" Value="{Binding StatusCode, Converter={StaticResource StatusCodeColorConverter}}" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
                 <DataGridTemplateColumn Header="Prepare Value">
                     <DataGridTemplateColumn.CellTemplateSelector>
                         <local2:ValueTemplateSelector
