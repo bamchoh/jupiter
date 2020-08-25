@@ -87,6 +87,9 @@ namespace Jupiter.ViewModels
                 model.SelectedServerIndex = value;
                 this.RaisePropertyChanged("SecurityList");
                 this.RaisePropertyChanged("SecurityListIsNotZero");
+                BrowseMessage = "";
+                this.RaisePropertyChanged("BrowseMessage");
+                this.RaisePropertyChanged("ExistBrowseMessage");
             }
         }
 
@@ -100,16 +103,47 @@ namespace Jupiter.ViewModels
 
         public ICommand Browse { get; }
 
+        public string BrowseMessage { get; set; }
+
+        public object ExistBrowseMessage
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(BrowseMessage))
+                    return System.Windows.Visibility.Collapsed;
+                else
+                    return System.Windows.Visibility.Visible;
+            }
+        }
+
         public LoadingViewModel(Events.NowLoading model)
         {
             this.model = model;
             SelectedIndex = 0;
             SelectedServerIndex = 0;
+            BrowseMessage = "";
             Browse = new Commands.DelegateCommand((param) =>
             {
-                model.Client.BrowseSecurityList(model.ServerList[SelectedServerIndex]);
-                this.RaisePropertyChanged("SecurityList");
-                this.RaisePropertyChanged("SecurityListIsNotZero");
+                BrowseMessage = "";
+                this.RaisePropertyChanged("BrowseMessage");
+                this.RaisePropertyChanged("ExistBrowseMessage");
+
+                try
+                {
+                    model.Client.BrowseSecurityList(model.ServerList[SelectedServerIndex]);
+                }
+                catch (Exception e)
+                {
+                    model.ServerList[SelectedServerIndex].Endpoints = null;
+                    BrowseMessage = string.Format("{0}", e.Message);
+                }
+                finally
+                {
+                    this.RaisePropertyChanged("SecurityList");
+                    this.RaisePropertyChanged("SecurityListIsNotZero");
+                    this.RaisePropertyChanged("BrowseMessage");
+                    this.RaisePropertyChanged("ExistBrowseMessage");
+                }
             }, (param) => true);
         }
     }

@@ -15,12 +15,15 @@
         <TextBlock Text="Select Security"  Style="{StaticResource MaterialDesignTitleTextBlock}" Margin="5" />
         <DockPanel>
             <Button Content="Browse" 
-                Style="{DynamicResource MaterialDesignFlatButton}"
+                Style="{DynamicResource MaterialDesignRaisedLightButton}"
                 Command="{Binding Browse}" Margin="5" />
-            <ComboBox ItemsSource="{Binding SecurityList, Mode=OneWay}"
-                      SelectedIndex="{Binding SelectedIndex}" Margin="5"
-                      IsEnabled="{Binding SecurityListIsNotZero}"/>
+            <ComboBox Grid.Column="0"
+                ItemsSource="{Binding SecurityList, Mode=OneWay}"
+                SelectedIndex="{Binding SelectedIndex}" Margin="5"
+                IsEnabled="{Binding SecurityListIsNotZero}"/>
         </DockPanel>
+        <TextBlock Grid.Column="0" VerticalAlignment="Center" Foreground="Red" Visibility="{Binding ExistBrowseMessage}"
+                Text="{Binding BrowseMessage}" Style="{DynamicResource MaterialDesignHeadlineTextBlock}" />
         <TextBlock Text="Login User"  Style="{StaticResource MaterialDesignTitleTextBlock}" Margin="5" />
         <DockPanel>
             <TextBlock Text="User Name"  Style="{StaticResource MaterialDesignSubheadingTextBlock}" Margin="5" />
@@ -36,14 +39,14 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Button Content="Connect" Grid.Column="0"
-                Style="{DynamicResource MaterialDesignFlatButton}"
+                Style="{DynamicResource MaterialDesignRaisedLightButton}"
                 Command="{x:Static material:DialogHost.CloseDialogCommand}" Margin="5" IsEnabled="{Binding SecurityListIsNotZero}">
                 <Button.CommandParameter>
                     <system:Boolean>True</system:Boolean>
                 </Button.CommandParameter>
             </Button>
             <Button Content="Cancel" Grid.Column="1"
-                Style="{DynamicResource MaterialDesignFlatButton}"
+                Style="{DynamicResource MaterialDesignRaisedAccentButton}"
                 Command="{x:Static material:DialogHost.CloseDialogCommand}" Margin="5">
                 <Button.CommandParameter>
                     <system:Boolean>False</system:Boolean>
