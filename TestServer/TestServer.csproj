@@ -8,10 +8,11 @@
     <OutputType>Library</OutputType>
     <RootNamespace>TestServer</RootNamespace>
     <AssemblyName>TestServer</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -65,12 +66,12 @@
     <EmbeddedResource Include="Quickstarts.Boiler.PredefinedNodes.uanodes" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\opcua\SampleApplications\SDK\Opc.Ua.Configuration\Opc.Ua.Configuration.csproj">
-      <Project>{26f0d36f-1348-4aed-b011-234131871d35}</Project>
+    <ProjectReference Include="..\opcua\Libraries\Opc.Ua.Configuration\Opc.Ua.Configuration.csproj">
+      <Project>{dc08795b-4484-4f24-a53c-2c7244154104}</Project>
       <Name>Opc.Ua.Configuration</Name>
     </ProjectReference>
-    <ProjectReference Include="..\opcua\SampleApplications\SDK\Opc.Ua.Server\Opc.Ua.Server.csproj">
-      <Project>{4a1b6008-293a-4c85-8d33-4194a446aaf5}</Project>
+    <ProjectReference Include="..\opcua\Libraries\Opc.Ua.Server\Opc.Ua.Server.csproj">
+      <Project>{eb1901e6-6285-4de9-923a-32a3b9f8562f}</Project>
       <Name>Opc.Ua.Server</Name>
     </ProjectReference>
     <ProjectReference Include="..\opcua\Stack\Opc.Ua.Core\Opc.Ua.Core.csproj">

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27004.2002
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30413.136
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jupiter", "Jupiter\Jupiter.csproj", "{589A1771-995B-4DAE-9B3B-406DFC54680E}"
 EndProject
@@ -9,17 +9,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Opc.Ua.Core", "opcua\Stack\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestJupiter", "UnitTestJupiter\UnitTestJupiter.csproj", "{ED86ED74-CC12-4D5A-9222-63977110D647}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Opc.Ua.Client", "opcua\SampleApplications\SDK\Opc.Ua.Client\Opc.Ua.Client.csproj", "{61115B1B-F57B-40A2-8BB2-7DE54B7F129A}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Opc.Ua.Configuration", "opcua\SampleApplications\SDK\Opc.Ua.Configuration\Opc.Ua.Configuration.csproj", "{26F0D36F-1348-4AED-B011-234131871D35}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestServer", "TestServer\TestServer.csproj", "{62423F94-39C4-4866-AF16-FD7F1E70E4F5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Opc.Ua.Server", "opcua\SampleApplications\SDK\Opc.Ua.Server\Opc.Ua.Server.csproj", "{4A1B6008-293A-4C85-8D33-4194A446AAF5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Opc.Ua.Client", "opcua\Libraries\Opc.Ua.Client\Opc.Ua.Client.csproj", "{DC40CBA8-AFB7-422F-A5BF-209398619B46}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quickstart Library", "opcua\SampleApplications\Workshop\Common\Quickstart Library.csproj", "{D8D0F7BC-BD73-4BE4-98E1-7ABDECAE4C50}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Opc.Ua.Configuration", "opcua\Libraries\Opc.Ua.Configuration\Opc.Ua.Configuration.csproj", "{DC08795B-4484-4F24-A53C-2C7244154104}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Opc.Ua.Sample", "opcua\SampleApplications\Samples\Opc.Ua.Sample\Opc.Ua.Sample.csproj", "{C1011A38-FA9A-45A8-A620-3911EA0E624C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Opc.Ua.Server", "opcua\Libraries\Opc.Ua.Server\Opc.Ua.Server.csproj", "{EB1901E6-6285-4DE9-923A-32A3B9F8562F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,30 +35,22 @@ Global
 		{ED86ED74-CC12-4D5A-9222-63977110D647}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ED86ED74-CC12-4D5A-9222-63977110D647}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ED86ED74-CC12-4D5A-9222-63977110D647}.Release|Any CPU.Build.0 = Release|Any CPU
-		{61115B1B-F57B-40A2-8BB2-7DE54B7F129A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{61115B1B-F57B-40A2-8BB2-7DE54B7F129A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{61115B1B-F57B-40A2-8BB2-7DE54B7F129A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{61115B1B-F57B-40A2-8BB2-7DE54B7F129A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{26F0D36F-1348-4AED-B011-234131871D35}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{26F0D36F-1348-4AED-B011-234131871D35}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{26F0D36F-1348-4AED-B011-234131871D35}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{26F0D36F-1348-4AED-B011-234131871D35}.Release|Any CPU.Build.0 = Release|Any CPU
 		{62423F94-39C4-4866-AF16-FD7F1E70E4F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{62423F94-39C4-4866-AF16-FD7F1E70E4F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{62423F94-39C4-4866-AF16-FD7F1E70E4F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{62423F94-39C4-4866-AF16-FD7F1E70E4F5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4A1B6008-293A-4C85-8D33-4194A446AAF5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4A1B6008-293A-4C85-8D33-4194A446AAF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4A1B6008-293A-4C85-8D33-4194A446AAF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4A1B6008-293A-4C85-8D33-4194A446AAF5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D8D0F7BC-BD73-4BE4-98E1-7ABDECAE4C50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D8D0F7BC-BD73-4BE4-98E1-7ABDECAE4C50}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D8D0F7BC-BD73-4BE4-98E1-7ABDECAE4C50}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D8D0F7BC-BD73-4BE4-98E1-7ABDECAE4C50}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C1011A38-FA9A-45A8-A620-3911EA0E624C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C1011A38-FA9A-45A8-A620-3911EA0E624C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C1011A38-FA9A-45A8-A620-3911EA0E624C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C1011A38-FA9A-45A8-A620-3911EA0E624C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC40CBA8-AFB7-422F-A5BF-209398619B46}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC40CBA8-AFB7-422F-A5BF-209398619B46}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC40CBA8-AFB7-422F-A5BF-209398619B46}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC40CBA8-AFB7-422F-A5BF-209398619B46}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC08795B-4484-4F24-A53C-2C7244154104}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC08795B-4484-4F24-A53C-2C7244154104}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC08795B-4484-4F24-A53C-2C7244154104}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC08795B-4484-4F24-A53C-2C7244154104}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB1901E6-6285-4DE9-923A-32A3B9F8562F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB1901E6-6285-4DE9-923A-32A3B9F8562F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB1901E6-6285-4DE9-923A-32A3B9F8562F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB1901E6-6285-4DE9-923A-32A3B9F8562F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

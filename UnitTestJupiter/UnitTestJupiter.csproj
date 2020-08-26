@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>UnitTestJupiter</RootNamespace>
     <AssemblyName>UnitTestJupiter</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">15.0</VisualStudioVersion>
@@ -19,6 +19,7 @@
     <TestProjectType>UnitTest</TestProjectType>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -125,12 +126,12 @@
       <Project>{589a1771-995b-4dae-9b3b-406dfc54680e}</Project>
       <Name>Jupiter</Name>
     </ProjectReference>
-    <ProjectReference Include="..\opcua\SampleApplications\SDK\Opc.Ua.Configuration\Opc.Ua.Configuration.csproj">
-      <Project>{26f0d36f-1348-4aed-b011-234131871d35}</Project>
+    <ProjectReference Include="..\opcua\Libraries\Opc.Ua.Configuration\Opc.Ua.Configuration.csproj">
+      <Project>{dc08795b-4484-4f24-a53c-2c7244154104}</Project>
       <Name>Opc.Ua.Configuration</Name>
     </ProjectReference>
-    <ProjectReference Include="..\opcua\SampleApplications\SDK\Opc.Ua.Server\Opc.Ua.Server.csproj">
-      <Project>{4a1b6008-293a-4c85-8d33-4194a446aaf5}</Project>
+    <ProjectReference Include="..\opcua\Libraries\Opc.Ua.Server\Opc.Ua.Server.csproj">
+      <Project>{eb1901e6-6285-4de9-923a-32a3b9f8562f}</Project>
       <Name>Opc.Ua.Server</Name>
     </ProjectReference>
     <ProjectReference Include="..\opcua\Stack\Opc.Ua.Core\Opc.Ua.Core.csproj">
