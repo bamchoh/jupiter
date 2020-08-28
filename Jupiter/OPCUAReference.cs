@@ -6,7 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Windows.Data;
 using Prism.Events;
-using Unity.Attributes;
+using Unity;
 using Jupiter.Interfaces;
 
 namespace Jupiter

@@ -8,7 +8,7 @@ using System.Windows.Input;
 using Prism.Mvvm;
 using Prism.Events;
 
-using Unity.Attributes;
+using Unity;
 
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;

@@ -15,7 +15,7 @@ using Reactive.Bindings.Extensions;
 
 using Opc.Ua;
 using Prism.Events;
-using Unity.Attributes;
+using Unity;
 
 namespace Jupiter.Models
 {
