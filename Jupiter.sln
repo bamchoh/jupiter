@@ -3,19 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30413.136
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jupiter", "Jupiter\Jupiter.csproj", "{589A1771-995B-4DAE-9B3B-406DFC54680E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jupiter", "Jupiter\Jupiter.csproj", "{589A1771-995B-4DAE-9B3B-406DFC54680E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Opc.Ua.Core", "opcua\Stack\Opc.Ua.Core\Opc.Ua.Core.csproj", "{509ED649-FF7F-424A-AF61-F5CCEFF4F974}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestJupiter", "UnitTestJupiter\UnitTestJupiter.csproj", "{ED86ED74-CC12-4D5A-9222-63977110D647}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestServer", "TestServer\TestServer.csproj", "{62423F94-39C4-4866-AF16-FD7F1E70E4F5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestServer", "TestServer\TestServer.csproj", "{62423F94-39C4-4866-AF16-FD7F1E70E4F5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Opc.Ua.Client", "opcua\Libraries\Opc.Ua.Client\Opc.Ua.Client.csproj", "{DC40CBA8-AFB7-422F-A5BF-209398619B46}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Opc.Ua.Configuration", "opcua\Libraries\Opc.Ua.Configuration\Opc.Ua.Configuration.csproj", "{DC08795B-4484-4F24-A53C-2C7244154104}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Opc.Ua.Server", "opcua\Libraries\Opc.Ua.Server\Opc.Ua.Server.csproj", "{EB1901E6-6285-4DE9-923A-32A3B9F8562F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestJupiterDotnetCore", "UnitTestJupiterDotnetCore\UnitTestJupiterDotnetCore.csproj", "{BE6E5D4A-3F1B-42BC-9397-309129B23C18}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,10 +31,6 @@ Global
 		{509ED649-FF7F-424A-AF61-F5CCEFF4F974}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{509ED649-FF7F-424A-AF61-F5CCEFF4F974}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{509ED649-FF7F-424A-AF61-F5CCEFF4F974}.Release|Any CPU.Build.0 = Release|Any CPU
-		{ED86ED74-CC12-4D5A-9222-63977110D647}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ED86ED74-CC12-4D5A-9222-63977110D647}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{ED86ED74-CC12-4D5A-9222-63977110D647}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{ED86ED74-CC12-4D5A-9222-63977110D647}.Release|Any CPU.Build.0 = Release|Any CPU
 		{62423F94-39C4-4866-AF16-FD7F1E70E4F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{62423F94-39C4-4866-AF16-FD7F1E70E4F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{62423F94-39C4-4866-AF16-FD7F1E70E4F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -51,6 +47,10 @@ Global
 		{EB1901E6-6285-4DE9-923A-32A3B9F8562F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EB1901E6-6285-4DE9-923A-32A3B9F8562F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EB1901E6-6285-4DE9-923A-32A3B9F8562F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE6E5D4A-3F1B-42BC-9397-309129B23C18}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE6E5D4A-3F1B-42BC-9397-309129B23C18}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE6E5D4A-3F1B-42BC-9397-309129B23C18}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE6E5D4A-3F1B-42BC-9397-309129B23C18}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

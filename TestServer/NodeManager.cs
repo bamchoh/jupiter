@@ -345,7 +345,7 @@ namespace TestServer
             variable.BrowseName = new QualifiedName(path, NamespaceIndex);
             variable.EngineeringUnits = new PropertyState<EUInformation>(variable);
 
-            variable.InstrumentRange = new PropertyState<Range>(variable);
+            variable.InstrumentRange = new PropertyState<Opc.Ua.Range>(variable);
 
             variable.Create(
                 SystemContext,
@@ -382,7 +382,7 @@ namespace TestServer
             // Using anything but 120,-10 fails a few tests
             variable.InstrumentRange.Value = GetAnalogRange(builtInType); ;
 
-            variable.EURange.Value = new Range(100, 0);
+            variable.EURange.Value = new Opc.Ua.Range(100, 0);
             variable.Value = Opc.Ua.TypeInfo.GetDefaultValue(dataType, valueRank, Server.TypeTree);
 
             variable.StatusCode = StatusCodes.Good;
@@ -448,27 +448,27 @@ namespace TestServer
             switch (builtInType)
             {
                 case BuiltInType.UInt16:
-                    return new Range(System.UInt16.MaxValue, System.UInt16.MinValue);
+                    return new Opc.Ua.Range(System.UInt16.MaxValue, System.UInt16.MinValue);
                 case BuiltInType.UInt32:
-                    return new Range(System.UInt32.MaxValue, System.UInt32.MinValue);
+                    return new Opc.Ua.Range(System.UInt32.MaxValue, System.UInt32.MinValue);
                 case BuiltInType.UInt64:
-                    return new Range(System.UInt64.MaxValue, System.UInt64.MinValue);
+                    return new Opc.Ua.Range(System.UInt64.MaxValue, System.UInt64.MinValue);
                 case BuiltInType.SByte:
-                    return new Range(System.SByte.MaxValue, System.SByte.MinValue);
+                    return new Opc.Ua.Range(System.SByte.MaxValue, System.SByte.MinValue);
                 case BuiltInType.Int16:
-                    return new Range(System.Int16.MaxValue, System.Int16.MinValue);
+                    return new Opc.Ua.Range(System.Int16.MaxValue, System.Int16.MinValue);
                 case BuiltInType.Int32:
-                    return new Range(System.Int32.MaxValue, System.Int32.MinValue);
+                    return new Opc.Ua.Range(System.Int32.MaxValue, System.Int32.MinValue);
                 case BuiltInType.Int64:
-                    return new Range(System.Int64.MaxValue, System.Int64.MinValue);
+                    return new Opc.Ua.Range(System.Int64.MaxValue, System.Int64.MinValue);
                 case BuiltInType.Float:
-                    return new Range(System.Single.MaxValue, System.Single.MinValue);
+                    return new Opc.Ua.Range(System.Single.MaxValue, System.Single.MinValue);
                 case BuiltInType.Double:
-                    return new Range(System.Double.MaxValue, System.Double.MinValue);
+                    return new Opc.Ua.Range(System.Double.MaxValue, System.Double.MinValue);
                 case BuiltInType.Byte:
-                    return new Range(System.Byte.MaxValue, System.Byte.MinValue);
+                    return new Opc.Ua.Range(System.Byte.MaxValue, System.Byte.MinValue);
                 default:
-                    return new Range(System.SByte.MaxValue, System.SByte.MinValue);
+                    return new Opc.Ua.Range(System.SByte.MaxValue, System.SByte.MinValue);
             }
         }
         #endregion
@@ -550,7 +550,7 @@ namespace TestServer
             ref StatusCode statusCode,
             ref DateTime timestamp)
         {
-            PropertyState<Range> variable = node as PropertyState<Range>;
+            PropertyState<Opc.Ua.Range> variable = node as PropertyState<Opc.Ua.Range>;
             ExtensionObject extensionObject = value as ExtensionObject;
             TypeInfo typeInfo = TypeInfo.Construct(value);
 
@@ -562,7 +562,7 @@ namespace TestServer
                 return StatusCodes.BadTypeMismatch;
             }
 
-            Range newRange = extensionObject.Body as Range;
+            Opc.Ua.Range newRange = extensionObject.Body as Opc.Ua.Range;
             AnalogItemState parent = variable.Parent as AnalogItemState;
             if (newRange == null ||
                 parent == null)
@@ -576,7 +576,7 @@ namespace TestServer
             }
 
             TypeInfo parentTypeInfo = TypeInfo.Construct(parent.Value);
-            Range parentRange = GetAnalogRange(parentTypeInfo.BuiltInType);
+            Opc.Ua.Range parentRange = GetAnalogRange(parentTypeInfo.BuiltInType);
             if (parentRange.High < newRange.High ||
                 parentRange.Low > newRange.Low)
             {
