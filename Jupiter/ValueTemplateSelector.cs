@@ -60,6 +60,9 @@ namespace Jupiter
             if (item is DateTimeVariableInfo)
                 return DefaultTemplate;
 
+            if (item is NullVariableInfo)
+                return DefaultTemplate;
+
             if (item is VariantVariableInfo)
                 return VariantTemplate;
 

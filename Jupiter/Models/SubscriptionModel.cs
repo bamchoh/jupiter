@@ -80,11 +80,39 @@ namespace Jupiter.Models
                     var vi = this.monitoredItems[i];
                     if (vi.ClientHandle == change.ClientHandle)
                     {
-                        vi.DataValue = change.DataValue;
+                        var newvi = NewVariableInfo(vi, change);
+                        if (newvi == vi)
+                        {
+                            vi.DataValue = change.Value;
+                        }
+                        else
+                        {
+                            this.monitoredItems.Remove(vi);
+                            this.monitoredItems.Insert(i, newvi);
+                        }
+                        break;
                     }
                 }
             }
         }
+        private VariableInfoBase NewVariableInfo(VariableInfoBase vi, MonitoredItemNotification n)
+        {
+            var builtInType = BuiltInType.Null;
+            if (n?.Value?.WrappedValue != null && n.Value.WrappedValue.TypeInfo != null)
+            {
+                builtInType = n.Value.WrappedValue.TypeInfo.BuiltInType;
+            }
+
+            if (vi.Type == builtInType)
+                return vi;
+
+            var conf = new VariableConfiguration(vi.NodeId, vi.DisplayName, NodeClass.Variable, builtInType);
+            var newvi = variableInfoManager.NewVariableInfo(conf);
+            newvi.SetItem(vi.NodeId, vi.DisplayName, vi.ClientHandle, n?.Value);
+            newvi.IsSelected = vi.IsSelected;
+            return newvi;
+        }
+
 
         private void DeleteMonitoredItems()
         {

@@ -19,7 +19,7 @@ namespace Jupiter.Converter
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (ServiceResult.IsNotGood((StatusCode)value))
-                return new SolidColorBrush(System.Windows.Media.Colors.Red);
+                return (SolidColorBrush)(new BrushConverter().ConvertFrom("#DB585C"));
 
             return new SolidColorBrush(System.Windows.Media.Colors.Black);
         }

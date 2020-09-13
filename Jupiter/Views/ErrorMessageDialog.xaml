@@ -1,0 +1,34 @@
+﻿<UserControl x:Class="Jupiter.Views.ErrorMessageDialog"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Jupiter.Views"
+             xmlns:material="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
+             mc:Ignorable="d"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <StackPanel Width="800" MaxWidth="800">
+        <DockPanel Background="#DB585C">
+            <DockPanel Margin="20">
+                <TextBlock Foreground="White" DockPanel.Dock="Top" HorizontalAlignment="Left" VerticalAlignment="Center" 
+                        Text="Error" Style="{DynamicResource MaterialDesignHeadline4TextBlock}" Margin="5" />
+                <Separator DockPanel.Dock="Top" BorderThickness="1" BorderBrush="#FB787C" Margin="-20,0,-20,10" />
+                <TextBlock Foreground="White"
+                   TextWrapping="Wrap" Margin="5"
+                           Text="{Binding Message}" />
+            </DockPanel>
+        </DockPanel>
+        <DockPanel>
+            <DockPanel Margin="20">
+                <Button Width="150" Content="OK" Grid.Column="0" HorizontalAlignment="Right"
+                Style="{DynamicResource MaterialDesignFlatDarkBgButton}" Background="#DB585C" BorderThickness="0"
+                Command="{x:Static material:DialogHost.CloseDialogCommand}" Margin="5">
+                    <Button.CommandParameter>
+                        <system:Boolean>True</system:Boolean>
+                    </Button.CommandParameter>
+                </Button>
+            </DockPanel>
+        </DockPanel>
+    </StackPanel>
+</UserControl>

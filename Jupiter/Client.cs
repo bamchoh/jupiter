@@ -598,15 +598,6 @@ namespace Jupiter
             SessionNotification?.Invoke(this, e);
         }
 
-        private VariableInfoBase NewVariableInfo(MonitoredItem m, MonitoredItemNotification n)
-        {
-            var builtInType = n.Value.WrappedValue.TypeInfo.BuiltInType;
-            var conf = new VariableConfiguration(m.StartNodeId, m.DisplayName, m.NodeClass, builtInType);
-            var vi = variableInfoManager.NewVariableInfo(conf);
-            vi.SetItem(m.StartNodeId, m.DisplayName, m.ClientHandle, n?.Value);
-            return vi;
-        }
-
         private void innerWrite(IList<VariableInfoBase> items, Func<VariableInfoBase, object> func)
         {
             try
@@ -706,7 +697,9 @@ namespace Jupiter
 
                 try
                 {
+                    IList<MonitoredItemNotification> changes = e.NotificationMessage.GetDataChanges(false);
                     // get the changes.
+                    /*
                     var changes = new List<VariableInfoBase>();
 
                     var datachanges = e.NotificationMessage.GetDataChanges(false);
@@ -736,6 +729,7 @@ namespace Jupiter
                     {
                         return;
                     }
+                    */
 
                     OnNotified(new ClientNotificationEventArgs(changes));
                 }
@@ -754,13 +748,13 @@ namespace Jupiter
 
     public class ClientNotificationEventArgs : EventArgs
     {
-        private readonly List<VariableInfoBase> items;
-        public ClientNotificationEventArgs(List<VariableInfoBase> items)
+        private readonly IList<MonitoredItemNotification> items;
+        public ClientNotificationEventArgs(IList<MonitoredItemNotification> items)
         {
             this.items = items;
         }
 
-        public List<VariableInfoBase> Items
+        public IList<MonitoredItemNotification> Items
         {
             get { return this.items; }
         }

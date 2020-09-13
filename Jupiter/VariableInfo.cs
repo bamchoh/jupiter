@@ -127,14 +127,14 @@ namespace Jupiter
                     vi = new DateTimeVariableInfo();
                     break;
                 default:
-                    vi = new VariantVariableInfo();
+                    vi = new NullVariableInfo();
                     break;
             }
 
             vi.VariableConfiguration = conf;
             vi.NodeId = conf.VariableNodeId();
             vi.DisplayName = conf.DisplayName;
-            vi.Type = conf.BuiltInType().ToString();
+            vi.Type = conf.BuiltInType();
             return vi;
         }
     }
@@ -1365,6 +1365,72 @@ namespace Jupiter
         }
     }
 
+    public class NullVariableInfo : VariableInfoBase
+    {
+        public NullVariableInfo()
+        {
+            Formats = new List<string>
+            {
+                FormatType.NULL
+            };
+
+            FormatSelectedItem = FormatType.NULL;
+        }
+
+        private static WrappedValue<string> nullValue = new WrappedValue<string>("null", FormatType.NULL, ConvertFn, ConvertBackFn);
+        public object Value
+        {
+            get
+            {
+                return nullValue;
+            }
+        }
+
+        public object WriteValue
+        {
+            get
+            {
+                return nullValue;
+            }
+
+            set
+            {
+            }
+        }
+
+        public object PrepareValue
+        {
+            get
+            {
+                return nullValue;
+            }
+
+            set
+            {
+            }
+        }
+
+        public override object GetPrepareValue()
+        {
+            return PrepareValue;
+        }
+
+        public override void SetPrepareValue(object obj)
+        {
+            PrepareValue = obj;
+        }
+
+        private static string ConvertFn(object value, string format)
+        {
+            return "";
+        }
+
+        private static object ConvertBackFn(object value, string format)
+        {
+            return nullValue;
+        }
+    }
+
     public abstract class VariableInfoBase : BindableBase
     {
         public List<string> Formats { get; protected set; }
@@ -1380,7 +1446,7 @@ namespace Jupiter
             errorsContainer = new ErrorsContainer<string>(OnErrorsChanged);
         }
 
-        public string Type { get; set; }
+        public BuiltInType Type { get; set; }
 
         public Interfaces.IVariableConfiguration VariableConfiguration { get; set; }
 

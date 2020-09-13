@@ -21,10 +21,9 @@ namespace Jupiter.Views
 
             eventAggregator.GetEvent<Events.ErrorNotificationEvent>()
                 .Subscribe((x) => {
-                    this.Dispatcher.Invoke((Action)(() =>
-                    {
-                        this.ShowMessageAsync("!!Error!!", $"{x.Message}");
-                    }));
+                    var dialogView = new ErrorMessageDialog();
+                    dialogView.DataContext = x;
+                    MaterialDesignThemes.Wpf.DialogHostEx.ShowDialog(this, dialogView);
                 });
 
 

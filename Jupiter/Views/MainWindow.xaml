@@ -1,4 +1,4 @@
-﻿<Controls:MetroWindow x:Class="Jupiter.Views.MainWindow"
+﻿<metro:MetroWindow x:Class="Jupiter.Views.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -8,13 +8,14 @@
         xmlns:Prism="http://prismlibrary.com/"
         Prism:ViewModelLocator.AutoWireViewModel="True"        
         mc:Ignorable="d"
-        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         BorderThickness="0" 
         GlowBrush="Black"
         ResizeMode="CanResizeWithGrip"
         WindowTransitionsEnabled="False"
         WindowStartupLocation="CenterScreen"                      
+        xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:dragablz="clr-namespace:Dragablz;assembly=Dragablz"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
         TextElement.FontSize="13"
@@ -36,11 +37,12 @@
             </materialDesign:DialogHost.DialogContent>
             <DockPanel>
                 <local:Connection DockPanel.Dock="Top" />
-                <Grid>
+                <Grid DockPanel.Dock="Top" >
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
+                        <RowDefinition Height="20" />
                     </Grid.RowDefinitions>
                     <local:NodeTree Grid.Row="0"
                             MouseDoubleClickedCommand="{Binding MouseDoubleClickedCommand}"
@@ -49,22 +51,24 @@
                             NodeSelectedCommand="{Binding NodeSelectedCommand}"
                             />
                     <GridSplitter Grid.Row="1" Height="5" VerticalAlignment="Stretch" Width="Auto" HorizontalAlignment="Stretch" />
-                    <TabControl Grid.Row="2" x:Name="tabCtrl">
+                    <dragablz:TabablzControl Grid.Row="2" x:Name="tabCtrl">
                         <TabItem Header="Subscription">
                             <local:SubscriptionView />
                         </TabItem>
                         <TabItem Header="Read/Write">
-                            <local:OneTimeAccessView />
+                            <local:OneTimeAccessView Margin="5,10"/>
                         </TabItem>
-                    </TabControl>
-                    <!--
+                    </dragablz:TabablzControl>
+                    <StatusBar Grid.Row="3">
+                    </StatusBar>
+                </Grid>
+                <!--
             <GridSplitter Grid.Column="3" Width="5" HorizontalAlignment="Center" />
             <GroupBox Header="Node Information" Grid.Column="4" >
                 <local:NodeInfoDataGrid />
             </GroupBox>
             -->
-                </Grid>
             </DockPanel>
         </materialDesign:DialogHost>
     </DockPanel>
-</Controls:MetroWindow>
+</metro:MetroWindow>

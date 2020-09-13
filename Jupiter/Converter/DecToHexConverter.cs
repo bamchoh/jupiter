@@ -21,6 +21,7 @@ namespace Jupiter.Converter
         public const string STRING = "String";
         public const string DATE_AND_TIME = "Date/Time";
         public const string VARIANT = "Variant";
+        public const string NULL = "Null";
     }
 
     public class DecToHexConverter : IValueConverter

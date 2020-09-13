@@ -75,7 +75,7 @@
                 <DataGridTextColumn Header="Name" Binding="{Binding DisplayName}" Width="*"/>
             </DataGrid.Columns>
             <DataGrid.ItemContainerStyle>
-                <Style TargetType="{x:Type DataGridRow}">
+                <Style BasedOn="{StaticResource MaterialDesignDataGridRow}" TargetType="{x:Type DataGridRow}">
                     <Setter Property="FontSize" Value="12" />
                     <Setter Property="ContextMenu" Value="{StaticResource topLevelMenu}" />
                     <EventSetter Event="MouseRightButtonDown" Handler="TreeViewItem_MouseRightButtonDown" />

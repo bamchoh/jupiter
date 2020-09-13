@@ -14,34 +14,34 @@
         <converter:DecToHexConverter x:Key="DecToHexConverter" />
         <converter:StatusCodeColorConverter x:Key="StatusCodeColorConverter" />
         <DataTemplate x:Key="VariantTypeForShow">
-            <TextBlock Text="{Binding Path=Value}" />
+            <TextBlock Text="{Binding Path=Value}" VerticalAlignment="Center" />
         </DataTemplate>
         <DataTemplate x:Key="DefaultTypeForShow">
-            <TextBlock Text="{Binding Path=Value, Converter={StaticResource DecToHexConverter}}" />
+            <TextBlock Text="{Binding Path=Value, Converter={StaticResource DecToHexConverter}}" VerticalAlignment="Center" />
         </DataTemplate>
         <DataTemplate x:Key="VariantTypeForEdit">
-            <TextBox Text="{Binding Path=WriteValue, Mode=OneWay, UpdateSourceTrigger=LostFocus}" b:TextBoxBehaviors.IsFocusSelect="True" />
+            <TextBox Text="{Binding Path=WriteValue, Mode=OneWay, UpdateSourceTrigger=LostFocus}" b:TextBoxBehaviors.IsFocusSelect="True" VerticalAlignment="Center" />
         </DataTemplate>
         <DataTemplate x:Key="DefaultTypeForEdit">
-            <TextBox Text="{Binding Path=WriteValue, Converter={StaticResource DecToHexConverter}, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" b:TextBoxBehaviors.IsFocusSelect="True" />
+            <TextBox Text="{Binding Path=WriteValue, Converter={StaticResource DecToHexConverter}, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" b:TextBoxBehaviors.IsFocusSelect="True" VerticalAlignment="Center" />
         </DataTemplate>
         <DataTemplate x:Key="BoolType">
-            <CheckBox IsChecked="{Binding Path=Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsTabStop="False"/>
+            <CheckBox IsChecked="{Binding Path=Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsTabStop="False" VerticalAlignment="Center"  />
         </DataTemplate>
         <DataTemplate x:Key="BoolTypePrepareValue">
-            <CheckBox IsChecked="{Binding Path=PrepareValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsTabStop="False" />
+            <CheckBox IsChecked="{Binding Path=PrepareValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsTabStop="False" VerticalAlignment="Center" />
         </DataTemplate>
         <DataTemplate x:Key="VariantTypeForShowPrepareValue">
-            <TextBlock Text="{Binding Path=PrepareValue}" />
+            <TextBlock Text="{Binding Path=PrepareValue}" VerticalAlignment="Center" />
         </DataTemplate>
         <DataTemplate x:Key="VariantTypeForEditPrepareValue">
-            <TextBox Text="{Binding Path=PrepareValue, Mode=OneWay}" b:TextBoxBehaviors.IsFocusSelect="True"/>
+            <TextBox Text="{Binding Path=PrepareValue, Mode=OneWay}" b:TextBoxBehaviors.IsFocusSelect="True" VerticalAlignment="Center" />
         </DataTemplate>
         <DataTemplate x:Key="DefaultTypeForShowPrepareValue">
-            <TextBlock Text="{Binding Path=PrepareValue, Converter={StaticResource DecToHexConverter}}" />
+            <TextBlock Text="{Binding Path=PrepareValue, Converter={StaticResource DecToHexConverter}}" VerticalAlignment="Center"  />
         </DataTemplate>
         <DataTemplate x:Key="DefaultTypeForEditPrepareValue">
-            <TextBox Text="{Binding Path=PrepareValue, Converter={StaticResource DecToHexConverter}, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" b:TextBoxBehaviors.IsFocusSelect="True"/>
+            <TextBox Text="{Binding Path=PrepareValue, Converter={StaticResource DecToHexConverter}, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" b:TextBoxBehaviors.IsFocusSelect="True" VerticalAlignment="Center"  />
         </DataTemplate>
     </UserControl.Resources>
 
@@ -52,9 +52,27 @@
                   SelectionChanged="DataGrid_SelectionChanged"
                   CanUserAddRows="False" CanUserSortColumns="False" CanUserReorderColumns="False" IsReadOnly="False" AutoGenerateColumns="False">
             <DataGrid.Columns>
-                <DataGridTextColumn IsReadOnly="True" Header="Node ID" Binding="{Binding NodeId}" />
-                <DataGridTextColumn IsReadOnly="True" Header="DisplayName" Binding="{Binding DisplayName}" />
-                <DataGridTextColumn IsReadOnly="True" Header="Type" Binding="{Binding Type}" />
+                <DataGridTemplateColumn IsReadOnly="True" Header="Node ID">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding NodeId}" VerticalAlignment="Center" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn IsReadOnly="True" Header="Display Name">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding DisplayName}" VerticalAlignment="Center" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn IsReadOnly="True" Header="Type">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Type}" VerticalAlignment="Center" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
                 <DataGridTemplateColumn IsReadOnly="True" Header="Format">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -78,13 +96,15 @@
 			                />
                     </DataGridTemplateColumn.CellEditingTemplateSelector>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn IsReadOnly="True" Header="StatusCode" Binding="{Binding StatusCode}">
-                    <DataGridTextColumn.ElementStyle>
-                        <Style TargetType="TextBlock">
-                            <Setter Property="Foreground" Value="{Binding StatusCode, Converter={StaticResource StatusCodeColorConverter}}" />
-                        </Style>
-                    </DataGridTextColumn.ElementStyle>
-                </DataGridTextColumn>
+                <DataGridTemplateColumn IsReadOnly="True" Header="Status Code">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding StatusCode}"
+                                       VerticalAlignment="Center"
+                                       Foreground="{Binding StatusCode, Converter={StaticResource StatusCodeColorConverter}}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
                 <DataGridTemplateColumn Header="Prepare Value">
                     <DataGridTemplateColumn.CellTemplateSelector>
                         <local2:ValueTemplateSelector
@@ -101,11 +121,23 @@
 			                />
                     </DataGridTemplateColumn.CellEditingTemplateSelector>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn IsReadOnly="True" Header="ServerTimestamp" Binding="{Binding ServerTimestamp}" />
-                <DataGridTextColumn IsReadOnly="True" Header="SourceTimestamp" Binding="{Binding SourceTimestamp}" />
+                <DataGridTemplateColumn IsReadOnly="True" Header="Server Time Stamp">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding ServerTimestamp}" VerticalAlignment="Center" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn IsReadOnly="True" Header="Source Time Stamp">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding SourceTimestamp}" VerticalAlignment="Center" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
             <DataGrid.RowStyle>
-                <Style TargetType="{x:Type DataGridRow}">
+                <Style BasedOn="{StaticResource MaterialDesignDataGridRow}" TargetType="{x:Type DataGridRow}">
                     <Setter Property="IsSelected" Value="{Binding Path=IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 </Style>
             </DataGrid.RowStyle>
