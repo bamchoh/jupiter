@@ -25,7 +25,7 @@ namespace Jupiter.Models
         public IEventAggregator EventAggregator { get; set; }
 
         private Interfaces.IVariableInfoManager variableInfoManager;
-        private ObservableCollection<VariableInfoBase> _itemsToRead;
+        private ObservableCollection<VariableInfoBase2> _itemsToRead;
         private Interfaces.IOneTimeAccessOperator otaOperator;
 
         public OneTimeAccessModel(
@@ -35,7 +35,7 @@ namespace Jupiter.Models
             )
         {
             this.variableInfoManager = variableInfoManager;
-            this._itemsToRead = new ObservableCollection<VariableInfoBase>();
+            this._itemsToRead = new ObservableCollection<VariableInfoBase2>();
             this.otaOperator = otaOperator;
 
             BindingOperations.EnableCollectionSynchronization(_itemsToRead, new object());
@@ -65,7 +65,7 @@ namespace Jupiter.Models
             get { return _itemsToRead; }
             private set
             {
-                this.SetProperty(ref this._itemsToRead, (ObservableCollection<VariableInfoBase>)value);
+                this.SetProperty(ref this._itemsToRead, (ObservableCollection<VariableInfoBase2>)value);
             }
         }
 
@@ -108,7 +108,14 @@ namespace Jupiter.Models
 
                 for (int i = 0; i < values.Count; i++)
                 {
-                    _itemsToRead[i].DataValue = values[i];
+                    if(_itemsToRead[i].Type == values[i]?.WrappedValue.TypeInfo?.BuiltInType)
+                    {
+                        _itemsToRead[i].UpdateDataValue(values[i]);
+                    }
+                    else
+                    {
+                        _itemsToRead[i].NewDataValue(values[i]);
+                    }
                 }
 
                 return;
@@ -123,14 +130,14 @@ namespace Jupiter.Models
             }
         }
 
-        private void GroupWrite(IList<VariableInfoBase> items)
+        private void GroupWrite(IList<VariableInfoBase2> items)
         {
             otaOperator.Write(items);
         }
 
         private void DeleteOneTimeAccessItems()
         {
-            var tempList = new ObservableCollection<VariableInfoBase>();
+            var tempList = new ObservableCollection<VariableInfoBase2>();
 
             int lastSelectedIndex;
             if (OneTimeAccessSelectedItems == null || OneTimeAccessItems.Count == 0)
@@ -166,13 +173,18 @@ namespace Jupiter.Models
 
         public void AddToReadWrite(IList refs)
         {
-            var items = variableInfoManager.GenerateVariableInfoList(refs);
-            if (items == null || items.Count == 0)
+            if (refs == null || refs.Count == 0)
                 return;
 
-            foreach (var vi in items)
+            List<BuiltInType> types = null;
+
+            otaOperator.ReadBuiltInType(refs, out types);
+
+            for(int i = 0;i < refs.Count;i++)
             {
-                this.OneTimeAccessItems.Add(vi);
+                var vi = (VariableInfoBase2)refs[i];
+                var newVI = new VariableInfoBase2(vi.NodeId, vi.DisplayName, types[i]);
+                this.OneTimeAccessItems.Add(newVI);
             }
         }
     }

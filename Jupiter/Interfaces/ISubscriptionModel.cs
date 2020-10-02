@@ -6,12 +6,15 @@ using System.Threading.Tasks;
 using System.Collections;
 using System.Windows.Input;
 using Opc.Ua;
+using System.Collections.ObjectModel;
 
 namespace Jupiter.Interfaces
 {
     public interface ISubscriptionModel
     {
-        Task AddToSubscription(IList objs);
+        void AddToSubscription(IList objs);
+
+        IList MonitoredItems { get; set; }
 
         ICommand DeleteMonitoredItemsCommand { get; set; }
     }

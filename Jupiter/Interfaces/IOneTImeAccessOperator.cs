@@ -12,6 +12,8 @@ namespace Jupiter.Interfaces
     {
         ResponseHeader Read(ReadValueIdCollection itemsToRead, out DataValueCollection values, out DiagnosticInfoCollection diagnosticInfos);
 
-        void Write(IList<VariableInfoBase> items);
+        void Write(IList<VariableInfoBase2> items);
+
+        void ReadBuiltInType(IList viList, out List<BuiltInType> types);
     }
 }

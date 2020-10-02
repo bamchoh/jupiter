@@ -12,7 +12,7 @@ namespace Jupiter.Interfaces
     {
         event ClientNotificationEventHandler SessionNotification;
 
-        Task<IList<VariableInfoBase>> AddToSubscription(IList objs);
+        IList<VariableInfoBase2> AddToSubscription(IList objs);
 
         void RemoveMonitoredItem(List<uint> chList);
     }

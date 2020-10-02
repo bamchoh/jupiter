@@ -23,15 +23,18 @@ namespace Jupiter.ViewModels
             set { model.SelectedMonitoredItems = value; }
         }
 
-        public IList MonitoredItems { get; set; }
+        public ReactiveProperty<IList> MonitoredItems
+        {
+            get;
+        }
+            
 
         public SubscriptionViewModel(Interfaces.ISubscriptionModel model)
         {
             this.model = (Models.SubscriptionModel)model;
 
-            this.MonitoredItems = this.model.MonitoredItems;
-
-            this.SelectedMonitoredItems = this.model.SelectedMonitoredItems;
+            MonitoredItems = this.model.ToReactivePropertyAsSynchronized(
+                x => x.MonitoredItems);
 
             this.DeleteMonitoredItemsCommand = this.model.DeleteMonitoredItemsCommand;
         }

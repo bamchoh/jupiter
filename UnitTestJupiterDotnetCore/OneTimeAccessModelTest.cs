@@ -26,7 +26,7 @@ namespace UnitTestJupiterDotnetCore
             return new ResponseHeader();
         }
 
-        public void Write(IList<VariableInfoBase> items)
+        public void Write(IList<VariableInfoBase2> items)
         {
             throw new NotImplementedException();
         }

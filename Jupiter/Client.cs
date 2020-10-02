@@ -186,7 +186,7 @@ namespace Jupiter
             }
         }
 
-        public async Task<IList<VariableInfoBase>> AddToSubscription(IList objs)
+        public IList<VariableInfoBase2> AddToSubscription(IList objs)
         {
 
             /*
@@ -213,10 +213,11 @@ namespace Jupiter
                 if (objs == null || objs.Count == 0)
                     return null;
 
-                var viList = await Task.Run(() => variableInfoManager.GenerateVariableInfoList(objs));
-
-                if (viList.Count == 0)
-                    return viList;
+                var viList = new ObservableCollection<VariableInfoBase2>();
+                foreach (VariableInfoBase2 item in objs)
+                {
+                    viList.Add(new VariableInfoBase2(item.NodeId, item.DisplayName));
+                }
 
                 if (session.Subscriptions.Count() == 0)
                 {
@@ -518,14 +519,14 @@ namespace Jupiter
                 out diagnosticInfos);
         }
 
-        public void Write(IList<VariableInfoBase> items)
+        public void Write(IList<VariableInfoBase2> items)
         {
-            Func<VariableInfoBase, object> func = (vi) => vi.GetPrepareValue();
-
+            Func<VariableInfoBase2, object> func = (vi) => vi.GetPreparedValue();
+            
             innerWrite(items, func);
         }
 
-        public ObservableCollection<VariableConfiguration> FetchVariableReferences(ExpandedNodeId expandedNodeId)
+        public ObservableCollection<VariableInfoBase2> FetchVariableReferences(ExpandedNodeId expandedNodeId)
         {
             var id = this.ToNodeId(expandedNodeId);
 
@@ -540,31 +541,27 @@ namespace Jupiter
             ReferenceDescriptionCollection refs;
             this.Browse(id, mask, out refs);
 
-            List<BuiltInType> types;
-            this.ReadBuiltInType(refs, out types);
-
-            var varConfigurations = new ObservableCollection<VariableConfiguration>();
+            var varConfigurations = new ObservableCollection<VariableInfoBase2>();
 
             for(int i=0;i<refs.Count;i++)
             {
                 var r = refs[i];
-                var t = types[i];
-                varConfigurations.Add(new VariableConfiguration(this.ToNodeId(r.NodeId), r.DisplayName.Text, r.NodeClass, t));
+                varConfigurations.Add(new VariableInfoBase2(this.ToNodeId(r.NodeId), r.DisplayName.Text));
             }
 
             return varConfigurations;
         }
 
-        private void ReadBuiltInType(ReferenceDescriptionCollection refs, out List<BuiltInType> types)
+        public void ReadBuiltInType(IList viList, out List<BuiltInType> types)
         {
-            if (refs.Count == 0)
+            if (viList.Count == 0)
             {
                 types = new List<BuiltInType>();
                 return;
             }
 
             var nodesToRead = new ReadValueIdCollection();
-            foreach (var r in refs)
+            foreach (VariableInfoBase2 r in viList)
             {
                 var nodeToRead = new ReadValueId();
                 nodeToRead.NodeId = this.ToNodeId(r.NodeId);
@@ -598,7 +595,7 @@ namespace Jupiter
             SessionNotification?.Invoke(this, e);
         }
 
-        private void innerWrite(IList<VariableInfoBase> items, Func<VariableInfoBase, object> func)
+        private void innerWrite(IList<VariableInfoBase2> items, Func<VariableInfoBase2, object> func)
         {
             try
             {
@@ -653,7 +650,7 @@ namespace Jupiter
                 for (int i = 0; i < values.Count; i++)
                 {
                     values[i].Value.StatusCode = results[i];
-                    items[i].DataValue = values[i].Value;
+                    items[i].UpdateDataValue(values[i].Value);
                 }
             }
             catch (Exception ex)
@@ -675,9 +672,9 @@ namespace Jupiter
         {
             if (e.PropertyName == "WriteValue")
             {
-                var items = new List<VariableInfoBase>() { (VariableInfoBase)sender };
+                var items = new List<VariableInfoBase2>() { (VariableInfoBase2)sender };
 
-                innerWrite(items, (vi) => vi.DataValue.Value);
+                innerWrite(items, (vi) => vi.GetRawValue());
             }
         }
 

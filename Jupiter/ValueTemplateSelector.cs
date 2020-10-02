@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using Opc.Ua;
 
 namespace Jupiter
 {
@@ -16,55 +17,56 @@ namespace Jupiter
 
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
+            System.Diagnostics.Trace.WriteLine(item);
+
             if (item == null)
             {
                 return base.SelectTemplate(item, container);
             }
 
-            if (item is BooleanVariableInfo)
+            var variableInfo = (VariableInfoBase2)item;
+
+            if (variableInfo.Type == BuiltInType.Boolean)
                 return BoolTemplate;
 
-            if (item is SByteVariableInfo)
+            if (variableInfo.Type == BuiltInType.SByte)
                 return DefaultTemplate;
 
-            if (item is ByteVariableInfo)
+            if (variableInfo.Type == BuiltInType.Byte)
                 return DefaultTemplate;
 
-            if (item is Int16VariableInfo)
+            if (variableInfo.Type == BuiltInType.Int16)
                 return DefaultTemplate;
 
-            if (item is UInt16VariableInfo)
+            if (variableInfo.Type == BuiltInType.UInt16)
                 return DefaultTemplate;
 
-            if (item is Int32VariableInfo)
+            if (variableInfo.Type == BuiltInType.Int32)
                 return DefaultTemplate;
 
-            if (item is UInt32VariableInfo)
+            if (variableInfo.Type == BuiltInType.UInt32)
                 return DefaultTemplate;
 
-            if (item is Int64VariableInfo)
+            if (variableInfo.Type == BuiltInType.Int64)
                 return DefaultTemplate;
 
-            if (item is UInt64VariableInfo)
+            if (variableInfo.Type == BuiltInType.UInt64)
                 return DefaultTemplate;
 
-            if (item is FloatVariableInfo)
+            if (variableInfo.Type == BuiltInType.Float)
                 return DefaultTemplate;
 
-            if (item is DoubleVariableInfo)
+            if (variableInfo.Type == BuiltInType.Double)
                 return DefaultTemplate;
 
-            if (item is StringVariableInfo)
+            if (variableInfo.Type == BuiltInType.String)
                 return DefaultTemplate;
 
-            if (item is DateTimeVariableInfo)
+            if (variableInfo.Type == BuiltInType.DateTime)
                 return DefaultTemplate;
 
-            if (item is NullVariableInfo)
+            if (variableInfo.Type == BuiltInType.Null)
                 return DefaultTemplate;
-
-            if (item is VariantVariableInfo)
-                return VariantTemplate;
 
             return base.SelectTemplate(item, container);
         }

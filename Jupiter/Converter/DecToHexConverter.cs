@@ -24,6 +24,47 @@ namespace Jupiter.Converter
         public const string NULL = "Null";
     }
 
+    /*
+    public class AnyToBoolConverter : IValueConverter
+    {
+        IWrappedValueConverter conv;
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            conv = value as IWrappedValueConverter;
+
+            if (conv != null)
+            {
+                try
+                {
+                    var convValue = conv.ConvertValue();
+                    if (convValue is bool)
+                    {
+                        return convValue;
+                    }
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+
+            return false;
+        }
+
+        public object ConvertBack(object value, Type targetTypes, object parameter, CultureInfo culture)
+        {
+            try
+            {
+                return conv.ConvertValueBack(value);
+            }
+            catch
+            {
+                return DependencyProperty.UnsetValue;
+            }
+        }
+    }
+
     public class DecToHexConverter : IValueConverter
     {
         IWrappedValueConverter conv;
@@ -33,7 +74,7 @@ namespace Jupiter.Converter
             conv = value as IWrappedValueConverter;
 
             if (conv != null)
-                return conv.Convert();
+                return conv.ConvertValue();
 
             return value.ToString();
         }
@@ -42,7 +83,7 @@ namespace Jupiter.Converter
         {
             try
             {
-                return conv.ConvertBack(value);
+                return conv.ConvertValueBack(value);
             }
             catch
             {
@@ -50,4 +91,5 @@ namespace Jupiter.Converter
             }
         }
     }
+    */
 }

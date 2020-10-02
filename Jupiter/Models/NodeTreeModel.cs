@@ -9,6 +9,7 @@ using System.Collections;
 using System.Collections.ObjectModel;
 
 using Prism.Mvvm;
+using Prism.Commands;
 
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
@@ -27,7 +28,7 @@ namespace Jupiter.Models
         private Interfaces.IConnection connector;
         private Interfaces.IReference references;
         private bool isEnabled;
-        private ObservableCollection<VariableConfiguration> variableNodes;
+        private ObservableCollection<VariableInfoBase2> variableNodes;
 
         public NodeTreeModel(
             Interfaces.IConnection connector, 
@@ -42,11 +43,11 @@ namespace Jupiter.Models
                 (param) => { ForceUpdate(); },
                 (param) => connector.Connected);
 
-            MouseDoubleClickedCommand = new Commands.AsyncCommand(async (param) =>
+            MouseDoubleClickedCommand = new DelegateCommand<IList>((items) =>
             {
-                await subscriptionM.AddToSubscription((IList)param);
+                subscriptionM.AddToSubscription(items);
                 ChangeSelectedIndexForTabContorol(0);
-            });
+            }, (param) => true);
 
             AddToReadWriteCommand = new Commands.DelegateCommand(
                 (param) => {
@@ -84,7 +85,7 @@ namespace Jupiter.Models
         public IList VariableNodes
         {
             get { return variableNodes; }
-            set { this.SetProperty(ref variableNodes, (ObservableCollection<VariableConfiguration>)value); }
+            set { this.SetProperty(ref variableNodes, (ObservableCollection<VariableInfoBase2>)value); }
         }
 
         public bool IsEnabled
@@ -128,7 +129,7 @@ namespace Jupiter.Models
         {
             References?.Children.Clear();
 
-            VariableNodes = new ObservableCollection<VariableConfiguration>();
+            VariableNodes = new ObservableCollection<VariableInfoBase2>();
         }
 
         private void SelectionChanged(Interfaces.IReference reference, Interfaces.INodeInfoDataGrid nodeInfoDataGrid)

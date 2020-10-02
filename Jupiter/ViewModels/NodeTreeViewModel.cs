@@ -42,7 +42,9 @@ namespace Jupiter.ViewModels
         public ICommand UpdateVariableNodeListCommand { get; set; }
 
         public ReactiveProperty<Interfaces.IReference> References { get; }
-        public ReactiveProperty<IList> VariableNodes { get; }
+        public ReactiveProperty<IList> VariableNodes {
+            get;
+        }
         public ReactiveProperty<bool> IsEnabled { get; }
     }
 }

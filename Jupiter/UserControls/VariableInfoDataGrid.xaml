@@ -11,8 +11,10 @@
              HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
              >
     <UserControl.Resources>
-        <converter:DecToHexConverter x:Key="DecToHexConverter" />
+        <converter:BoolTypeToVisibilityConverter x:Key="BoolTypeToVisibilityConverter" />
+        <converter:OtherTypeToVisibilityConverter x:Key="OtherTypeToVisibilityConverter" />
         <converter:StatusCodeColorConverter x:Key="StatusCodeColorConverter" />
+        <!--
         <DataTemplate x:Key="VariantTypeForShow">
             <TextBlock Text="{Binding Path=Value}" VerticalAlignment="Center" />
         </DataTemplate>
@@ -26,8 +28,9 @@
             <TextBox Text="{Binding Path=WriteValue, Converter={StaticResource DecToHexConverter}, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" b:TextBoxBehaviors.IsFocusSelect="True" VerticalAlignment="Center" />
         </DataTemplate>
         <DataTemplate x:Key="BoolType">
-            <CheckBox IsChecked="{Binding Path=Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsTabStop="False" VerticalAlignment="Center"  />
+            <CheckBox IsChecked="{Binding Path=Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource DecToHexConverter}}" IsTabStop="False" VerticalAlignment="Center"  />
         </DataTemplate>
+        -->
         <DataTemplate x:Key="BoolTypePrepareValue">
             <CheckBox IsChecked="{Binding Path=PrepareValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsTabStop="False" VerticalAlignment="Center" />
         </DataTemplate>
@@ -76,25 +79,33 @@
                 <DataGridTemplateColumn IsReadOnly="True" Header="Format">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <ComboBox ItemsSource="{Binding Formats}" SelectedItem="{Binding FormatSelectedItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <ComboBox ItemsSource="{Binding Formats}"
+                                      SelectedItem="{Binding FormatSelectedItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                      IsEnabled="{Binding FormatIsEnabled}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
                 <DataGridTemplateColumn Header="Value">
-                    <DataGridTemplateColumn.CellTemplateSelector>
-                        <local2:ValueTemplateSelector
-			                DefaultTemplate="{StaticResource DefaultTypeForShow}"
-			                VariantTemplate="{StaticResource VariantTypeForShow}"
-			                BoolTemplate="{StaticResource BoolType}"
-			                />
-                    </DataGridTemplateColumn.CellTemplateSelector>
-                    <DataGridTemplateColumn.CellEditingTemplateSelector>
-                        <local2:ValueTemplateSelector
-			                DefaultTemplate="{StaticResource DefaultTypeForEdit}"
-			                VariantTemplate="{StaticResource VariantTypeForEdit}"
-			                BoolTemplate="{StaticResource BoolType}"
-			                />
-                    </DataGridTemplateColumn.CellEditingTemplateSelector>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <CheckBox IsChecked="{Binding Path=BoolValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                          IsTabStop="False" VerticalAlignment="Center"
+                                          Visibility="{Binding Type, Converter={StaticResource BoolTypeToVisibilityConverter}}"/>
+                                <TextBlock Text="{Binding Path=Value, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                           VerticalAlignment="Center"
+                                           Visibility="{Binding Type, Converter={StaticResource OtherTypeToVisibilityConverter}}"/>
+                            </Grid>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <TextBox Text="{Binding Path=WriteValue, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                                         b:TextBoxBehaviors.IsFocusSelect="True" VerticalAlignment="Center" />
+                            </Grid>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
                 <DataGridTemplateColumn IsReadOnly="True" Header="Status Code">
                     <DataGridTemplateColumn.CellTemplate>
@@ -106,6 +117,7 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
                 <DataGridTemplateColumn Header="Prepare Value">
+                    <!--
                     <DataGridTemplateColumn.CellTemplateSelector>
                         <local2:ValueTemplateSelector
 			                DefaultTemplate="{StaticResource DefaultTypeForShowPrepareValue}"
@@ -120,6 +132,27 @@
 			                BoolTemplate="{StaticResource BoolTypePrepareValue}"
 			                />
                     </DataGridTemplateColumn.CellEditingTemplateSelector>
+                    -->
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <CheckBox IsChecked="{Binding Path=BoolPreparedValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                          IsTabStop="False" VerticalAlignment="Center"
+                                          Visibility="{Binding Type, Converter={StaticResource BoolTypeToVisibilityConverter}}"/>
+                                <TextBlock Text="{Binding Path=PreparedValue, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                           VerticalAlignment="Center"
+                                           Visibility="{Binding Type, Converter={StaticResource OtherTypeToVisibilityConverter}}"/>
+                            </Grid>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <TextBox Text="{Binding Path=PreparedValue, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                                         b:TextBoxBehaviors.IsFocusSelect="True" VerticalAlignment="Center" />
+                            </Grid>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
                 <DataGridTemplateColumn IsReadOnly="True" Header="Server Time Stamp">
                     <DataGridTemplateColumn.CellTemplate>
@@ -136,11 +169,6 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
-            <DataGrid.RowStyle>
-                <Style BasedOn="{StaticResource MaterialDesignDataGridRow}" TargetType="{x:Type DataGridRow}">
-                    <Setter Property="IsSelected" Value="{Binding Path=IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                </Style>
-            </DataGrid.RowStyle>
         </DataGrid>
     </DockPanel>
 </UserControl>

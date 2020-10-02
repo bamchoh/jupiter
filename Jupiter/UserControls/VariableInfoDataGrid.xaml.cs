@@ -68,7 +68,7 @@ namespace Jupiter.UserControls
             var elem = dg.CurrentColumn.GetCellContent(dg.CurrentItem);
             var checkbox = GetElement<CheckBox>(elem);
 
-            if (checkbox != null)
+            if (checkbox != null && checkbox.Visibility == Visibility.Visible)
             {
                 switch(e.Key)
                 {

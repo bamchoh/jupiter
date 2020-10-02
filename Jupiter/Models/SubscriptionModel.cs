@@ -20,8 +20,8 @@ namespace Jupiter.Models
     {
         private Interfaces.ISubscriptionOperatable subscriptionOperator;
         private Interfaces.IVariableInfoManager variableInfoManager;
-        private ObservableCollection<VariableInfoBase> monitoredItems = new ObservableCollection<VariableInfoBase>();
-        private ObservableCollection<VariableInfoBase> selectedMonitoredItems = new ObservableCollection<VariableInfoBase>();
+        private ObservableCollection<VariableInfoBase2> monitoredItems = new ObservableCollection<VariableInfoBase2>();
+        private ObservableCollection<VariableInfoBase2> selectedMonitoredItems = new ObservableCollection<VariableInfoBase2>();
 
         public ICommand DeleteMonitoredItemsCommand { get; set; }
 
@@ -50,16 +50,16 @@ namespace Jupiter.Models
         public IList MonitoredItems
         {
             get { return monitoredItems; }
-            set { this.SetProperty(ref monitoredItems, (ObservableCollection<VariableInfoBase>)value); }
+            set { this.SetProperty(ref monitoredItems, (ObservableCollection<VariableInfoBase2>)value); }
         }
 
-        public async Task AddToSubscription(IList objs)
+        public void AddToSubscription(IList objs)
         {
-            var items = await subscriptionOperator.AddToSubscription(objs);
+            var items = subscriptionOperator.AddToSubscription(objs);
             if (items == null || items.Count == 0)
                 return;
 
-            foreach(VariableInfoBase mi in MonitoredItems)
+            foreach(VariableInfoBase2 mi in MonitoredItems)
             {
                 mi.IsSelected = false;
             }
@@ -75,51 +75,37 @@ namespace Jupiter.Models
         {
             foreach(var change in e.Items)
             {
-                for(int i = 0; i < this.monitoredItems.Count; i++)
+                for(int i = 0; i < monitoredItems.Count; i++)
                 {
-                    var vi = this.monitoredItems[i];
+                    var vi = monitoredItems[i];
                     if (vi.ClientHandle == change.ClientHandle)
                     {
-                        var newvi = NewVariableInfo(vi, change);
-                        if (newvi == vi)
+                        var builtInType = BuiltInType.Null;
+                        if (change?.Value?.WrappedValue != null && change.Value.WrappedValue.TypeInfo != null)
                         {
-                            vi.DataValue = change.Value;
+                            builtInType = change.Value.WrappedValue.TypeInfo.BuiltInType;
+                        }
+
+                        if (builtInType == vi.Type)
+                        {
+                            vi.UpdateDataValue(change?.Value);
                         }
                         else
                         {
-                            this.monitoredItems.Remove(vi);
-                            this.monitoredItems.Insert(i, newvi);
+                            vi.NewDataValue(change?.Value);
                         }
                         break;
                     }
                 }
             }
         }
-        private VariableInfoBase NewVariableInfo(VariableInfoBase vi, MonitoredItemNotification n)
-        {
-            var builtInType = BuiltInType.Null;
-            if (n?.Value?.WrappedValue != null && n.Value.WrappedValue.TypeInfo != null)
-            {
-                builtInType = n.Value.WrappedValue.TypeInfo.BuiltInType;
-            }
-
-            if (vi.Type == builtInType)
-                return vi;
-
-            var conf = new VariableConfiguration(vi.NodeId, vi.DisplayName, NodeClass.Variable, builtInType);
-            var newvi = variableInfoManager.NewVariableInfo(conf);
-            newvi.SetItem(vi.NodeId, vi.DisplayName, vi.ClientHandle, n?.Value);
-            newvi.IsSelected = vi.IsSelected;
-            return newvi;
-        }
-
 
         private void DeleteMonitoredItems()
         {
-            var tempList = new ObservableCollection<VariableInfoBase>();
+            var tempList = new ObservableCollection<VariableInfoBase2>();
 
             var delItems = new List<uint>();
-            foreach (var vi in this.monitoredItems)
+            foreach (var vi in (ObservableCollection<VariableInfoBase2>)MonitoredItems)
             {
                 if (SelectedMonitoredItems.Contains(vi))
                 {
