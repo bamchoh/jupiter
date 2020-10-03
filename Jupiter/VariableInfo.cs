@@ -18,6 +18,7 @@ using System.Globalization;
 
 namespace Jupiter
 {
+    /*
     public class VariableConfiguration : Interfaces.IVariableConfiguration
     {
         public VariableConfiguration(NodeId id, string displayName, NodeClass nodeClass, BuiltInType builtInType)
@@ -35,7 +36,7 @@ namespace Jupiter
                 return displayName;
             }
 
-            set { /* NOPE */ }
+            set {}
         }
 
         NodeClass nodeClass;
@@ -45,7 +46,7 @@ namespace Jupiter
                 return nodeClass;
             }
 
-            set { /* NOPE */ }
+            set {}
         }
 
         BuiltInType builtInType;
@@ -1594,6 +1595,7 @@ namespace Jupiter
             }
         }
     }
+    */
 
     public abstract class DataValueBase
     {
@@ -2342,7 +2344,7 @@ namespace Jupiter
         }
     }
 
-    public class VariableInfoBase2 : BindableBase
+    public class VariableInfo : BindableBase
     {
         #region Properties(DataGridView)
         private NodeId nodeId;
@@ -2446,7 +2448,7 @@ namespace Jupiter
         }
         #endregion
 
-        public VariableInfoBase2(NodeId nodeId, string displayName)
+        public VariableInfo(NodeId nodeId, string displayName)
         {
             this.nodeId = nodeId;
 
@@ -2455,7 +2457,7 @@ namespace Jupiter
             this._value = new NullDataValue(new DataValue(StatusCodes.BadWaitingForInitialData));
         }
 
-        public VariableInfoBase2(NodeId nodeId, string displayName, BuiltInType builtInType)
+        public VariableInfo(NodeId nodeId, string displayName, BuiltInType builtInType)
         {
             this.nodeId = nodeId;
 

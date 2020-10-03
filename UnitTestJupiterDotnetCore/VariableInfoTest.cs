@@ -3,6 +3,7 @@ using Jupiter;
 using Jupiter.Converter;
 using System;
 using System.Collections.Generic;
+using Opc.Ua;
 
 namespace UnitTestJupiterDotnetCore
 {
@@ -12,23 +13,21 @@ namespace UnitTestJupiterDotnetCore
         [TestMethod]
         public void TestBooleanVariableInfo()
         {
-            var vi = new BooleanVariableInfo();
-            Assert.AreEqual(vi.Value, false);
-            vi.Value = true;
-            Assert.AreEqual(vi.Value, true);
-            vi.Value = false;
-            Assert.AreEqual(vi.Value, false);
+            var vi = new BooleanDataValue(new DataValue(new Variant(false)));
+            Assert.AreEqual(vi.BoolValue, false);
+            vi.BoolValue = true;
+            Assert.AreEqual(vi.BoolValue, true);
+            vi.BoolValue = false;
+            Assert.AreEqual(vi.BoolValue, false);
         }
 
         [TestMethod]
         public void TestSByteeanVariableInfo()
         {
-            var vi = new SByteVariableInfo();
-            Assert.AreEqual(vi.Value.Value, 0);
-            vi.WriteValue = new WrappedValue<sbyte>(-128, FormatType.DEC, null, null);
-
-            Assert.AreEqual(vi.WriteValue.Value, -128);
-            Assert.AreEqual(vi.Value.Value, -128);
+            var vi = new SByteDataValue(new DataValue(new Variant((sbyte)0)));
+            Assert.AreEqual(vi.GetRawValue(), (sbyte)0);
+            vi.UpdateDataValue(new DataValue(new Variant((sbyte)-128)));
+            Assert.AreEqual(vi.GetRawValue(), (sbyte)-128);
         }
 
         [DataRow((sbyte)0, FormatType.DEC, "0")]
@@ -49,11 +48,9 @@ namespace UnitTestJupiterDotnetCore
         [DataTestMethod]
         public void TestSByteCoverter(sbyte inputValue, string format, string expectedDisplayValue)
         {
-            var varInfo = new SByteVariableInfo();
+            var varInfo = new SByteDataValue(new DataValue(new Variant(inputValue)));
             varInfo.FormatSelectedItem = format;
-            var wVal = varInfo.Value;
-            wVal.Value = inputValue;
-            var convVal = wVal.Convert();
+            var convVal = varInfo.ConvertValue();
             Assert.AreEqual(convVal, expectedDisplayValue);
         }
 
@@ -75,11 +72,9 @@ namespace UnitTestJupiterDotnetCore
         [DataTestMethod]
         public void TestByteCoverter(byte inputValue, string format, string expectedDisplayValue)
         {
-            var varInfo = new ByteVariableInfo();
+            var varInfo = new ByteDataValue(new DataValue(new Variant(inputValue)));
             varInfo.FormatSelectedItem = format;
-            var wVal = varInfo.Value;
-            wVal.Value = inputValue;
-            var convVal = wVal.Convert();
+            var convVal = varInfo.ConvertValue();
             Assert.AreEqual(convVal, expectedDisplayValue);
         }
 
@@ -101,11 +96,9 @@ namespace UnitTestJupiterDotnetCore
         [DataTestMethod]
         public void TestInt16Coverter(Int16 inputValue, string format, string expectedDisplayValue)
         {
-            var varInfo = new Int16VariableInfo();
+            var varInfo = new Int16DataValue(new DataValue(new Variant(inputValue)));
             varInfo.FormatSelectedItem = format;
-            var wVal = varInfo.Value;
-            wVal.Value = inputValue;
-            var convVal = wVal.Convert();
+            var convVal = varInfo.ConvertValue();
             Assert.AreEqual(convVal, expectedDisplayValue);
         }
 
@@ -127,11 +120,9 @@ namespace UnitTestJupiterDotnetCore
         [DataTestMethod]
         public void TestUInt16Coverter(UInt16 inputValue, string format, string expectedDisplayValue)
         {
-            var varInfo = new UInt16VariableInfo();
+            var varInfo = new UInt16DataValue(new DataValue(new Variant(inputValue)));
             varInfo.FormatSelectedItem = format;
-            var wVal = varInfo.Value;
-            wVal.Value = inputValue;
-            var convVal = wVal.Convert();
+            var convVal = varInfo.ConvertValue();
             Assert.AreEqual(convVal, expectedDisplayValue);
         }
 
@@ -153,11 +144,9 @@ namespace UnitTestJupiterDotnetCore
         [DataTestMethod]
         public void TestInt32Coverter(Int32 inputValue, string format, string expectedDisplayValue)
         {
-            var varInfo = new Int32VariableInfo();
+            var varInfo = new Int32DataValue(new DataValue(new Variant(inputValue)));
             varInfo.FormatSelectedItem = format;
-            var wVal = varInfo.Value;
-            wVal.Value = inputValue;
-            var convVal = wVal.Convert();
+            var convVal = varInfo.ConvertValue();
             Assert.AreEqual(convVal, expectedDisplayValue);
         }
 
@@ -179,11 +168,9 @@ namespace UnitTestJupiterDotnetCore
         [DataTestMethod]
         public void TestUInt32Coverter(UInt32 inputValue, string format, string expectedDisplayValue)
         {
-            var varInfo = new UInt32VariableInfo();
+            var varInfo = new UInt32DataValue(new DataValue(new Variant(inputValue)));
             varInfo.FormatSelectedItem = format;
-            var wVal = varInfo.Value;
-            wVal.Value = inputValue;
-            var convVal = wVal.Convert();
+            var convVal = varInfo.ConvertValue();
             Assert.AreEqual(convVal, expectedDisplayValue);
         }
 
@@ -205,11 +192,9 @@ namespace UnitTestJupiterDotnetCore
         [DataTestMethod]
         public void TestInt64Coverter(Int64 inputValue, string format, string expectedDisplayValue)
         {
-            var varInfo = new Int64VariableInfo();
+            var varInfo = new Int64DataValue(new DataValue(new Variant(inputValue)));
             varInfo.FormatSelectedItem = format;
-            var wVal = varInfo.Value;
-            wVal.Value = inputValue;
-            var convVal = wVal.Convert();
+            var convVal = varInfo.ConvertValue();
             Assert.AreEqual(convVal, expectedDisplayValue);
         }
 
@@ -231,11 +216,9 @@ namespace UnitTestJupiterDotnetCore
         [DataTestMethod]
         public void TestUInt64Coverter(UInt64 inputValue, string format, string expectedDisplayValue)
         {
-            var varInfo = new UInt64VariableInfo();
+            var varInfo = new UInt64DataValue(new DataValue(new Variant(inputValue)));
             varInfo.FormatSelectedItem = format;
-            var wVal = varInfo.Value;
-            wVal.Value = inputValue;
-            var convVal = wVal.Convert();
+            var convVal = varInfo.ConvertValue();
             Assert.AreEqual(convVal, expectedDisplayValue);
         }
 
@@ -251,11 +234,9 @@ namespace UnitTestJupiterDotnetCore
         [DataTestMethod]
         public void TestFloatCoverter(float inputValue, string format, string expectedDisplayValue)
         {
-            var varInfo = new FloatVariableInfo();
+            var varInfo = new FloatDataValue(new DataValue(new Variant(inputValue)));
             varInfo.FormatSelectedItem = format;
-            var wVal = varInfo.Value;
-            wVal.Value = inputValue;
-            var convVal = wVal.Convert();
+            var convVal = varInfo.ConvertValue();
             Assert.AreEqual(convVal, expectedDisplayValue);
         }
 
@@ -271,11 +252,9 @@ namespace UnitTestJupiterDotnetCore
         [DataTestMethod]
         public void TestDoubleCoverter(double inputValue, string format, string expectedDisplayValue)
         {
-            var varInfo = new DoubleVariableInfo();
+            var varInfo = new DoubleDataValue(new DataValue(new Variant(inputValue)));
             varInfo.FormatSelectedItem = format;
-            var wVal = varInfo.Value;
-            wVal.Value = inputValue;
-            var convVal = wVal.Convert();
+            var convVal = varInfo.ConvertValue();
             Assert.AreEqual(expectedDisplayValue, convVal);
         }
 
@@ -287,11 +266,9 @@ namespace UnitTestJupiterDotnetCore
         [DataTestMethod]
         public void TestStringCoverter(string inputValue, string format, string expectedDisplayValue)
         {
-            var varInfo = new StringVariableInfo();
+            var varInfo = new StringDataValue(new DataValue(new Variant(inputValue)));
             varInfo.FormatSelectedItem = format;
-            var wVal = varInfo.Value;
-            wVal.Value = inputValue;
-            var convVal = wVal.Convert();
+            var convVal = varInfo.ConvertValue();
             Assert.AreEqual(convVal, expectedDisplayValue);
         }
 
@@ -302,11 +279,9 @@ namespace UnitTestJupiterDotnetCore
 
             var fn = new Action<DateTime, string, string>((inputValue, format, expectedDisplayValue) =>
             {
-                var varInfo = new DateTimeVariableInfo();
+                var varInfo = new DateTimeDataValue(new DataValue(new Variant(inputValue)));
                 varInfo.FormatSelectedItem = format;
-                var wVal = varInfo.Value;
-                wVal.Value = inputValue;
-                var convVal = wVal.Convert();
+                var convVal = varInfo.ConvertValue();
                 try
                 {
                     Assert.AreEqual(convVal, expectedDisplayValue);
@@ -359,11 +334,10 @@ namespace UnitTestJupiterDotnetCore
         [DataTestMethod]
         public void TestSByteBackCoverter(string inputValue, string format, sbyte expectedDisplayValue)
         {
-            var varInfo = new SByteVariableInfo();
+            var varInfo = new SByteDataValue(new DataValue(new Variant((sbyte)0)));
             varInfo.FormatSelectedItem = format;
-            var wVal = varInfo.Value;
-            var convVal = (WrappedValue<sbyte>)wVal.ConvertBack(inputValue);
-            Assert.AreEqual(convVal.Value, expectedDisplayValue);
+            varInfo.ConvertValueBack(inputValue);
+            Assert.AreEqual(varInfo.GetRawValue(), expectedDisplayValue);
         }
 
         [DataRow("128", FormatType.DEC)]
@@ -373,10 +347,9 @@ namespace UnitTestJupiterDotnetCore
         [DataTestMethod]
         public void TestSByteBackCoverterForIllegal(string inputValue, string format)
         {
-            var varInfo = new SByteVariableInfo();
+            var varInfo = new SByteDataValue(new DataValue(new Variant((sbyte)0)));
             varInfo.FormatSelectedItem = format;
-            var wVal = varInfo.Value;
-            Assert.ThrowsException<OverflowException>(() => wVal.ConvertBack(inputValue));
+            Assert.ThrowsException<OverflowException>(() => varInfo.ConvertValueBack(inputValue));
         }
 
         [DataRow("0", FormatType.DEC, (byte)0)]
@@ -407,11 +380,10 @@ namespace UnitTestJupiterDotnetCore
         [DataTestMethod]
         public void TestByteBackCoverter(string inputValue, string format, byte expectedDisplayValue)
         {
-            var varInfo = new ByteVariableInfo();
+            var varInfo = new ByteDataValue(new DataValue(new Variant((byte)0)));
             varInfo.FormatSelectedItem = format;
-            var wVal = varInfo.Value;
-            var convVal = (WrappedValue<byte>)wVal.ConvertBack(inputValue);
-            Assert.AreEqual(convVal.Value, expectedDisplayValue);
+            varInfo.ConvertValueBack(inputValue);
+            Assert.AreEqual(varInfo.GetRawValue(), expectedDisplayValue);
         }
 
         [DataRow("-1", FormatType.DEC)]
@@ -421,10 +393,9 @@ namespace UnitTestJupiterDotnetCore
         [DataTestMethod]
         public void TestByteBackCoverterForIllegal(string inputValue, string format)
         {
-            var varInfo = new ByteVariableInfo();
+            var varInfo = new ByteDataValue(new DataValue(new Variant((byte)0)));
             varInfo.FormatSelectedItem = format;
-            var wVal = varInfo.Value;
-            Assert.ThrowsException<OverflowException>(() => wVal.ConvertBack(inputValue));
+            Assert.ThrowsException<OverflowException>(() => varInfo.ConvertValueBack(inputValue));
         }
 
         [DataRow("0", FormatType.DEC, (Int16)0)]
@@ -455,11 +426,10 @@ namespace UnitTestJupiterDotnetCore
         [DataTestMethod]
         public void TestInt16BackCoverter(string inputValue, string format, Int16 expectedDisplayValue)
         {
-            var varInfo = new Int16VariableInfo();
+            var varInfo = new Int16DataValue(new DataValue(new Variant((Int16)0)));
             varInfo.FormatSelectedItem = format;
-            var wVal = varInfo.Value;
-            var convVal = (WrappedValue<Int16>)wVal.ConvertBack(inputValue);
-            Assert.AreEqual(convVal.Value, expectedDisplayValue);
+            varInfo.ConvertValueBack(inputValue);
+            Assert.AreEqual(varInfo.GetRawValue(), expectedDisplayValue);
         }
 
         [DataRow("32768", FormatType.DEC)]
@@ -469,10 +439,9 @@ namespace UnitTestJupiterDotnetCore
         [DataTestMethod]
         public void TestInt16BackCoverterForIllegal(string inputValue, string format)
         {
-            var varInfo = new Int16VariableInfo();
+            var varInfo = new Int16DataValue(new DataValue(new Variant((Int16)0)));
             varInfo.FormatSelectedItem = format;
-            var wVal = varInfo.Value;
-            Assert.ThrowsException<OverflowException>(() => wVal.ConvertBack(inputValue));
+            Assert.ThrowsException<OverflowException>(() => varInfo.ConvertValueBack(inputValue));
         }
 
         [DataRow("0", FormatType.DEC, (UInt16)0)]
@@ -503,11 +472,10 @@ namespace UnitTestJupiterDotnetCore
         [DataTestMethod]
         public void TestUInt16BackCoverter(string inputValue, string format, UInt16 expectedDisplayValue)
         {
-            var varInfo = new UInt16VariableInfo();
+            var varInfo = new UInt16DataValue(new DataValue(new Variant((UInt16)0)));
             varInfo.FormatSelectedItem = format;
-            var wVal = varInfo.Value;
-            var convVal = (WrappedValue<UInt16>)wVal.ConvertBack(inputValue);
-            Assert.AreEqual(convVal.Value, expectedDisplayValue);
+            varInfo.ConvertValueBack(inputValue);
+            Assert.AreEqual(varInfo.GetRawValue(), expectedDisplayValue);
         }
 
         [DataRow("-1", FormatType.DEC)]
@@ -517,10 +485,9 @@ namespace UnitTestJupiterDotnetCore
         [DataTestMethod]
         public void TestUInt16BackCoverterForIllegal(string inputValue, string format)
         {
-            var varInfo = new UInt16VariableInfo();
+            var varInfo = new UInt16DataValue(new DataValue(new Variant((UInt16)0)));
             varInfo.FormatSelectedItem = format;
-            var wVal = varInfo.Value;
-            Assert.ThrowsException<OverflowException>(() => wVal.ConvertBack(inputValue));
+            Assert.ThrowsException<OverflowException>(() => varInfo.ConvertValueBack(inputValue));
         }
 
         [DataRow("0", FormatType.DEC, (Int32)0)]
@@ -551,11 +518,10 @@ namespace UnitTestJupiterDotnetCore
         [DataTestMethod]
         public void TestInt32BackCoverter(string inputValue, string format, Int32 expectedDisplayValue)
         {
-            var varInfo = new Int32VariableInfo();
+            var varInfo = new Int32DataValue(new DataValue(new Variant((Int32)0)));
             varInfo.FormatSelectedItem = format;
-            var wVal = varInfo.Value;
-            var convVal = (WrappedValue<Int32>)wVal.ConvertBack(inputValue);
-            Assert.AreEqual(convVal.Value, expectedDisplayValue);
+            varInfo.ConvertValueBack(inputValue);
+            Assert.AreEqual(varInfo.GetRawValue(), expectedDisplayValue);
         }
 
         [DataRow("2147483648", FormatType.DEC)]
@@ -565,10 +531,9 @@ namespace UnitTestJupiterDotnetCore
         [DataTestMethod]
         public void TestInt32BackCoverterForIllegal(string inputValue, string format)
         {
-            var varInfo = new Int32VariableInfo();
+            var varInfo = new Int32DataValue(new DataValue(new Variant((Int32)0)));
             varInfo.FormatSelectedItem = format;
-            var wVal = varInfo.Value;
-            Assert.ThrowsException<OverflowException>(() => wVal.ConvertBack(inputValue));
+            Assert.ThrowsException<OverflowException>(() => varInfo.ConvertValueBack(inputValue));
         }
 
         [DataRow("0", FormatType.DEC, (UInt32)0)]
@@ -599,11 +564,10 @@ namespace UnitTestJupiterDotnetCore
         [DataTestMethod]
         public void TestUInt32BackCoverter(string inputValue, string format, UInt32 expectedDisplayValue)
         {
-            var varInfo = new UInt32VariableInfo();
+            var varInfo = new UInt32DataValue(new DataValue(new Variant((UInt32)0)));
             varInfo.FormatSelectedItem = format;
-            var wVal = varInfo.Value;
-            var convVal = (WrappedValue<UInt32>)wVal.ConvertBack(inputValue);
-            Assert.AreEqual(convVal.Value, expectedDisplayValue);
+            varInfo.ConvertValueBack(inputValue);
+            Assert.AreEqual(varInfo.GetRawValue(), expectedDisplayValue);
         }
 
         [DataRow("-1", FormatType.DEC)]
@@ -613,10 +577,9 @@ namespace UnitTestJupiterDotnetCore
         [DataTestMethod]
         public void TestUInt32BackCoverterForIllegal(string inputValue, string format)
         {
-            var varInfo = new UInt32VariableInfo();
+            var varInfo = new UInt32DataValue(new DataValue(new Variant((UInt32)0)));
             varInfo.FormatSelectedItem = format;
-            var wVal = varInfo.Value;
-            Assert.ThrowsException<OverflowException>(() => wVal.ConvertBack(inputValue));
+            Assert.ThrowsException<OverflowException>(() => varInfo.ConvertValueBack(inputValue));
         }
 
 
@@ -648,11 +611,10 @@ namespace UnitTestJupiterDotnetCore
         [DataTestMethod]
         public void TestInt64BackCoverter(string inputValue, string format, Int64 expectedDisplayValue)
         {
-            var varInfo = new Int64VariableInfo();
+            var varInfo = new Int64DataValue(new DataValue(new Variant((Int64)0)));
             varInfo.FormatSelectedItem = format;
-            var wVal = varInfo.Value;
-            var convVal = (WrappedValue<Int64>)wVal.ConvertBack(inputValue);
-            Assert.AreEqual(convVal.Value, expectedDisplayValue);
+            varInfo.ConvertValueBack(inputValue);
+            Assert.AreEqual(varInfo.GetRawValue(), expectedDisplayValue);
         }
 
         [DataRow("9223372036854775808", FormatType.DEC)]
@@ -662,10 +624,9 @@ namespace UnitTestJupiterDotnetCore
         [DataTestMethod]
         public void TestInt64BackCoverterForIllegal(string inputValue, string format)
         {
-            var varInfo = new Int64VariableInfo();
+            var varInfo = new Int64DataValue(new DataValue(new Variant((Int64)0)));
             varInfo.FormatSelectedItem = format;
-            var wVal = varInfo.Value;
-            Assert.ThrowsException<OverflowException>(() => wVal.ConvertBack(inputValue));
+            Assert.ThrowsException<OverflowException>(() => varInfo.ConvertValueBack(inputValue));
         }
 
         [DataRow("0", FormatType.DEC, (UInt64)0)]
@@ -696,11 +657,10 @@ namespace UnitTestJupiterDotnetCore
         [DataTestMethod]
         public void TestUInt64BackCoverter(string inputValue, string format, UInt64 expectedDisplayValue)
         {
-            var varInfo = new UInt64VariableInfo();
+            var varInfo = new UInt64DataValue(new DataValue(new Variant((UInt64)0)));
             varInfo.FormatSelectedItem = format;
-            var wVal = varInfo.Value;
-            var convVal = (WrappedValue<UInt64>)wVal.ConvertBack(inputValue);
-            Assert.AreEqual(convVal.Value, expectedDisplayValue);
+            varInfo.ConvertValueBack(inputValue);
+            Assert.AreEqual(varInfo.GetRawValue(), expectedDisplayValue);
         }
 
         [DataRow("-1", FormatType.DEC)]
@@ -710,10 +670,9 @@ namespace UnitTestJupiterDotnetCore
         [DataTestMethod]
         public void TestUInt64BackCoverterForIllegal(string inputValue, string format)
         {
-            var varInfo = new UInt64VariableInfo();
+            var varInfo = new UInt64DataValue(new DataValue(new Variant((UInt64)0)));
             varInfo.FormatSelectedItem = format;
-            var wVal = varInfo.Value;
-            Assert.ThrowsException<OverflowException>(() => wVal.ConvertBack(inputValue));
+            Assert.ThrowsException<OverflowException>(() => varInfo.ConvertValueBack(inputValue));
         }
 
         [DataRow("-3.402823E+38", FormatType.FLOAT, (float)(-3.402823E+38))]
@@ -731,11 +690,10 @@ namespace UnitTestJupiterDotnetCore
         [DataTestMethod]
         public void TestFloatBackCoverter(string inputValue, string format, float expectedDisplayValue)
         {
-            var varInfo = new FloatVariableInfo();
+            var varInfo = new FloatDataValue(new DataValue(new Variant((float)0)));
             varInfo.FormatSelectedItem = format;
-            var wVal = varInfo.Value;
-            var convVal = (WrappedValue<float>)wVal.ConvertBack(inputValue);
-            Assert.AreEqual(convVal.Value, expectedDisplayValue);
+            varInfo.ConvertValueBack(inputValue);
+            Assert.AreEqual(varInfo.GetRawValue(), expectedDisplayValue);
         }
 
         [DataRow("Åá", FormatType.FLOAT)]
@@ -743,12 +701,11 @@ namespace UnitTestJupiterDotnetCore
         [DataTestMethod]
         public void TestFloatBackCoverterForIllegal(string inputValue, string format)
         {
-            var varInfo = new FloatVariableInfo();
+            var varInfo = new FloatDataValue(new DataValue(new Variant((float)0)));
             varInfo.FormatSelectedItem = format;
-            var wVal = varInfo.Value;
             try
             {
-                wVal.ConvertBack(inputValue);
+                varInfo.ConvertValueBack(inputValue);
                 Assert.Fail("Exception did not occur");
             }
             catch (OverflowException)
@@ -780,11 +737,10 @@ namespace UnitTestJupiterDotnetCore
         [DataTestMethod]
         public void TestDoubleBackCoverter(string inputValue, string format, double expectedDisplayValue)
         {
-            var varInfo = new DoubleVariableInfo();
+            var varInfo = new DoubleDataValue(new DataValue(new Variant((double)0)));
             varInfo.FormatSelectedItem = format;
-            var wVal = varInfo.Value;
-            var convVal = (WrappedValue<double>)wVal.ConvertBack(inputValue);
-            Assert.AreEqual(expectedDisplayValue, convVal.Value);
+            varInfo.ConvertValueBack(inputValue);
+            Assert.AreEqual(expectedDisplayValue, varInfo.GetRawValue());
         }
 
         [DataRow("Åá", FormatType.FLOAT)]
@@ -792,12 +748,11 @@ namespace UnitTestJupiterDotnetCore
         [DataTestMethod]
         public void TestDoubleBackCoverterForIllegal(string inputValue, string format)
         {
-            var varInfo = new DoubleVariableInfo();
+            var varInfo = new DoubleDataValue(new DataValue(new Variant((double)0)));
             varInfo.FormatSelectedItem = format;
-            var wVal = varInfo.Value;
             try
             {
-                wVal.ConvertBack(inputValue);
+                varInfo.ConvertValueBack(inputValue);
                 Assert.Fail("Exception did not occur");
             }
             catch (OverflowException)
@@ -822,11 +777,10 @@ namespace UnitTestJupiterDotnetCore
         [DataTestMethod]
         public void TestStringBackCoverter(string inputValue, string format, string expectedDisplayValue)
         {
-            var varInfo = new StringVariableInfo();
+            var varInfo = new StringDataValue(new DataValue(new Variant((Int64)0)));
             varInfo.FormatSelectedItem = format;
-            var wVal = varInfo.Value;
-            var convVal = (WrappedValue<string>)wVal.ConvertBack(inputValue);
-            Assert.AreEqual(convVal.Value, expectedDisplayValue);
+            varInfo.ConvertValueBack(inputValue);
+            Assert.AreEqual(varInfo.GetRawValue(), expectedDisplayValue);
         }
 
         [TestMethod]
@@ -836,13 +790,12 @@ namespace UnitTestJupiterDotnetCore
 
             var fn = new Action<string, string, DateTime>((inputValue, format, expectedDisplayValue) =>
             {
-                var varInfo = new DateTimeVariableInfo();
+                var varInfo = new DateTimeDataValue(new DataValue(new Variant((Int64)0)));
                 varInfo.FormatSelectedItem = format;
-                var wVal = varInfo.Value;
-                var convVal = (WrappedValue<DateTime>)wVal.ConvertBack(inputValue);
+                varInfo.ConvertValueBack(inputValue);
                 try
                 {
-                    Assert.AreEqual(convVal.Value, expectedDisplayValue);
+                    Assert.AreEqual(varInfo.GetRawValue(), expectedDisplayValue);
                 }
                 catch (Exception e)
                 {

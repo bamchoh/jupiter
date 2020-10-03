@@ -8,7 +8,7 @@ namespace Jupiter
 {
     class Utility
     {
-        public static void SelectDeletedLastIndex(IList<VariableInfoBase2> items, int i)
+        public static void SelectDeletedLastIndex(IList<VariableInfo> items, int i)
         {
             if (items.Count == 0)
                 return;

@@ -24,18 +24,15 @@ namespace Jupiter.Models
         [Dependency]
         public IEventAggregator EventAggregator { get; set; }
 
-        private Interfaces.IVariableInfoManager variableInfoManager;
-        private ObservableCollection<VariableInfoBase2> _itemsToRead;
+        private ObservableCollection<VariableInfo> _itemsToRead;
         private Interfaces.IOneTimeAccessOperator otaOperator;
 
         public OneTimeAccessModel(
             Interfaces.IConnection connector,
-            Interfaces.IOneTimeAccessOperator otaOperator,
-            Interfaces.IVariableInfoManager variableInfoManager
+            Interfaces.IOneTimeAccessOperator otaOperator
             )
         {
-            this.variableInfoManager = variableInfoManager;
-            this._itemsToRead = new ObservableCollection<VariableInfoBase2>();
+            this._itemsToRead = new ObservableCollection<VariableInfo>();
             this.otaOperator = otaOperator;
 
             BindingOperations.EnableCollectionSynchronization(_itemsToRead, new object());
@@ -65,7 +62,7 @@ namespace Jupiter.Models
             get { return _itemsToRead; }
             private set
             {
-                this.SetProperty(ref this._itemsToRead, (ObservableCollection<VariableInfoBase2>)value);
+                this.SetProperty(ref this._itemsToRead, (ObservableCollection<VariableInfo>)value);
             }
         }
 
@@ -130,14 +127,14 @@ namespace Jupiter.Models
             }
         }
 
-        private void GroupWrite(IList<VariableInfoBase2> items)
+        private void GroupWrite(IList<VariableInfo> items)
         {
             otaOperator.Write(items);
         }
 
         private void DeleteOneTimeAccessItems()
         {
-            var tempList = new ObservableCollection<VariableInfoBase2>();
+            var tempList = new ObservableCollection<VariableInfo>();
 
             int lastSelectedIndex;
             if (OneTimeAccessSelectedItems == null || OneTimeAccessItems.Count == 0)
@@ -182,8 +179,8 @@ namespace Jupiter.Models
 
             for(int i = 0;i < refs.Count;i++)
             {
-                var vi = (VariableInfoBase2)refs[i];
-                var newVI = new VariableInfoBase2(vi.NodeId, vi.DisplayName, types[i]);
+                var vi = (VariableInfo)refs[i];
+                var newVI = new VariableInfo(vi.NodeId, vi.DisplayName, types[i]);
                 this.OneTimeAccessItems.Add(newVI);
             }
         }

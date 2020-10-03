@@ -26,7 +26,16 @@ namespace UnitTestJupiterDotnetCore
             return new ResponseHeader();
         }
 
-        public void Write(IList<VariableInfoBase2> items)
+        public void ReadBuiltInType(IList viList, out List<BuiltInType> types)
+        {
+            types = new List<BuiltInType>();
+            foreach(VariableInfo vi in viList)
+            {
+                types.Add(vi.Type);
+            }
+        }
+
+        public void Write(IList<VariableInfo> items)
         {
             throw new NotImplementedException();
         }
@@ -70,8 +79,7 @@ namespace UnitTestJupiterDotnetCore
         {
             var connection = new TestConnection();
             var otao = new TestOneTimeAccessOperator();
-            var varinfomgr = new VariableInfo();
-            var ota = new Jupiter.Models.OneTimeAccessModel(connection, otao, varinfomgr);
+            var ota = new Jupiter.Models.OneTimeAccessModel(connection, otao);
             Add(ota, "Var1", 12345, BuiltInType.Integer);
             Assert.AreEqual(ota.OneTimeAccessItems.Count, 1);
         }
@@ -81,8 +89,7 @@ namespace UnitTestJupiterDotnetCore
         {
             var connection = new TestConnection();
             var otao = new TestOneTimeAccessOperator();
-            var varinfomgr = new VariableInfo();
-            var ota = new Jupiter.Models.OneTimeAccessModel(connection, otao, varinfomgr);
+            var ota = new Jupiter.Models.OneTimeAccessModel(connection, otao);
             Add(ota, "Var1", 12345, BuiltInType.Integer);
             connection.Connected = true;
             Assert.AreEqual(ota.OneTimeAccessItems.Count, 1);
@@ -95,8 +102,7 @@ namespace UnitTestJupiterDotnetCore
         {
             var connection = new TestConnection();
             var otao = new TestOneTimeAccessOperator();
-            var varinfomgr = new VariableInfo();
-            var ota = new Jupiter.Models.OneTimeAccessModel(connection, otao, varinfomgr);
+            var ota = new Jupiter.Models.OneTimeAccessModel(connection, otao);
             bool flag;
             flag = ota.DeleteOneTimeAccessItemsCommand.CanExecute(null);
             Assert.AreEqual(flag, false);
@@ -113,8 +119,7 @@ namespace UnitTestJupiterDotnetCore
         {
             var connection = new TestConnection();
             var otao = new TestOneTimeAccessOperator();
-            var varinfomgr = new VariableInfo();
-            var ota = new Jupiter.Models.OneTimeAccessModel(connection, otao, varinfomgr);
+            var ota = new Jupiter.Models.OneTimeAccessModel(connection, otao);
             bool flag;
             flag = ota.ReadCommand.CanExecute(null);
             Assert.AreEqual(flag, false);
@@ -131,8 +136,7 @@ namespace UnitTestJupiterDotnetCore
         {
             var connection = new TestConnection();
             var otao = new TestOneTimeAccessOperator();
-            var varinfomgr = new VariableInfo();
-            var ota = new Jupiter.Models.OneTimeAccessModel(connection, otao, varinfomgr);
+            var ota = new Jupiter.Models.OneTimeAccessModel(connection, otao);
             bool flag;
             flag = ota.WriteCommand.CanExecute(null);
             Assert.AreEqual(flag, false);
@@ -149,8 +153,7 @@ namespace UnitTestJupiterDotnetCore
         {
             var connection = new TestConnection();
             var otao = new TestOneTimeAccessOperator();
-            var varinfomgr = new VariableInfo();
-            var ota = new Jupiter.Models.OneTimeAccessModel(connection, otao, varinfomgr);
+            var ota = new Jupiter.Models.OneTimeAccessModel(connection, otao);
             ota.DeleteOneTimeAccessItemsCommand.Execute(null);
             Assert.AreEqual(ota.OneTimeAccessItems.Count, 0);
         }
@@ -160,11 +163,10 @@ namespace UnitTestJupiterDotnetCore
         {
             var connection = new TestConnection();
             var otao = new TestOneTimeAccessOperator();
-            var varinfomgr = new VariableInfo();
-            var ota = new Jupiter.Models.OneTimeAccessModel(connection, otao, varinfomgr);
+            var ota = new Jupiter.Models.OneTimeAccessModel(connection, otao);
             Add(ota, "Var1", 12345, BuiltInType.Integer);
-            ((VariableInfoBase)ota.OneTimeAccessItems[0]).PropertyChanged += (object sender, System.ComponentModel.PropertyChangedEventArgs e) => {
-                ota.OneTimeAccessSelectedItems = new ObservableCollection<VariableInfoBase>();
+            ((VariableInfo)ota.OneTimeAccessItems[0]).PropertyChanged += (object sender, System.ComponentModel.PropertyChangedEventArgs e) => {
+                ota.OneTimeAccessSelectedItems = new ObservableCollection<VariableInfo>();
                 ota.OneTimeAccessSelectedItems.Add(sender);
             };
             ota.DeleteOneTimeAccessItemsCommand.Execute(null);
@@ -176,14 +178,13 @@ namespace UnitTestJupiterDotnetCore
         {
             var connection = new TestConnection();
             var otao = new TestOneTimeAccessOperator();
-            var varinfomgr = new VariableInfo();
-            var ota = new Jupiter.Models.OneTimeAccessModel(connection, otao, varinfomgr);
+            var ota = new Jupiter.Models.OneTimeAccessModel(connection, otao);
             Add(ota, "Var1", 12345, BuiltInType.Integer);
-            ((VariableInfoBase)ota.OneTimeAccessItems[0]).PropertyChanged += (object sender, System.ComponentModel.PropertyChangedEventArgs e) => {
-                ota.OneTimeAccessSelectedItems = new ObservableCollection<VariableInfoBase>();
+            ((VariableInfo)ota.OneTimeAccessItems[0]).PropertyChanged += (object sender, System.ComponentModel.PropertyChangedEventArgs e) => {
+                ota.OneTimeAccessSelectedItems = new ObservableCollection<VariableInfo>();
                 ota.OneTimeAccessSelectedItems.Add(sender);
             };
-            ((VariableInfoBase)ota.OneTimeAccessItems[0]).IsSelected = true;
+            ((VariableInfo)ota.OneTimeAccessItems[0]).IsSelected = true;
             ota.DeleteOneTimeAccessItemsCommand.Execute(null);
             Assert.AreEqual(ota.OneTimeAccessItems.Count, 0);
         }
@@ -193,21 +194,20 @@ namespace UnitTestJupiterDotnetCore
         {
             var connection = new TestConnection();
             var otao = new TestOneTimeAccessOperator();
-            var varinfomgr = new VariableInfo();
-            var ota = new Jupiter.Models.OneTimeAccessModel(connection, otao, varinfomgr);
+            var ota = new Jupiter.Models.OneTimeAccessModel(connection, otao);
             Add(ota, "Var1", 12345, BuiltInType.Integer);
             Add(ota, "Var2", 23456, BuiltInType.Integer);
-            ota.OneTimeAccessSelectedItems = new ObservableCollection<VariableInfoBase>();
-            foreach (VariableInfoBase vib in ota.OneTimeAccessItems)
+            ota.OneTimeAccessSelectedItems = new ObservableCollection<VariableInfo>();
+            foreach (VariableInfo vib in ota.OneTimeAccessItems)
             {
                 vib.PropertyChanged += (object sender, System.ComponentModel.PropertyChangedEventArgs e) => {
                     ota.OneTimeAccessSelectedItems.Add(sender);
                 };
             }
-            ((VariableInfoBase)ota.OneTimeAccessItems[0]).IsSelected = true;
+            ((VariableInfo)ota.OneTimeAccessItems[0]).IsSelected = true;
             ota.DeleteOneTimeAccessItemsCommand.Execute(null);
             Assert.AreEqual(ota.OneTimeAccessItems.Count, 1);
-            Assert.AreEqual(((VariableInfoBase)ota.OneTimeAccessItems[0]).NodeId, "Var2");
+            Assert.AreEqual(((VariableInfo)ota.OneTimeAccessItems[0]).NodeId, "Var2");
         }
 
         private Dictionary<string, BuiltInType> _readCommandBase_CreateTestVariables(List<TestPattern> testPatterns)
@@ -254,10 +254,9 @@ namespace UnitTestJupiterDotnetCore
                 ea.GetEvent<Jupiter.Events.ErrorNotificationEvent>()
                     .Subscribe(x => msg = x.Message);
 
-                var varinfomgr = new VariableInfo();
-                var c = new Client(varinfomgr, ea);
+                var c = new Client(ea);
                 var references = new OPCUAReference(c, null, ea);
-                var ota = new Jupiter.Models.OneTimeAccessModel(c, c, varinfomgr);
+                var ota = new Jupiter.Models.OneTimeAccessModel(c, c);
                 ota.EventAggregator = ea;
                 var nodegrid = new Jupiter.Models.NodeInfoDataGridModel(c, c);
                 var nodetree = new Jupiter.Models.NodeTreeModel(c, references, null, ota);
@@ -291,9 +290,9 @@ namespace UnitTestJupiterDotnetCore
                         continue;
 
                     nodetree.UpdateVariableNodeListCommand.Execute(ch);
-                    foreach (VariableConfiguration vn in nodetree.VariableNodes)
+                    foreach (VariableInfo vn in nodetree.VariableNodes)
                     {
-                        nodetree.AddToReadWriteCommand.Execute(new List<VariableConfiguration>() { vn });
+                        nodetree.AddToReadWriteCommand.Execute(new List<VariableInfo>() { vn });
                     }
                 };
                 ota.ReadCommand.Execute(null);
@@ -301,7 +300,7 @@ namespace UnitTestJupiterDotnetCore
                 Assert.AreEqual(ota.OneTimeAccessItems.Count, testPatterns.Count);
                 for (int i = 0; i < testPatterns.Count; i++)
                 {
-                    var got = ((VariableInfoBase)ota.OneTimeAccessItems[i]).DataValue.Value.ToString();
+                    var got = ((VariableInfo)ota.OneTimeAccessItems[i]).Value.ToString();
                     var want = testPatterns[i].Value.ToString();
                     Assert.AreEqual(got, want);
                 }
@@ -339,14 +338,9 @@ namespace UnitTestJupiterDotnetCore
 
         private void Add(Jupiter.Models.OneTimeAccessModel ota, string name, object value, BuiltInType type)
         {
-            ota.AddToReadWrite(new List<IVariableConfiguration>() {
-                new TestVariableConfiguration() {
-                    NodeClass = NodeClass.Variable,
-                    TestBuiltInType = type,
-                    TestVariableNodeId = new NodeId(name),
-                    Value = value,
-                }
-            });
+            var vi = new VariableInfo(new NodeId(name), name);
+            vi.NewDataValue(new DataValue(new Variant(value)));
+            ota.AddToReadWrite(new List<VariableInfo>() { vi });
         }
     }
 }

@@ -57,7 +57,6 @@ namespace Jupiter
         private Session session;
         private Subscription subscription;
         private Opc.Ua.ApplicationConfiguration config;
-        private Interfaces.IVariableInfoManager variableInfoManager;
 
         private bool connected;
         #endregion
@@ -67,10 +66,8 @@ namespace Jupiter
         #endregion
 
         #region Constructor
-        public Client(Interfaces.IVariableInfoManager variableInfoManager, IEventAggregator ea)
+        public Client(IEventAggregator ea)
         {
-            this.variableInfoManager = variableInfoManager;
-
             this.EventAggregator = ea;
 
             this.config = ApplicationConfiguration.Load(null);
@@ -186,7 +183,7 @@ namespace Jupiter
             }
         }
 
-        public IList<VariableInfoBase2> AddToSubscription(IList objs)
+        public IList<VariableInfo> AddToSubscription(IList objs)
         {
 
             /*
@@ -213,10 +210,10 @@ namespace Jupiter
                 if (objs == null || objs.Count == 0)
                     return null;
 
-                var viList = new ObservableCollection<VariableInfoBase2>();
-                foreach (VariableInfoBase2 item in objs)
+                var viList = new ObservableCollection<VariableInfo>();
+                foreach (VariableInfo item in objs)
                 {
-                    viList.Add(new VariableInfoBase2(item.NodeId, item.DisplayName));
+                    viList.Add(new VariableInfo(item.NodeId, item.DisplayName));
                 }
 
                 if (session.Subscriptions.Count() == 0)
@@ -519,14 +516,14 @@ namespace Jupiter
                 out diagnosticInfos);
         }
 
-        public void Write(IList<VariableInfoBase2> items)
+        public void Write(IList<VariableInfo> items)
         {
-            Func<VariableInfoBase2, object> func = (vi) => vi.GetPreparedValue();
+            Func<VariableInfo, object> func = (vi) => vi.GetPreparedValue();
             
             innerWrite(items, func);
         }
 
-        public ObservableCollection<VariableInfoBase2> FetchVariableReferences(ExpandedNodeId expandedNodeId)
+        public ObservableCollection<VariableInfo> FetchVariableReferences(ExpandedNodeId expandedNodeId)
         {
             var id = this.ToNodeId(expandedNodeId);
 
@@ -541,12 +538,12 @@ namespace Jupiter
             ReferenceDescriptionCollection refs;
             this.Browse(id, mask, out refs);
 
-            var varConfigurations = new ObservableCollection<VariableInfoBase2>();
+            var varConfigurations = new ObservableCollection<VariableInfo>();
 
             for(int i=0;i<refs.Count;i++)
             {
                 var r = refs[i];
-                varConfigurations.Add(new VariableInfoBase2(this.ToNodeId(r.NodeId), r.DisplayName.Text));
+                varConfigurations.Add(new VariableInfo(this.ToNodeId(r.NodeId), r.DisplayName.Text));
             }
 
             return varConfigurations;
@@ -561,7 +558,7 @@ namespace Jupiter
             }
 
             var nodesToRead = new ReadValueIdCollection();
-            foreach (VariableInfoBase2 r in viList)
+            foreach (VariableInfo r in viList)
             {
                 var nodeToRead = new ReadValueId();
                 nodeToRead.NodeId = this.ToNodeId(r.NodeId);
@@ -595,7 +592,7 @@ namespace Jupiter
             SessionNotification?.Invoke(this, e);
         }
 
-        private void innerWrite(IList<VariableInfoBase2> items, Func<VariableInfoBase2, object> func)
+        private void innerWrite(IList<VariableInfo> items, Func<VariableInfo, object> func)
         {
             try
             {
@@ -672,7 +669,7 @@ namespace Jupiter
         {
             if (e.PropertyName == "WriteValue")
             {
-                var items = new List<VariableInfoBase2>() { (VariableInfoBase2)sender };
+                var items = new List<VariableInfo>() { (VariableInfo)sender };
 
                 innerWrite(items, (vi) => vi.GetRawValue());
             }

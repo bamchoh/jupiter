@@ -28,7 +28,7 @@ namespace Jupiter.Models
         private Interfaces.IConnection connector;
         private Interfaces.IReference references;
         private bool isEnabled;
-        private ObservableCollection<VariableInfoBase2> variableNodes;
+        private ObservableCollection<VariableInfo> variableNodes;
 
         public NodeTreeModel(
             Interfaces.IConnection connector, 
@@ -85,7 +85,7 @@ namespace Jupiter.Models
         public IList VariableNodes
         {
             get { return variableNodes; }
-            set { this.SetProperty(ref variableNodes, (ObservableCollection<VariableInfoBase2>)value); }
+            set { this.SetProperty(ref variableNodes, (ObservableCollection<VariableInfo>)value); }
         }
 
         public bool IsEnabled
@@ -129,7 +129,7 @@ namespace Jupiter.Models
         {
             References?.Children.Clear();
 
-            VariableNodes = new ObservableCollection<VariableInfoBase2>();
+            VariableNodes = new ObservableCollection<VariableInfo>();
         }
 
         private void SelectionChanged(Interfaces.IReference reference, Interfaces.INodeInfoDataGrid nodeInfoDataGrid)

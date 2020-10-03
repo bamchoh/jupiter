@@ -20,8 +20,8 @@ namespace Jupiter.Models
     {
         private Interfaces.ISubscriptionOperatable subscriptionOperator;
         private Interfaces.IVariableInfoManager variableInfoManager;
-        private ObservableCollection<VariableInfoBase2> monitoredItems = new ObservableCollection<VariableInfoBase2>();
-        private ObservableCollection<VariableInfoBase2> selectedMonitoredItems = new ObservableCollection<VariableInfoBase2>();
+        private ObservableCollection<VariableInfo> monitoredItems = new ObservableCollection<VariableInfo>();
+        private ObservableCollection<VariableInfo> selectedMonitoredItems = new ObservableCollection<VariableInfo>();
 
         public ICommand DeleteMonitoredItemsCommand { get; set; }
 
@@ -50,7 +50,7 @@ namespace Jupiter.Models
         public IList MonitoredItems
         {
             get { return monitoredItems; }
-            set { this.SetProperty(ref monitoredItems, (ObservableCollection<VariableInfoBase2>)value); }
+            set { this.SetProperty(ref monitoredItems, (ObservableCollection<VariableInfo>)value); }
         }
 
         public void AddToSubscription(IList objs)
@@ -59,7 +59,7 @@ namespace Jupiter.Models
             if (items == null || items.Count == 0)
                 return;
 
-            foreach(VariableInfoBase2 mi in MonitoredItems)
+            foreach(VariableInfo mi in MonitoredItems)
             {
                 mi.IsSelected = false;
             }
@@ -102,10 +102,10 @@ namespace Jupiter.Models
 
         private void DeleteMonitoredItems()
         {
-            var tempList = new ObservableCollection<VariableInfoBase2>();
+            var tempList = new ObservableCollection<VariableInfo>();
 
             var delItems = new List<uint>();
-            foreach (var vi in (ObservableCollection<VariableInfoBase2>)MonitoredItems)
+            foreach (var vi in (ObservableCollection<VariableInfo>)MonitoredItems)
             {
                 if (SelectedMonitoredItems.Contains(vi))
                 {

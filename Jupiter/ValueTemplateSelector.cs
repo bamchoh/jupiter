@@ -24,7 +24,7 @@ namespace Jupiter
                 return base.SelectTemplate(item, container);
             }
 
-            var variableInfo = (VariableInfoBase2)item;
+            var variableInfo = (VariableInfo)item;
 
             if (variableInfo.Type == BuiltInType.Boolean)
                 return BoolTemplate;

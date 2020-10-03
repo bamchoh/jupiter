@@ -24,9 +24,6 @@ namespace Jupiter
 
             ViewModelLocationProvider.SetDefaultViewModelFactory(x => this.Container.Resolve(x));
 
-            var varinfo = new VariableInfo();
-            this.Container.RegisterInstance<Interfaces.IVariableInfoManager>(varinfo);
-
             var lifetimeManager = new ContainerControlledLifetimeManager();
             var lifetimeManager2 = new ContainerControlledLifetimeManager();
             var lifetimeManager3 = new ContainerControlledLifetimeManager();
@@ -40,7 +37,7 @@ namespace Jupiter
             this.Container.RegisterType<Interfaces.ISubscriptionModel, Models.SubscriptionModel>(lifetimeManager3);
             this.Container.RegisterType<Interfaces.IOneTimeAccessModel, Models.OneTimeAccessModel>(lifetimeManager4);
 
-            var c = new Client(varinfo, ea);
+            var c = new Client(ea);
             this.Container.RegisterInstance<Interfaces.IConnection>(c);
             this.Container.RegisterInstance<Interfaces.IReferenceFetchable>(c);
             this.Container.RegisterInstance<Interfaces.INodeInfoGetter>(c);

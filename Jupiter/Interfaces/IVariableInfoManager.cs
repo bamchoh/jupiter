@@ -21,8 +21,8 @@ namespace Jupiter.Interfaces
 
     public interface IVariableInfoManager
     {
-        IList<VariableInfoBase> GenerateVariableInfoList(IList objs);
+        IList<VariableInfo> GenerateVariableInfoList(IList objs);
 
-        VariableInfoBase NewVariableInfo(IVariableConfiguration reference);
+        VariableInfo NewVariableInfo(IVariableConfiguration reference);
     }
 }
