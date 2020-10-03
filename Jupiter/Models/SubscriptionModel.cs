@@ -19,7 +19,6 @@ namespace Jupiter.Models
     public class SubscriptionModel : BindableBase, Interfaces.ISubscriptionModel
     {
         private Interfaces.ISubscriptionOperatable subscriptionOperator;
-        private Interfaces.IVariableInfoManager variableInfoManager;
         private ObservableCollection<VariableInfo> monitoredItems = new ObservableCollection<VariableInfo>();
         private ObservableCollection<VariableInfo> selectedMonitoredItems = new ObservableCollection<VariableInfo>();
 
@@ -27,11 +26,9 @@ namespace Jupiter.Models
 
         public SubscriptionModel(
             Interfaces.IConnection connector,
-            Interfaces.ISubscriptionOperatable subscriptionOperator,
-            Interfaces.IVariableInfoManager variableInfoManager)
+            Interfaces.ISubscriptionOperatable subscriptionOperator)
         {
             this.subscriptionOperator = subscriptionOperator;
-            this.variableInfoManager = variableInfoManager;
 
             BindingOperations.EnableCollectionSynchronization(monitoredItems, new object());
 

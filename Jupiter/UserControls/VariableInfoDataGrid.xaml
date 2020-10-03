@@ -14,38 +14,6 @@
         <converter:BoolTypeToVisibilityConverter x:Key="BoolTypeToVisibilityConverter" />
         <converter:OtherTypeToVisibilityConverter x:Key="OtherTypeToVisibilityConverter" />
         <converter:StatusCodeColorConverter x:Key="StatusCodeColorConverter" />
-        <!--
-        <DataTemplate x:Key="VariantTypeForShow">
-            <TextBlock Text="{Binding Path=Value}" VerticalAlignment="Center" />
-        </DataTemplate>
-        <DataTemplate x:Key="DefaultTypeForShow">
-            <TextBlock Text="{Binding Path=Value, Converter={StaticResource DecToHexConverter}}" VerticalAlignment="Center" />
-        </DataTemplate>
-        <DataTemplate x:Key="VariantTypeForEdit">
-            <TextBox Text="{Binding Path=WriteValue, Mode=OneWay, UpdateSourceTrigger=LostFocus}" b:TextBoxBehaviors.IsFocusSelect="True" VerticalAlignment="Center" />
-        </DataTemplate>
-        <DataTemplate x:Key="DefaultTypeForEdit">
-            <TextBox Text="{Binding Path=WriteValue, Converter={StaticResource DecToHexConverter}, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" b:TextBoxBehaviors.IsFocusSelect="True" VerticalAlignment="Center" />
-        </DataTemplate>
-        <DataTemplate x:Key="BoolType">
-            <CheckBox IsChecked="{Binding Path=Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource DecToHexConverter}}" IsTabStop="False" VerticalAlignment="Center"  />
-        </DataTemplate>
-        -->
-        <DataTemplate x:Key="BoolTypePrepareValue">
-            <CheckBox IsChecked="{Binding Path=PrepareValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsTabStop="False" VerticalAlignment="Center" />
-        </DataTemplate>
-        <DataTemplate x:Key="VariantTypeForShowPrepareValue">
-            <TextBlock Text="{Binding Path=PrepareValue}" VerticalAlignment="Center" />
-        </DataTemplate>
-        <DataTemplate x:Key="VariantTypeForEditPrepareValue">
-            <TextBox Text="{Binding Path=PrepareValue, Mode=OneWay}" b:TextBoxBehaviors.IsFocusSelect="True" VerticalAlignment="Center" />
-        </DataTemplate>
-        <DataTemplate x:Key="DefaultTypeForShowPrepareValue">
-            <TextBlock Text="{Binding Path=PrepareValue, Converter={StaticResource DecToHexConverter}}" VerticalAlignment="Center"  />
-        </DataTemplate>
-        <DataTemplate x:Key="DefaultTypeForEditPrepareValue">
-            <TextBox Text="{Binding Path=PrepareValue, Converter={StaticResource DecToHexConverter}, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" b:TextBoxBehaviors.IsFocusSelect="True" VerticalAlignment="Center"  />
-        </DataTemplate>
     </UserControl.Resources>
 
     <DockPanel>
@@ -117,22 +85,6 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
                 <DataGridTemplateColumn Header="Prepare Value">
-                    <!--
-                    <DataGridTemplateColumn.CellTemplateSelector>
-                        <local2:ValueTemplateSelector
-			                DefaultTemplate="{StaticResource DefaultTypeForShowPrepareValue}"
-			                VariantTemplate="{StaticResource VariantTypeForShowPrepareValue}"
-			                BoolTemplate="{StaticResource BoolTypePrepareValue}"
-			                />
-                    </DataGridTemplateColumn.CellTemplateSelector>
-                    <DataGridTemplateColumn.CellEditingTemplateSelector>
-                        <local2:ValueTemplateSelector
-			                DefaultTemplate="{StaticResource DefaultTypeForEditPrepareValue}"
-			                VariantTemplate="{StaticResource VariantTypeForEditPrepareValue}"
-			                BoolTemplate="{StaticResource BoolTypePrepareValue}"
-			                />
-                    </DataGridTemplateColumn.CellEditingTemplateSelector>
-                    -->
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Grid>

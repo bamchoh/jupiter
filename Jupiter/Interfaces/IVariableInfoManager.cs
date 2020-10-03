@@ -19,7 +19,7 @@ namespace Jupiter.Interfaces
         NodeClass NodeClass { get; set; }
     }
 
-    public interface IVariableInfoManager
+    public interface IVariableInfoManager2
     {
         IList<VariableInfo> GenerateVariableInfoList(IList objs);
 
