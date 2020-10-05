@@ -865,6 +865,8 @@ namespace Jupiter
             {
                 this._value.FormatSelectedItem = value;
                 this.RaisePropertyChanged("FormatSelectedItem");
+                this.RaisePropertyChanged("Value");
+                this.RaisePropertyChanged("PreparedValue");
             }
         }
         #endregion
