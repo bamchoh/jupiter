@@ -886,7 +886,16 @@ namespace Jupiter
 
             this.displayname = displayName;
 
-            var defaultValue = TypeInfo.GetDefaultValue(builtInType);
+            object defaultValue;
+            switch(builtInType)
+            {
+                case BuiltInType.String:
+                    defaultValue = "";
+                    break;
+                default:
+                    defaultValue = TypeInfo.GetDefaultValue(builtInType);
+                    break;
+            }
             var typeInfo = TypeInfo.Construct(defaultValue);
             var dv = new DataValue(new Variant(defaultValue, typeInfo), StatusCodes.BadWaitingForInitialData);
 
