@@ -23,9 +23,9 @@
     <AssemblyConfiguration></AssemblyConfiguration>
     <AssemblyProduct></AssemblyProduct>
     <AssemblyTitle>Jupiter</AssemblyTitle>
-    <AssemblyVersion>0.1.0.21</AssemblyVersion>
-    <AssemblyFileVersion>0.1.0.21</AssemblyFileVersion>
-    <AssemblyInformationalVersion>0.1.0.21</AssemblyInformationalVersion>
+    <AssemblyVersion>0.1.0.22</AssemblyVersion>
+    <AssemblyFileVersion>0.1.0.22</AssemblyFileVersion>
+    <AssemblyInformationalVersion>0.1.0.22</AssemblyInformationalVersion>
     <UseWindowsForms>true</UseWindowsForms>
     <UseWPF>true</UseWPF>
   </PropertyGroup>

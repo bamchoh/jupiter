@@ -14,11 +14,11 @@ namespace UnitTestJupiterDotnetCore
         public void TestBooleanVariableInfo()
         {
             var vi = new BooleanDataValue(new DataValue(new Variant(false)));
-            Assert.AreEqual(vi.BoolValue, false);
-            vi.BoolValue = true;
-            Assert.AreEqual(vi.BoolValue, true);
-            vi.BoolValue = false;
-            Assert.AreEqual(vi.BoolValue, false);
+            Assert.AreEqual(vi.GetRawValue(), false);
+            vi.ConvertValueBack(true);
+            Assert.AreEqual(vi.GetRawValue(), true);
+            vi.ConvertValueBack(false);
+            Assert.AreEqual(vi.GetRawValue(), false);
         }
 
         [TestMethod]
