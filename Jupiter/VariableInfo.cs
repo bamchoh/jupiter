@@ -49,8 +49,6 @@ namespace Jupiter
             get { return dataValue?.WrappedValue.TypeInfo?.BuiltInType ?? BuiltInType.Null; }
         }
 
-        public abstract bool BoolValue { get; set; }
-
         public List<string> Formats { get; protected set; }
 
         public string FormatSelectedItem { get; set; }
@@ -99,12 +97,6 @@ namespace Jupiter
 
     public class NullDataValue : DataValueBase
     {
-        public override bool BoolValue
-        {
-            get { return false; }
-            set { }
-        }
-
         public NullDataValue(DataValue dataValue) : base(dataValue)
         {
             this.dataValue = dataValue;
@@ -132,12 +124,6 @@ namespace Jupiter
 
     public class BooleanDataValue : DataValueBase
     {
-        public override bool BoolValue
-        {
-            get { return (bool)dataValue.Value; }
-            set { dataValue.Value = value; }
-        }
-
         public BooleanDataValue(DataValue dv) : base(dv)
         {
             preparedValue = false;
@@ -165,12 +151,6 @@ namespace Jupiter
 
     public class ByteDataValue : DataValueBase
     {
-        public override bool BoolValue
-        {
-            get { return false; }
-            set { }
-        }
-
         public ByteDataValue(DataValue dataValue) : base(dataValue)
         {
             preparedValue = (byte)0;
@@ -219,12 +199,6 @@ namespace Jupiter
 
     public class SByteDataValue : DataValueBase
     {
-        public override bool BoolValue
-        {
-            get { return false; }
-            set { }
-        }
-
         public SByteDataValue(DataValue dataValue) : base(dataValue)
         {
             preparedValue = (sbyte)0;
@@ -274,12 +248,6 @@ namespace Jupiter
 
     public class UInt16DataValue : DataValueBase
     {
-        public override bool BoolValue
-        {
-            get { return false; }
-            set { }
-        }
-
         public UInt16DataValue(DataValue dataValue) : base(dataValue)
         {
             preparedValue = (UInt16)0;
@@ -328,12 +296,6 @@ namespace Jupiter
 
     public class Int16DataValue : DataValueBase
     {
-        public override bool BoolValue
-        {
-            get { return false; }
-            set { }
-        }
-
         public Int16DataValue(DataValue dataValue) : base(dataValue)
         {
             preparedValue = (Int16)0;
@@ -383,12 +345,6 @@ namespace Jupiter
 
     public class UInt32DataValue : DataValueBase
     {
-        public override bool BoolValue
-        {
-            get { return false; }
-            set { }
-        }
-
         public UInt32DataValue(DataValue dataValue) : base(dataValue)
         {
             preparedValue = (UInt32)0;
@@ -437,12 +393,6 @@ namespace Jupiter
 
     public class Int32DataValue : DataValueBase
     {
-        public override bool BoolValue
-        {
-            get { return false; }
-            set { }
-        }
-
         public Int32DataValue(DataValue dataValue) : base(dataValue)
         {
             preparedValue = (Int32)0;
@@ -492,12 +442,6 @@ namespace Jupiter
 
     public class UInt64DataValue : DataValueBase
     {
-        public override bool BoolValue
-        {
-            get { return false; }
-            set { }
-        }
-
         public UInt64DataValue(DataValue dataValue) : base(dataValue)
         {
             preparedValue = (UInt64)0;
@@ -566,12 +510,6 @@ namespace Jupiter
 
     public class Int64DataValue : DataValueBase
     {
-        public override bool BoolValue
-        {
-            get { return false; }
-            set { }
-        }
-
         public Int64DataValue(DataValue dataValue) : base(dataValue)
         {
             preparedValue = (Int64)0;
@@ -620,12 +558,6 @@ namespace Jupiter
 
     public class FloatDataValue : DataValueBase
     {
-        public override bool BoolValue
-        {
-            get { return false; }
-            set { }
-        }
-
         public FloatDataValue(DataValue dataValue) : base(dataValue)
         {
             preparedValue = (float)0;
@@ -654,12 +586,6 @@ namespace Jupiter
 
     public class DoubleDataValue : DataValueBase
     {
-        public override bool BoolValue
-        {
-            get { return false; }
-            set { }
-        }
-
         public DoubleDataValue(DataValue dataValue) : base(dataValue)
         {
             preparedValue = (double)0;
@@ -688,12 +614,6 @@ namespace Jupiter
 
     public class StringDataValue : DataValueBase
     {
-        public override bool BoolValue
-        {
-            get { return false; }
-            set { }
-        }
-
         public StringDataValue(DataValue dataValue) : base(dataValue)
         {
             preparedValue = "";
@@ -732,12 +652,6 @@ namespace Jupiter
 
     public class DateTimeDataValue : DataValueBase
     {
-        public override bool BoolValue
-        {
-            get { return false; }
-            set { }
-        }
-
         private readonly string DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss.fff";
 
         public DateTimeDataValue(DataValue dataValue) : base(dataValue)
@@ -802,13 +716,22 @@ namespace Jupiter
             get { return _value.ConvertValue(); }
         }
 
-        public bool BoolValue
+        public object BoolValue
         {
-            get { return _value.BoolValue; }
+            get
+            {
+                if (Type != BuiltInType.Boolean)
+                    return false;
+
+                return _value.ConvertValue();
+            }
             set
             {
-                _value.BoolValue = value;
-                this.RaisePropertyChanged("WriteValue");
+                if (Type != BuiltInType.Boolean)
+                    return;
+
+                _value.ConvertValueBack(value);
+                RaisePropertyChanged("WriteValue");
                 RaisePropertyChanged("BoolValue");
             }
         }
@@ -820,15 +743,38 @@ namespace Jupiter
             set
             {
                 _value.ConvertValueBack(value);
-                this.RaisePropertyChanged("WriteValue");
-                this.RaisePropertyChanged("Value");
+                RaisePropertyChanged("WriteValue");
+                RaisePropertyChanged("Value");
             }
         }
 
         public object PreparedValue
         {
             get { return _value.ConvertPreparedValue(); }
-            set { _value.ConvertBackPreparedValue(value); }
+            set {
+                _value.ConvertBackPreparedValue(value);
+                RaisePropertyChanged("PreparedValue");
+            }
+        }
+
+        public object PreparedBoolValue
+        {
+            get
+            {
+                if (Type != BuiltInType.Boolean)
+                    return false;
+
+                return _value.ConvertPreparedValue();
+            }
+
+            set
+            {
+                if (Type != BuiltInType.Boolean)
+                    return;
+
+                _value.ConvertBackPreparedValue(value);
+                RaisePropertyChanged("PreparedBoolValue");
+            }
         }
 
         public StatusCode StatusCode

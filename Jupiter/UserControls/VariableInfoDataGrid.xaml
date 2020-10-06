@@ -84,11 +84,11 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="Prepare Value">
+                <DataGridTemplateColumn Header="Prepared Value">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Grid>
-                                <CheckBox IsChecked="{Binding Path=BoolPreparedValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                <CheckBox IsChecked="{Binding Path=PreparedBoolValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                           IsTabStop="False" VerticalAlignment="Center"
                                           Visibility="{Binding Type, Converter={StaticResource BoolTypeToVisibilityConverter}}"/>
                                 <TextBlock Text="{Binding Path=PreparedValue, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
