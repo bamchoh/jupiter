@@ -17,7 +17,15 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <!-- Assembly Info -->
+    <AssemblyCompany></AssemblyCompany>
+    <AssemblyConfiguration></AssemblyConfiguration>
+    <AssemblyProduct></AssemblyProduct>
+    <AssemblyTitle>Jupiter</AssemblyTitle>
+    <AssemblyVersion>0.1.0.21</AssemblyVersion>
+    <AssemblyFileVersion>0.1.0.21</AssemblyFileVersion>
+    <AssemblyInformationalVersion>0.1.0.21</AssemblyInformationalVersion>
     <UseWindowsForms>true</UseWindowsForms>
     <UseWPF>true</UseWPF>
   </PropertyGroup>
@@ -106,5 +114,18 @@
     <PackageReference Include="Unity">
       <Version>5.11.7</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
 </Project>
