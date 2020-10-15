@@ -105,14 +105,7 @@ namespace Jupiter.Models
 
                 for (int i = 0; i < values.Count; i++)
                 {
-                    if(_itemsToRead[i].Type == values[i]?.WrappedValue.TypeInfo?.BuiltInType)
-                    {
-                        _itemsToRead[i].UpdateDataValue(values[i]);
-                    }
-                    else
-                    {
-                        _itemsToRead[i].NewDataValue(values[i]);
-                    }
+                    _itemsToRead[i].UpdateDataValue(values[i]);
                 }
 
                 return;

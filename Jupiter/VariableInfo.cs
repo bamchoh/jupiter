@@ -870,7 +870,22 @@ namespace Jupiter
 
         public void UpdateDataValue(DataValue dv)
         {
-            this._value.UpdateDataValue(dv);
+            if(this._value.Type != BuiltInType.Null && dv.Value == null)
+            {
+                var defaultValue = TypeInfo.GetDefaultValue(this._value.Type);
+                var typeInfo = TypeInfo.Construct(defaultValue);
+                var newdv = new DataValue(new Variant(defaultValue, typeInfo));
+
+                newdv.StatusCode = dv.StatusCode;
+                newdv.ServerTimestamp = dv.ServerTimestamp;
+                newdv.SourceTimestamp = dv.SourceTimestamp;
+
+                this._value.UpdateDataValue(newdv);
+            }
+            else
+            {
+                this._value.UpdateDataValue(dv);
+            }
 
             this.RaisePropertyChanged("Value");
             this.RaisePropertyChanged("BoolValue");
