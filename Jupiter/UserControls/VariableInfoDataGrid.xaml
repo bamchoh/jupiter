@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:b="clr-namespace:Jupiter.Behaviors"
              xmlns:local="clr-namespace:Jupiter.UserControls"
+             xmlns:localValidationRules="clr-namespace:Jupiter.ValidationRules"
              xmlns:local2="clr-namespace:Jupiter"
              xmlns:converter="clr-namespace:Jupiter.Converter"
              xmlns:materialDesign="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
@@ -20,6 +21,7 @@
         <DataGrid Grid.Column="1" Grid.Row="1"
                   PreviewKeyDown="DataGrid_PreviewKeyDown"
                   ItemsSource="{Binding ItemsSource, RelativeSource={RelativeSource AncestorType=local:VariableInfoDataGrid}}"
+                  CellEditEnding="DataGrid_CellEditEnding"
                   SelectionChanged="DataGrid_SelectionChanged"
                   CanUserAddRows="False" CanUserSortColumns="False" CanUserReorderColumns="False" IsReadOnly="False" AutoGenerateColumns="False">
             <DataGrid.Columns>
@@ -69,8 +71,10 @@
                     <DataGridTemplateColumn.CellEditingTemplate>
                         <DataTemplate>
                             <Grid>
-                                <TextBox Text="{Binding Path=WriteValue, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-                                         b:TextBoxBehaviors.IsFocusSelect="True" VerticalAlignment="Center" />
+                                <local:CustomTextBox b:TextBoxBehaviors.IsFocusSelect="True" VerticalAlignment="Center"
+                                                     Style="{DynamicResource MaterialDesignTextBox}"
+                                                     CancelCommand="{Binding CancelCommand}"
+                                                     Text="{Binding WriteValue, Mode=TwoWay, UpdateSourceTrigger=LostFocus, ValidatesOnDataErrors=True}" />
                             </Grid>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
@@ -100,8 +104,10 @@
                     <DataGridTemplateColumn.CellEditingTemplate>
                         <DataTemplate>
                             <Grid>
-                                <TextBox Text="{Binding Path=PreparedValue, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-                                         b:TextBoxBehaviors.IsFocusSelect="True" VerticalAlignment="Center" />
+                                <local:CustomTextBox b:TextBoxBehaviors.IsFocusSelect="True" VerticalAlignment="Center"
+                                                     Style="{DynamicResource MaterialDesignTextBox}"
+                                                     CancelCommand="{Binding CancelCommand}"
+                                                     Text="{Binding PreparedValue, Mode=TwoWay, UpdateSourceTrigger=LostFocus, ValidatesOnDataErrors=True}" />
                             </Grid>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>

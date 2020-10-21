@@ -17,6 +17,18 @@ using System.Windows.Controls.Primitives;
 
 namespace Jupiter.UserControls
 {
+    public class CustomTextBox : TextBox
+    {
+        public ICommand CancelCommand
+        {
+            get { return (ICommand)GetValue(CancelCommandProperty); }
+            set { SetValue(CancelCommandProperty, value); }
+        }
+
+        public static readonly DependencyProperty CancelCommandProperty =
+            DependencyProperty.Register("CancelCommand", typeof(object), typeof(CustomTextBox), new PropertyMetadata(null));
+    }
+
     /// <summary>
     /// VariableInfoDataGrid.xaml の相互作用ロジック
     /// </summary>
@@ -162,6 +174,52 @@ namespace Jupiter.UserControls
             }
 
             return elem as T;
+        }
+
+        private void DataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        {
+            if (e.Column.Header.ToString() == "Value" || e.Column.Header.ToString() == "Prepared Value")
+            {
+                int childrenCount = VisualTreeHelper.GetChildrenCount(e.EditingElement);
+
+                CustomTextBox tb = null;
+                for (int i = 0; i < childrenCount; i++)
+                {
+                    var child = VisualTreeHelper.GetChild(e.EditingElement, i) as FrameworkElement;
+                    if (child != null)
+                    {
+                        int subChildrenCount = VisualTreeHelper.GetChildrenCount(child);
+                        for (int j = 0; j < subChildrenCount; j++)
+                        {
+                            var subChild = VisualTreeHelper.GetChild(child, i) as FrameworkElement;
+                            if (subChild is CustomTextBox)
+                            {
+                                tb = subChild as CustomTextBox;
+                                goto ExitLoop;
+                            }
+                        }
+                    }
+                }
+
+            ExitLoop:;
+
+                if (tb != null)
+                {
+                    if (e.EditAction == DataGridEditAction.Commit)
+                    {
+                        var expr = tb.GetBindingExpression(TextBox.TextProperty);
+                        expr.UpdateSource();
+                        if (expr.HasError)
+                        {
+                            e.Cancel = true;
+                        }
+                    }
+                    else
+                    {
+                        tb.CancelCommand?.Execute(null);
+                    }
+                }
+            }
         }
     }
 }

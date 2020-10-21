@@ -15,6 +15,9 @@ using System.Runtime.Serialization;
 using Microsoft.SqlServer.Server;
 using System.Windows.Forms;
 using System.Globalization;
+using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Infrastructure;
+using System.Windows.Input;
+using Unity.Injection;
 
 namespace Jupiter
 {
@@ -77,7 +80,14 @@ namespace Jupiter
 
         public void ConvertValueBack(object value)
         {
-            dataValue.Value = _convertBackValue(value);
+            try
+            {
+                dataValue.Value = _convertBackValue(value);
+            }
+            catch(Exception)
+            {
+
+            }
         }
 
         public object ConvertPreparedValue()
@@ -87,7 +97,27 @@ namespace Jupiter
 
         public void ConvertBackPreparedValue(object value)
         {
-            preparedValue = _convertBackValue(value);
+            try
+            {
+                preparedValue = _convertBackValue(value);
+            }
+            catch(Exception)
+            {
+
+            }
+        }
+
+        public bool Validate(object value)
+        {
+            try
+            {
+                _convertBackValue(value);
+                return true;
+            }
+            catch(Exception)
+            {
+                return false;
+            }
         }
 
         protected abstract object _convertValue(object value);
@@ -679,8 +709,10 @@ namespace Jupiter
         }
     }
 
-    public class VariableInfo : BindableBase
+    public class VariableInfo : BindableBase, IDataErrorInfo
     {
+        public static NullDataValue NullDataValue = new NullDataValue(new DataValue(StatusCodes.BadWaitingForInitialData));
+
         #region Properties(DataGridView)
         private NodeId nodeId;
         public NodeId NodeId {
@@ -736,25 +768,60 @@ namespace Jupiter
             }
         }
 
+        private object _writeValue; 
         public object WriteValue
         {
-            get { return _value.ConvertValue(); }
+            get {
+                if (this["WriteValue"] != null)
+                    return _writeValue;
+                else
+                    return _value.ConvertValue();
+            }
 
             set
             {
-                _value.ConvertValueBack(value);
-                RaisePropertyChanged("WriteValue");
-                RaisePropertyChanged("Value");
+                if (_value.Validate(value))
+                {
+                    Errors.Remove("WriteValue");
+                    _value.ConvertValueBack(value);
+                }
+                else
+                {
+                    Errors["WriteValue"] = "Invalid Input Value";
+                }
+                SetProperty(ref _writeValue, value);
             }
         }
 
+        private object _preparedValue;
         public object PreparedValue
         {
-            get { return _value.ConvertPreparedValue(); }
-            set {
-                _value.ConvertBackPreparedValue(value);
-                RaisePropertyChanged("PreparedValue");
+            get {
+                if (this["PreparedValue"] != null)
+                    return _preparedValue;
+                else
+                    return _value.ConvertPreparedValue();
             }
+
+            set {
+                if (_value.Validate(value))
+                {
+                    Errors.Remove("PreparedValue");
+                    _value.ConvertBackPreparedValue(value);
+                }
+                else
+                {
+                    Errors["PreparedValue"] = "Invalid Input Value";
+                }
+                SetProperty(ref _preparedValue, value);
+            }
+        }
+
+        public void ResetValue()
+        {
+            _writeValue = null;
+            Errors.Remove("WriteValue");
+            Errors.Remove("PreparedValue");
         }
 
         public object PreparedBoolValue
@@ -793,6 +860,16 @@ namespace Jupiter
         }
         #endregion
 
+        public VariableInfo Self
+        {
+            get { return this; }
+        }
+
+        public void Validate(object value)
+        {
+            _value.Validate(value);
+        }
+
         #region Properties(Others)
         public uint ClientHandle;
 
@@ -817,20 +894,28 @@ namespace Jupiter
         }
         #endregion
 
-        public VariableInfo(NodeId nodeId, string displayName)
+        private void InitializeClass(NodeId nodeId, string displayName)
         {
             this.nodeId = nodeId;
 
             this.displayname = displayName;
 
-            this._value = new NullDataValue(new DataValue(StatusCodes.BadWaitingForInitialData));
+            this.CancelCommand = new DelegateCommand(() =>
+            {
+                ResetValue();
+            });
+        }
+
+        public VariableInfo(NodeId nodeId, string displayName)
+        {
+            InitializeClass(nodeId, displayName);
+
+            this._value = NullDataValue;
         }
 
         public VariableInfo(NodeId nodeId, string displayName, BuiltInType builtInType)
         {
-            this.nodeId = nodeId;
-
-            this.displayname = displayName;
+            InitializeClass(nodeId, displayName);
 
             object defaultValue;
             switch(builtInType)
@@ -956,6 +1041,20 @@ namespace Jupiter
             this.RaisePropertyChanged("StatusCode");
             this.RaisePropertyChanged("ServerTimestamp");
             this.RaisePropertyChanged("SourceTimestamp");
+        }
+
+        public ICommand CancelCommand { get; set; }
+
+        private Dictionary<string, string> Errors = new Dictionary<string, string>();
+
+        public string Error => throw new NotImplementedException();
+
+        public string this[string columnName]
+        {
+            get
+            {
+                return Errors.ContainsKey(columnName) ? Errors[columnName] : null;
+            }
         }
     }
 }
