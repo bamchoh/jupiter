@@ -60,7 +60,7 @@
                         <DataTemplate>
                             <Grid>
                                 <CheckBox IsChecked="{Binding Path=BoolValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                          IsTabStop="False" VerticalAlignment="Center"
+                                          IsTabStop="False" VerticalAlignment="Center" HorizontalAlignment="Center"
                                           Visibility="{Binding Type, Converter={StaticResource BoolTypeToVisibilityConverter}}"/>
                                 <TextBlock Text="{Binding Path=Value, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                                            VerticalAlignment="Center"
@@ -93,7 +93,7 @@
                         <DataTemplate>
                             <Grid>
                                 <CheckBox IsChecked="{Binding Path=PreparedBoolValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                          IsTabStop="False" VerticalAlignment="Center"
+                                          IsTabStop="False" VerticalAlignment="Center" HorizontalAlignment="Stretch"
                                           Visibility="{Binding Type, Converter={StaticResource BoolTypeToVisibilityConverter}}"/>
                                 <TextBlock Text="{Binding Path=PreparedValue, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                                            VerticalAlignment="Center"

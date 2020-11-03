@@ -558,7 +558,7 @@ namespace Jupiter
             }
 
             var nodesToRead = new ReadValueIdCollection();
-            foreach (VariableInfo r in viList)
+            foreach (Interfaces.IVariableInfo r in viList)
             {
                 var nodeToRead = new ReadValueId();
                 nodeToRead.NodeId = this.ToNodeId(r.NodeId);
@@ -590,6 +590,15 @@ namespace Jupiter
         protected virtual void OnNotified(ClientNotificationEventArgs e)
         {
             SessionNotification?.Invoke(this, e);
+        }
+
+        public ResponseHeader CoreWrite(WriteValueCollection values, out StatusCodeCollection results, out DiagnosticInfoCollection diagnosticInfos)
+        {
+            return session.Write(
+                null,
+                values,
+                out results,
+                out diagnosticInfos);
         }
 
         private void innerWrite(IList<VariableInfo> items, Func<VariableInfo, object> func)
@@ -635,11 +644,7 @@ namespace Jupiter
                 StatusCodeCollection results = null;
                 DiagnosticInfoCollection diagnosticInfos = null;
 
-                ResponseHeader responseHeader = session.Write(
-                    null,
-                    values,
-                    out results,
-                    out diagnosticInfos);
+                ResponseHeader responseHeader = CoreWrite(values, out results, out diagnosticInfos);
 
                 ClientBase.ValidateResponse(results, values);
                 ClientBase.ValidateDiagnosticInfos(diagnosticInfos, values);

@@ -58,6 +58,9 @@
                         <TabItem Header="Read/Write">
                             <local:OneTimeAccessView Margin="5,10"/>
                         </TabItem>
+                        <TabItem Header="Script">
+                            <local:ScriptView Margin="5,10"/>
+                        </TabItem>
                     </dragablz:TabablzControl>
                     <StatusBar Grid.Row="3">
                     </StatusBar>

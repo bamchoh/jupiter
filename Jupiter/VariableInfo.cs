@@ -709,7 +709,7 @@ namespace Jupiter
         }
     }
 
-    public class VariableInfo : BindableBase, IDataErrorInfo
+    public class VariableInfo : BindableBase, IDataErrorInfo, Interfaces.IVariableInfo
     {
         public static NullDataValue NullDataValue = new NullDataValue(new DataValue(StatusCodes.BadWaitingForInitialData));
 

@@ -1,0 +1,69 @@
+﻿<UserControl x:Class="Jupiter.Views.ScriptView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Jupiter.Views"
+             xmlns:converter="clr-namespace:Jupiter.Converter"
+             mc:Ignorable="d" 
+             xmlns:Prism="http://prismlibrary.com/"
+             Prism:ViewModelLocator.AutoWireViewModel="True"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <converter:BoolToContentConverter x:Key="BoolToRepeatContentConverter" TrueConetnt="Repeat" FalseContent="One Time" />
+        <converter:BoolInverseConverter x:Key="BoolInverseConverter" />
+    </UserControl.Resources>
+    <DockPanel LastChildFill="True">
+        <DockPanel DockPanel.Dock="Top" LastChildFill="False">
+            <Button 
+                Content="Run"
+                Margin="5"
+                Command="{Binding RunCommand}"
+                IsEnabled="{Binding IsRunning, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BoolInverseConverter}}" />
+            <Button 
+                Content="Stop"
+                Margin="5"
+                Command="{Binding StopCommand}" 
+                IsEnabled="{Binding IsRunning}"/>
+            <DockPanel>
+                <Label
+                    DockPanel.Dock="Top"
+                    Content="Repeat Script" />
+                <DockPanel>
+                    <ToggleButton 
+                        Margin="5"
+                        Command="{Binding RepeatCommand}"/>
+                    <Label 
+                        VerticalAlignment="Center"
+                        Content="{Binding IsRepeat, Converter={StaticResource BoolToRepeatContentConverter}}" />
+                </DockPanel>
+            </DockPanel>
+        </DockPanel>
+        <Grid DockPanel.Dock="Top">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <TextBox Grid.Column="0"
+                     AcceptsReturn="True"
+                     AcceptsTab="True"
+                     FontFamily="Courier New"
+                     VerticalContentAlignment="Stretch"
+                     ScrollViewer.HorizontalScrollBarVisibility="Visible"
+                     ScrollViewer.VerticalScrollBarVisibility="Visible"
+                     Text="{Binding Script, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <ListBox Grid.Column="1"
+                     FontFamily="Courier New"
+                     VerticalContentAlignment="Stretch"
+                     ScrollViewer.HorizontalScrollBarVisibility="Visible"
+                     ScrollViewer.VerticalScrollBarVisibility="Visible"
+                     ItemsSource="{Binding ScriptOutput, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+    </DockPanel>
+</UserControl>

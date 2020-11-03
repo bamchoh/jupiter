@@ -41,7 +41,7 @@ namespace UnitTestJupiterDotnetCore
         }
     }
 
-    public class TestVariableConfiguration : Jupiter.Interfaces.IVariableConfiguration
+    public class TestVariableConfiguration
     {
         public NodeClass NodeClass { get; set; }
 
