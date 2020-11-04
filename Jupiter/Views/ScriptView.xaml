@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Jupiter.Views"
+             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"             
              xmlns:converter="clr-namespace:Jupiter.Converter"
              mc:Ignorable="d" 
              xmlns:Prism="http://prismlibrary.com/"
@@ -38,32 +39,48 @@
                         Content="{Binding IsRepeat, Converter={StaticResource BoolToRepeatContentConverter}}" />
                 </DockPanel>
             </DockPanel>
+            <Button
+                Content="Load"
+                Margin="5"
+                Command="{Binding LoadCommand}" />
         </DockPanel>
         <Grid DockPanel.Dock="Top">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <TextBox Grid.Column="0"
+            <GroupBox
+                Header="Script"
+                Grid.Column="0"
+                Margin="2" >
+                <TextBox
                      AcceptsReturn="True"
                      AcceptsTab="True"
                      FontFamily="Courier New"
                      VerticalContentAlignment="Stretch"
                      ScrollViewer.HorizontalScrollBarVisibility="Visible"
                      ScrollViewer.VerticalScrollBarVisibility="Visible"
+                     IsEnabled="{Binding IsRunning, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BoolInverseConverter}}"
                      Text="{Binding Script, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-            <ListBox Grid.Column="1"
+            </GroupBox>
+            <GroupBox
+                Header="Output"
+                Grid.Column="1"
+                Margin="2" >
+                <ListBox
                      FontFamily="Courier New"
                      VerticalContentAlignment="Stretch"
                      ScrollViewer.HorizontalScrollBarVisibility="Visible"
                      ScrollViewer.VerticalScrollBarVisibility="Visible"
+                     BorderThickness="1"
                      ItemsSource="{Binding ScriptOutput, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding}" />
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </GroupBox>
         </Grid>
     </DockPanel>
 </UserControl>

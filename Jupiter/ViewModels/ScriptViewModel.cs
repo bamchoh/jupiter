@@ -11,12 +11,17 @@ using System.Threading.Tasks;
 
 using Prism.Mvvm;
 using Prism.Commands;
+using System.Windows.Forms;
 
 namespace Jupiter.ViewModels
 {
     class ScriptViewModel : BindableBase
     {
-        public string Script { get; set; }
+        public string Script
+        {
+            get { return _script; }
+            set { SetProperty(ref _script, value); }
+        }
 
         public ObservableCollection<string> ScriptOutput
         {
@@ -40,6 +45,10 @@ namespace Jupiter.ViewModels
         public ICommand StopCommand { get; private set; }
 
         public ICommand RepeatCommand { get; private set; }
+
+        public ICommand LoadCommand { get; private set; }
+
+        private string _script;
 
         private ScriptEngine.V8Engine engine;
 
@@ -92,6 +101,22 @@ namespace Jupiter.ViewModels
             RepeatCommand = new DelegateCommand(() =>
             {
                 IsRepeat = !_isRepeat;
+            });
+
+            LoadCommand = new DelegateCommand(() =>
+            {
+                using(var ofd = new OpenFileDialog())
+                {
+                    ofd.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                    ofd.Filter = "Javascript files (*.js)|*.js|All files (*.*)|*.*";
+                    ofd.FilterIndex = 1;
+                    ofd.RestoreDirectory = true;
+
+                    if(ofd.ShowDialog() == DialogResult.OK)
+                    {
+                        Script = File.ReadAllText(ofd.FileName, System.Text.Encoding.UTF8);
+                    }
+                }
             });
         }
 
