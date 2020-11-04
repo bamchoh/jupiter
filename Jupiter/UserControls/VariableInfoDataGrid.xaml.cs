@@ -82,7 +82,7 @@ namespace Jupiter.UserControls
 
             if (checkbox != null && checkbox.Visibility == Visibility.Visible)
             {
-                switch(e.Key)
+                switch (e.Key)
                 {
                     case Key.Space:
                         {
@@ -146,7 +146,7 @@ namespace Jupiter.UserControls
                 return reference as T;
 
             DependencyObject elem = null;
-            for(int i = 0;i < VisualTreeHelper.GetChildrenCount(reference);i++)
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(reference); i++)
             {
                 elem = GetChildElement<T>(reference, i);
                 if (elem != null)
@@ -166,7 +166,7 @@ namespace Jupiter.UserControls
                 return child as T;
 
             DependencyObject elem = reference;
-            for(int i=0;i<VisualTreeHelper.GetChildrenCount(child);i++)
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(child); i++)
             {
                 elem = GetChildElement<T>(child, i);
                 if (elem != null)
@@ -218,6 +218,25 @@ namespace Jupiter.UserControls
                     {
                         tb.CancelCommand?.Execute(null);
                     }
+                }
+            }
+        }
+
+        private void DataGrid_BeginningEdit(object sender, DataGridBeginningEditEventArgs e)
+        {
+            if (e.Column.Header.ToString() == "Value" || e.Column.Header.ToString() == "Prepared Value")
+            {
+                var dg = (DataGrid)sender;
+                if (dg == null)
+                    return;
+
+                var elem = dg.CurrentColumn.GetCellContent(dg.CurrentItem);
+                var checkbox = GetElement<CheckBox>(elem);
+
+                if (checkbox != null && checkbox.Visibility == Visibility.Visible)
+                {
+                    e.Cancel = true;
+                    dg.CancelEdit();
                 }
             }
         }

@@ -22,6 +22,7 @@
                   PreviewKeyDown="DataGrid_PreviewKeyDown"
                   ItemsSource="{Binding ItemsSource, RelativeSource={RelativeSource AncestorType=local:VariableInfoDataGrid}}"
                   CellEditEnding="DataGrid_CellEditEnding"
+                  BeginningEdit="DataGrid_BeginningEdit"
                   SelectionChanged="DataGrid_SelectionChanged"
                   CanUserAddRows="False" CanUserSortColumns="False" CanUserReorderColumns="False" IsReadOnly="False" AutoGenerateColumns="False">
             <DataGrid.Columns>
@@ -60,7 +61,7 @@
                         <DataTemplate>
                             <Grid>
                                 <CheckBox IsChecked="{Binding Path=BoolValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                          IsTabStop="False" VerticalAlignment="Center" HorizontalAlignment="Center"
+                                          IsTabStop="False" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
                                           Visibility="{Binding Type, Converter={StaticResource BoolTypeToVisibilityConverter}}"/>
                                 <TextBlock Text="{Binding Path=Value, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                                            VerticalAlignment="Center"
@@ -93,7 +94,7 @@
                         <DataTemplate>
                             <Grid>
                                 <CheckBox IsChecked="{Binding Path=PreparedBoolValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                          IsTabStop="False" VerticalAlignment="Center" HorizontalAlignment="Stretch"
+                                          IsTabStop="False" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
                                           Visibility="{Binding Type, Converter={StaticResource BoolTypeToVisibilityConverter}}"/>
                                 <TextBlock Text="{Binding Path=PreparedValue, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                                            VerticalAlignment="Center"
