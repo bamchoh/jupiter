@@ -59,6 +59,7 @@
     <ProjectReference Include="..\opcua\Stack\Opc.Ua.Core\Opc.Ua.Core.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="AvalonEdit" Version="6.0.1" />
     <PackageReference Include="CommonServiceLocator">
       <Version>2.0.5</Version>
     </PackageReference>

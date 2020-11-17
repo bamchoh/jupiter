@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Jupiter.Views"
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"             
+             xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
              xmlns:converter="clr-namespace:Jupiter.Converter"
              mc:Ignorable="d" 
              xmlns:Prism="http://prismlibrary.com/"
@@ -53,15 +54,15 @@
                 Header="Script"
                 Grid.Column="0"
                 Margin="2" >
-                <TextBox
-                     AcceptsReturn="True"
-                     AcceptsTab="True"
+                <avalonEdit:TextEditor
                      FontFamily="Courier New"
                      VerticalContentAlignment="Stretch"
                      ScrollViewer.HorizontalScrollBarVisibility="Visible"
                      ScrollViewer.VerticalScrollBarVisibility="Visible"
+                     ShowLineNumbers="True"
+                     SyntaxHighlighting="JavaScript"
                      IsEnabled="{Binding IsRunning, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BoolInverseConverter}}"
-                     Text="{Binding Script, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                     Document="{Binding Script, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
             </GroupBox>
             <GroupBox
                 Header="Output"

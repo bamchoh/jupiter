@@ -9,6 +9,7 @@ using System.Windows.Data;
 using System.Threading;
 using System.Threading.Tasks;
 
+using ICSharpCode.AvalonEdit.Document;
 using Prism.Mvvm;
 using Prism.Commands;
 using System.Windows.Forms;
@@ -17,7 +18,7 @@ namespace Jupiter.ViewModels
 {
     class ScriptViewModel : BindableBase
     {
-        public string Script
+        public TextDocument Script
         {
             get { return _script; }
             set { SetProperty(ref _script, value); }
@@ -48,7 +49,7 @@ namespace Jupiter.ViewModels
 
         public ICommand LoadCommand { get; private set; }
 
-        private string _script;
+        private TextDocument _script;
 
         private ScriptEngine.V8Engine engine;
 
@@ -62,7 +63,7 @@ namespace Jupiter.ViewModels
 
         public ScriptViewModel(Interfaces.IConnection client)
         {
-            Script = "";
+            Script = new TextDocument();
 
             log = new LogStream();
 
@@ -83,7 +84,7 @@ namespace Jupiter.ViewModels
                     Task.Run(() => {
                         do
                         {
-                            engine.Run(Script, log, cancel);
+                            engine.Run(Script.ToString(), log, cancel);
                         } while (_isRepeat && !cancel.IsCancellationRequested);
                         IsRunning = false;
                     }, cancel);
@@ -114,7 +115,7 @@ namespace Jupiter.ViewModels
 
                     if(ofd.ShowDialog() == DialogResult.OK)
                     {
-                        Script = File.ReadAllText(ofd.FileName, System.Text.Encoding.UTF8);
+                        Script = new TextDocument(File.ReadAllText(ofd.FileName, System.Text.Encoding.UTF8));
                     }
                 }
             });
