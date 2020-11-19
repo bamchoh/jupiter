@@ -56,11 +56,14 @@
                 Grid.Column="0"
                 Margin="2" >
                 <avalonEdit:TextEditor
-                     FontFamily="Courier New"
+                    x:Name="avalonEdit_TextEditor"
+                     FontFamily="Consolas"
                      VerticalContentAlignment="Stretch"
                      ScrollViewer.HorizontalScrollBarVisibility="Visible"
                      ScrollViewer.VerticalScrollBarVisibility="Visible"
                      ShowLineNumbers="True"
+                     Foreground="#303030"
+                     
                      SyntaxHighlighting="JavaScript"
                      IsEnabled="{Binding IsRunning, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BoolInverseConverter}}"
                      Document="{Binding Script, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />

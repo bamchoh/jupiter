@@ -10,6 +10,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.IO;
+using System.Xml;
+using ICSharpCode.AvalonEdit.Highlighting;
+using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 
 namespace Jupiter.Views
 {
@@ -21,6 +25,16 @@ namespace Jupiter.Views
         public ScriptView()
         {
             InitializeComponent();
+            using (MemoryStream ms = new MemoryStream())
+            {
+                var src = Properties.Resources.JavaScript_Mode;
+                ms.Write(src, 0, src.Length);
+                ms.Seek(0, SeekOrigin.Begin);
+                using (var reader = new XmlTextReader(ms))
+                {
+                    avalonEdit_TextEditor.SyntaxHighlighting = HighlightingLoader.Load(reader, HighlightingManager.Instance);
+                }
+            }
         }
     }
 }

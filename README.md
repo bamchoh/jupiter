@@ -10,3 +10,7 @@ I'm using the algorythm which is describing in below web site:
 http://final.hateblo.jp/entry/2015/08/16/212631
 
 I'd like to thank you @finalstream for the greatest post.
+
+# Clear Script Support
+
+
