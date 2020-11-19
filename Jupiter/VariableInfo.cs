@@ -790,6 +790,7 @@ namespace Jupiter
                     Errors["WriteValue"] = "Invalid Input Value";
                 }
                 SetProperty(ref _writeValue, value);
+                RaisePropertyChanged();
             }
         }
 
