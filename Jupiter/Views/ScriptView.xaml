@@ -21,6 +21,7 @@
                 Content="Run"
                 Margin="5"
                 Command="{Binding RunCommand}"
+                CommandParameter="{Binding Script.Text}"
                 IsEnabled="{Binding IsRunning, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BoolInverseConverter}}" />
             <Button 
                 Content="Stop"

@@ -71,7 +71,7 @@ namespace Jupiter.ViewModels
 
             this.engine = new ScriptEngine.V8Engine((Client)client);
 
-            RunCommand = new DelegateCommand(() => 
+            RunCommand = new DelegateCommand<string>((body) => 
             {
                 Task.Run(() =>
                 {
@@ -84,7 +84,7 @@ namespace Jupiter.ViewModels
                     Task.Run(() => {
                         do
                         {
-                            engine.Run(Script.ToString(), log, cancel);
+                            engine.Run(body, log, cancel);
                         } while (_isRepeat && !cancel.IsCancellationRequested);
                         IsRunning = false;
                     }, cancel);
