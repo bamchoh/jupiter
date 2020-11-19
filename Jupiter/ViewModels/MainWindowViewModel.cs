@@ -40,13 +40,16 @@ namespace Jupiter.ViewModels
         {
             get
             {
-                var opcuaasm = Assembly.LoadFrom("Opc.Ua.Core.dll");
+                var asm = Assembly.GetExecutingAssembly();
+                var execDir = System.IO.Path.GetDirectoryName(asm.Location);
+
+                var opcuaasm = Assembly.LoadFrom(System.IO.Path.Combine(execDir, "Opc.Ua.Core.dll"));
                 string opcuaFileVersion = ((AssemblyFileVersionAttribute)Attribute.GetCustomAttribute(opcuaasm, typeof(AssemblyFileVersionAttribute))).Version;
 
-                var asm = Assembly.GetExecutingAssembly();
                 string assemblyTitle = ((AssemblyTitleAttribute)Attribute.GetCustomAttribute(asm, typeof(AssemblyTitleAttribute))).Title;
                 string asmFileVersion = ((AssemblyFileVersionAttribute)Attribute.GetCustomAttribute(asm, typeof(AssemblyFileVersionAttribute))).Version;
-                return string.Format("{0}(Version: {1}, Opc.Ua.Core.dll: {2})", assemblyTitle, asmFileVersion, opcuaFileVersion);
+                string title = string.Format("{0}(Version: {1}, Opc.Ua.Core.dll: {2})", assemblyTitle, asmFileVersion, opcuaFileVersion);
+                return title;
             }
         }
 
