@@ -49,6 +49,8 @@ namespace Jupiter.ViewModels
 
         public ICommand LoadCommand { get; private set; }
 
+        public ICommand ClearOutputCommand { get; private set; }
+
         private TextDocument _script;
 
         private ScriptEngine.V8Engine engine;
@@ -118,6 +120,11 @@ namespace Jupiter.ViewModels
                         Script = new TextDocument(File.ReadAllText(ofd.FileName, System.Text.Encoding.UTF8));
                     }
                 }
+            });
+
+            ClearOutputCommand = new DelegateCommand(() =>
+            {
+                ScriptOutput.Clear();
             });
         }
 

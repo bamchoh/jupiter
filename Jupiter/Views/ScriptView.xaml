@@ -16,7 +16,7 @@
         <converter:BoolInverseConverter x:Key="BoolInverseConverter" />
     </UserControl.Resources>
     <DockPanel LastChildFill="True">
-        <DockPanel DockPanel.Dock="Top" LastChildFill="False">
+        <DockPanel DockPanel.Dock="Top" LastChildFill="True">
             <Button 
                 Content="Run"
                 Margin="5"
@@ -45,6 +45,13 @@
                 Content="Load"
                 Margin="5"
                 Command="{Binding LoadCommand}" />
+            <Grid DockPanel.Dock="Right" >
+                <Button
+                    Content="Clear"
+                    Margin="5"
+                    Command="{Binding ClearOutputCommand}"
+                    HorizontalAlignment="Right" />
+            </Grid>
         </DockPanel>
         <Grid DockPanel.Dock="Top">
             <Grid.ColumnDefinitions>
