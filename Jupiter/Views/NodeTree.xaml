@@ -45,7 +45,8 @@
                     <Label Content="Reload" VerticalAlignment="Center" VerticalContentAlignment="Center" Padding="0,0,0,0" />
                 </StackPanel>
             </Button>
-            <TreeView ItemsSource="{Binding Path=References.Value.Children}" ItemContainerStyle="{StaticResource MaterialDesignTreeViewItem}">
+            <TreeView ItemsSource="{Binding Path=References.Value.Children}" ItemContainerStyle="{StaticResource MaterialDesignTreeViewItem}"
+                      VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.IsVirtualizing="True">
                 <TreeView.Resources>
                     <HierarchicalDataTemplate DataType="{x:Type local2:OPCUAReference}" ItemsSource="{Binding Children}">
                         <StackPanel Orientation="Horizontal">
