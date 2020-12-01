@@ -138,17 +138,17 @@ namespace Jupiter
             return new OPCUAReference(this.client, null, this.EventAggregator) { DisplayName = name };
         }
 
-        private ReferenceDescriptionCollection FetchObjectReferences(ExpandedNodeId enodeid)
+        private ReferenceDescriptionCollection FetchObjectReferences(ExpandedNodeId expandedNodeId)
         {
             try
             {
                 NodeId id;
-                if(enodeid == null)
+                if(expandedNodeId == null)
                     id = Objects.ObjectsFolder;
                 else
-                    id = client.ToNodeId(enodeid);
+                    id = client.ToNodeId(expandedNodeId);
 
-                var mask = (uint)NodeClass.Object;
+                var mask = (uint)(NodeClass.Object | NodeClass.Variable);
                 var refs = client.FetchReferences(id);
                 client.Browse(id, mask, out refs);
                 return refs;
