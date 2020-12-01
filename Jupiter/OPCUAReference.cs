@@ -148,10 +148,22 @@ namespace Jupiter
                 else
                     id = client.ToNodeId(expandedNodeId);
 
-                var mask = (uint)(NodeClass.Object | NodeClass.Variable);
-                var refs = client.FetchReferences(id);
-                client.Browse(id, mask, out refs);
-                return refs;
+                uint mask;
+                    
+                mask = (uint)(NodeClass.Object);
+                var objRefs = new ReferenceDescriptionCollection();
+                client.Browse(id, mask, out objRefs);
+
+                mask = (uint)(NodeClass.Variable);
+                var varRefs = new ReferenceDescriptionCollection();
+                client.Browse(id, mask, out varRefs);
+
+                foreach(var varRef in varRefs)
+                {
+                    objRefs.Add(varRef);
+                }
+
+                return objRefs;
             }
             catch (Exception ex)
             {
