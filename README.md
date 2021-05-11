@@ -25,19 +25,29 @@ function dump(vals)
   {
     let str = '';
     str += `status code: ${vals[i].StatusCode.ToString()}, `;
-    str += `value: ${vals[i].Value}, `;
+    str += `value: ${client.DataValueToString(vals[i])}, `;
     str += `type: ${getType(vals[i])}`;
     utils.WriteLine(str);
   }
 }
 
 let vars = [
+  "ns=2;s=Scalar_Static_Boolean",
+  "ns=2;s=Scalar_Static_SByte",
   "ns=2;s=Scalar_Static_Byte",
   "ns=2;s=Scalar_Static_Int16",
   "ns=2;s=Scalar_Static_Int32",
+  "ns=2;s=Scalar_Static_Int64",
 ];
 
-for(let i = 0;i < 100;i++)
+client.Write([{"node_id": "ns=2;s=Scalar_Static_Boolean", "value": false}]);
+client.Write([{"node_id": "ns=2;s=Scalar_Static_SByte", "value": 127}]);
+client.Write([{"node_id": "ns=2;s=Scalar_Static_Byte", "value": 255}]);
+client.Write([{"node_id": "ns=2;s=Scalar_Static_Int16", "value": 32767}]);
+client.Write([{"node_id": "ns=2;s=Scalar_Static_Int32", "value": 0x7FFFFFFF}]);
+client.Write([{"node_id": "ns=2;s=Scalar_Static_Int64", "value": 0x7FFFFFFFFFFFFFFFn}]);
+
+for(let i = 0;i < 3;i++)
 {
   let readResults = client.Read(vars);
   dump(readResults);
@@ -46,7 +56,7 @@ for(let i = 0;i < 100;i++)
   {
     writeVals.push({
       "node_id": vars[i],
-      "value": readResults[i].Value + 1,
+      "value": client.TryToBigInt(readResults[i]) + 1n,
     });
   }
   let results = client.Write(writeVals);
