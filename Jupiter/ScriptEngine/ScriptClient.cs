@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Numerics;
 using System.CodeDom;
 using System.Collections;
 using System.Collections.Generic;
@@ -32,10 +33,18 @@ namespace Jupiter.ScriptEngine
                     }
                     break;
                 case BuiltInType.Boolean:
-                    if (rawValue is bool)
                     {
-                        Value = rawValue;
-                        return;
+                        if (rawValue is bool)
+                        {
+                            Value = rawValue;
+                            return;
+                        }
+
+                        if (rawValue is BigInteger bigInteger)
+                        {
+                            Value = BitConverter.ToBoolean(bigInteger.ToByteArray());
+                            return;
+                        }
                     }
                     break;
                 case BuiltInType.SByte:
@@ -44,6 +53,12 @@ namespace Jupiter.ScriptEngine
                         if (SByte.TryParse(rawValue.ToString(), out val))
                         {
                             Value = val;
+                            return;
+                        }
+
+                        if (rawValue is BigInteger bigInteger)
+                        {
+                            Value = (sbyte)bigInteger.ToByteArray()[0];
                             return;
                         }
                     }
@@ -56,6 +71,12 @@ namespace Jupiter.ScriptEngine
                             Value = val;
                             return;
                         }
+
+                        if (rawValue is BigInteger bigInteger)
+                        {
+                            Value = bigInteger.ToByteArray()[0];
+                            return;
+                        }
                     }
                     break;
                 case BuiltInType.Int16:
@@ -64,6 +85,12 @@ namespace Jupiter.ScriptEngine
                         if (Int16.TryParse(rawValue.ToString(), out val))
                         {
                             Value = val;
+                            return;
+                        }
+
+                        if (rawValue is BigInteger bigInteger)
+                        {
+                            Value = BitConverter.ToInt16(bigInteger.ToByteArray());
                             return;
                         }
                     }
@@ -76,6 +103,12 @@ namespace Jupiter.ScriptEngine
                             Value = val;
                             return;
                         }
+
+                        if (rawValue is BigInteger bigInteger)
+                        {
+                            Value = BitConverter.ToUInt16(bigInteger.ToByteArray());
+                            return;
+                        }
                     }
                     break;
                 case BuiltInType.Int32:
@@ -84,6 +117,12 @@ namespace Jupiter.ScriptEngine
                         if (Int32.TryParse(rawValue.ToString(), out val))
                         {
                             Value = val;
+                            return;
+                        }
+
+                        if (rawValue is BigInteger bigInteger)
+                        {
+                            Value = BitConverter.ToInt32(bigInteger.ToByteArray());
                             return;
                         }
                     }
@@ -96,6 +135,12 @@ namespace Jupiter.ScriptEngine
                             Value = val;
                             return;
                         }
+
+                        if (rawValue is BigInteger bigInteger)
+                        {
+                            Value = BitConverter.ToUInt32(bigInteger.ToByteArray());
+                            return;
+                        }
                     }
                     break;
                 case BuiltInType.Int64:
@@ -103,6 +148,13 @@ namespace Jupiter.ScriptEngine
                         Int64 val;
                         if (Int64.TryParse(rawValue.ToString(), out val))
                         {
+                            Value = val;
+                            return;
+                        }
+
+                        if (rawValue is BigInteger bigInteger)
+                        {
+                            val = BitConverter.ToInt64(bigInteger.ToByteArray());
                             Value = val;
                             return;
                         }
@@ -114,6 +166,12 @@ namespace Jupiter.ScriptEngine
                         if (UInt64.TryParse(rawValue.ToString(), out val))
                         {
                             Value = val;
+                            return;
+                        }
+
+                        if (rawValue is BigInteger bigInteger)
+                        {
+                            Value = BitConverter.ToUInt64(bigInteger.ToByteArray());
                             return;
                         }
                     }
@@ -285,6 +343,38 @@ namespace Jupiter.ScriptEngine
             {
                 System.Diagnostics.Trace.WriteLine(e.Message);
                 return null;
+            }
+        }
+
+        public string DataValueToString(DataValue text)
+        {
+            return text?.ToString();
+        }
+
+        public dynamic TryToBigInt(DataValue value)
+        {
+            switch (value.WrappedValue.TypeInfo.BuiltInType)
+            {
+                case BuiltInType.Boolean:
+                    return (bool)value.Value ? BigInteger.One : BigInteger.Zero;
+                case BuiltInType.Byte:
+                    return new BigInteger((Byte)value.Value);
+                case BuiltInType.UInt16:
+                    return new BigInteger((UInt16)value.Value);
+                case BuiltInType.UInt32:
+                    return new BigInteger((UInt32)value.Value);
+                case BuiltInType.UInt64:
+                    return new BigInteger((UInt64)value.Value);
+                case BuiltInType.SByte:
+                    return new BigInteger((SByte)value.Value);
+                case BuiltInType.Int16:
+                    return new BigInteger((Int16)value.Value);
+                case BuiltInType.Int32:
+                    return new BigInteger((Int32)value.Value);
+                case BuiltInType.Int64:
+                    return new BigInteger((Int64)value.Value);
+                default:
+                    return value.Value;
             }
         }
     }
