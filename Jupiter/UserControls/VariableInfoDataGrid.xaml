@@ -24,30 +24,31 @@
                   CellEditEnding="DataGrid_CellEditEnding"
                   BeginningEdit="DataGrid_BeginningEdit"
                   SelectionChanged="DataGrid_SelectionChanged"
+                  ClipboardCopyMode="IncludeHeader"
                   CanUserAddRows="False" CanUserSortColumns="False" CanUserReorderColumns="False" IsReadOnly="False" AutoGenerateColumns="False">
             <DataGrid.Columns>
-                <DataGridTemplateColumn IsReadOnly="True" Header="Node ID">
+                <DataGridTemplateColumn IsReadOnly="True" Header="Node ID" ClipboardContentBinding="{Binding NodeId}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding NodeId}" VerticalAlignment="Center" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn IsReadOnly="True" Header="Display Name">
+                <DataGridTemplateColumn IsReadOnly="True" Header="Display Name"  ClipboardContentBinding="{Binding DisplayName}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding DisplayName}" VerticalAlignment="Center" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn IsReadOnly="True" Header="Type">
+                <DataGridTemplateColumn IsReadOnly="True" Header="Type" ClipboardContentBinding="{Binding Type}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Type}" VerticalAlignment="Center" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn IsReadOnly="True" Header="Format">
+                <DataGridTemplateColumn IsReadOnly="True" Header="Format" ClipboardContentBinding="{Binding FormatSelectedItem}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <ComboBox ItemsSource="{Binding Formats}"
@@ -56,7 +57,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="Value">
+                <DataGridTemplateColumn Header="Value" ClipboardContentBinding="{Binding Value}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Grid>
@@ -80,7 +81,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn IsReadOnly="True" Header="Status Code">
+                <DataGridTemplateColumn IsReadOnly="True" Header="Status Code" ClipboardContentBinding="{Binding StatusCode}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding StatusCode}"
@@ -89,7 +90,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="Prepared Value">
+                <DataGridTemplateColumn Header="Prepared Value" ClipboardContentBinding="{Binding PreparedValue}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Grid>
@@ -113,14 +114,14 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn IsReadOnly="True" Header="Server Time Stamp">
+                <DataGridTemplateColumn IsReadOnly="True" Header="Server Time Stamp" ClipboardContentBinding="{Binding ServerTimestamp}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding ServerTimestamp}" VerticalAlignment="Center" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn IsReadOnly="True" Header="Source Time Stamp">
+                <DataGridTemplateColumn IsReadOnly="True" Header="Source Time Stamp" ClipboardContentBinding="{Binding SourceTimestamp}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding SourceTimestamp}" VerticalAlignment="Center" />
