@@ -36,5 +36,15 @@ namespace Jupiter.Views
                 }
             }
         }
+
+        private void CopyToClipboard_Click(object sender, RoutedEventArgs e)
+        {
+            var s = "";
+            foreach(var i in scriptOutputListBox.SelectedItems)
+            {
+                s += i.ToString() + "\n";
+            }
+            Clipboard.SetText(s);
+        }
     }
 }

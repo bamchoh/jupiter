@@ -80,12 +80,19 @@
                 Grid.Column="1"
                 Margin="2" >
                 <ListBox
+                     Name="scriptOutputListBox"
                      FontFamily="Courier New"
                      VerticalContentAlignment="Stretch"
                      ScrollViewer.HorizontalScrollBarVisibility="Visible"
                      ScrollViewer.VerticalScrollBarVisibility="Visible"
                      BorderThickness="1"
+                     SelectionMode="Extended"
                      ItemsSource="{Binding ScriptOutput, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                    <ListBox.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Copy To Clipboard" Click="CopyToClipboard_Click" />
+                        </ContextMenu>
+                    </ListBox.ContextMenu>
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding}" />
